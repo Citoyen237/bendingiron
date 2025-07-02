@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.203.51','127.0.0.1','192.168.1.107', 'localhost', '192.168.219.51','192.168.35.51', '192.168.109.51']
+ALLOWED_HOSTS = ['bendingiron.onrender.com','192.168.203.51','127.0.0.1','192.168.1.107', 'localhost', '192.168.219.51','192.168.35.51', '192.168.109.51']
 
 
 # nouveau model de connexion
@@ -117,16 +117,16 @@ WSGI_APPLICATION = 'SiteDFmac.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# DATABASES = {
+#     'default': dj_database_url.parse(config('DATABASE_URL'))
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
