@@ -1,0 +1,175 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+fabrication d'armature
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/expertise4.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">FABRICATION D’ARMATURES</h1>
+                        <p class="text-ligth"><b>
+                                BENDING IRON mets son expertise au service de vos chantiers grâce à un atelier de
+                                fabrication d’armatures moderne et propose des solutions sur mesure adaptées à
+                                l’ensemble de vos projets de construction en béton armé.
+                            </b></p>
+                        <a href="{% url 'contact.index' %}" class="btn btn-primary mb-2">DEMANDER UN DEVIS !</a>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div>
+<section class=" no-padding solid-bg">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <div class="col-md-12 text-md-left mt-3">
+                    <h3 class="text-dark widget-title">FABRICATION D’ARMATURES <br>
+                        <b class="text-warning">LE CŒUR DE NOTRE EXPERTISE</b>
+                    </h3>
+                    <p>Nous produisons des armatures façonnées sur plan ou sur mesure, prêtes à être posées, pour tous
+                        types de constructions. Vous avez des plans à transmettre ou un besoin spécifique ?
+                        Notre ingénierie de projets vous accompagne pour un chiffrage rapide et personnalisé.
+                    </p><!-- col end -->
+                </div><!-- row end -->
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-5"><!-- Service2 end -->
+                    <h4>POUR QUELS PROJETS ?</h4>
+                    <p>Nos armatures sont conçues pour répondre aux besoins de :
+                        Maisons individuelles et logements collectifs
+                        Bâtiments industriels et agricoles
+                        Travaux publics, fondations spéciales, piscines, ouvrages en béton armé
+                    </p>
+                </div><!-- Col 2 end -->
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <div class="ts-service-box">
+                        <h4>NOS PRESTATIONS</h4>
+                        <p>Découpe et façonnage de barres HA / acier lisse
+                            Assemblage d’armatures en atelier (cadres, épingles, chaînages, longrines, etc.)
+                            Fabrication selon plans BTP, DAO ou modèle fourni
+                            Préparation de kits complets pour chantiers
+                            Livraison directe sur site ou mise à disposition en dépôt
+                        </p>
+                    </div><!-- Service2 end -->
+                </div><!-- Col 2 end -->
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <div class="ts-service-box">
+                        <h4>NOS ENGAGEMENTS</h4>
+                        <i class="fa fa-check text-warning"></i> Conformité aux normes BAEL / Eurocode 2 <br>
+                        <i class="fa fa-check text-warning"></i> Traçabilité complète des aciers utilisés <br>
+                        <i class="fa fa-check text-warning"></i> Délais rapides grâce à nos machines automatisées <br>
+                        <i class="fa fa-check text-warning"></i> Qualité constante grâce à un contrôle rigoureux en
+                        atelier
+                        <br>
+                        <i class="fa fa-check text-warning"></i> Réduction des pertes et gain de temps sur chantier
+                    </div><!-- Service2 end -->
+                </div>
+                <div class="col-lg-3 col-md-6 mb-5">
+                    <div class="ts-service-box">
+                        <h4>POURQUOI CHOISIR BENDING IRON ?</h4>
+                        <b>Un gain de productivité :</b> plus besoin de façonner sur place <br>
+                        <b>Des armatures précises et prêtes à poser :</b> zéro erreur de coupe ou de pliage <br>
+                        <b>Un accompagnement technique : </b> nous pouvons vous aider à optimiser vos plans ou
+                        quantitatifs
+                    </div><!-- Service2 end -->
+                </div>
+            </div><!-- Action style box -->
+        </div><!-- Container end -->
+</section>
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/decoupage.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>ARMATURES COUPÉES FACONNÉES</h3>
+                    <p><b>La fabrication des armatures passe par plusieurs étapes essentielles</b>
+                        Tout d’abord, le dressage est réalisé en faisant passer les fils d’acier à travers une dresseuse
+                        équipée de galets. Ensuite, la coupe est effectuée directement sur les barres à l’aide de
+                        cisailles mécaniques.
+                        Le façonnage, réalisé à froid, se fait sur des machines semi-automatique (cadreuse). Grâce à nos
+                        nombreuses cadreuses nous sommes en mesure de répondre à vos exigences spécifiques en réalisant
+                        des productions sur mesure.
+                        Les armatures coupées et façonnées sont disponibles dans notre boutique en ligne et offre des
+                        solutions personnalisables pour vos projets.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>ARMATURES ASSEMBLÉES PAR LIGATURE</h3>
+                    <p><b>Pour plus de rapidité et d’efficacité nous recommandons d’effectuer l’assemblage des armatures
+                            coupées et façonnées en atelier.</b><br>
+                        BENDING IRON propose l’assemblage par ligature des armatures, une méthode fiable et maîtrisée
+                        qui consiste à relier les barres d’acier entre elles à l’aide de fils de ligature en acier
+                        recuit (fil de fer galvanisé). Réalisée manuellement ou à l’aide de pinces à ligaturer, cette
+                        opération garantit le maintien précis des barres selon les plans de ferraillage. Grâce à son
+                        savoir-faire, l’entreprise assure un montage solide, conforme aux normes, prêt à recevoir le
+                        béton. Cette technique permet souplesse d'exécution sur chantier, adaptation aux contraintes
+                        techniques, et un excellent maintien des armatures jusqu’à leur enrobage.
+
+                    </p>
+                    <p>
+                        <a href="{% url 'contact.index' %}" class="slider btn btn-primary">DEMANDER UN DEVIS !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div>
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/expertise3-2.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/expertise3-3.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>ARMATURES ASSEMBLÉES PAR SOURDURE</h3>
+                    <p><b>Pour plus de rapidité et d’efficacité nous recommandons d’effectuer l’assemblage des armatures
+                        coupées et façonnées en atelier.</b>
+                        BENDING IRON propose l’assemblage des armatures par soudure, une solution robuste et durable
+                        adaptée aux exigences des structures complexes ou fortement sollicitées. Cette méthode consiste
+                        à souder les barres d’acier entre elles aux points de croisement, assurant une fixation rigide
+                        et permanente de l’armature. Réalisé en atelier ou sur chantier par des soudeurs qualifiés, cet
+                        assemblage garantit une grande précision, une meilleure stabilité et un gain de temps lors du
+                        bétonnage. L’entreprise met à profit son expertise pour livrer des armatures soudées conformes aux normes en vigueur, prêtes à l'emploi et optimisées pour la performance structurelle.
+                    </p>
+                    <p>
+                        <a href="{% url 'contact.index' %}" class="slider btn btn-primary">DERMANDER UN DEVIS !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div> <!-- Content row end -->
+    </div><!-- Container end -->
+</section>
+{% endblock %}

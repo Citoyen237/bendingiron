@@ -1,0 +1,85 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+boutique en ligne
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/expertise3.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">BOUTIQUE EN LIGNE D’ARMATURE COUPÉES FACONNÉES</h1>
+                        <p class="text-ligth"><b>
+                                Nous avons décidé de franchir une nouvelle étape : mettre la puissance du digital au
+                                service de nos clients professionnels et particuliers.
+                            </b></p>
+                        <a href="{% url 'boutique' %}" class="btn btn-primary mb-2">BOUTIQUE</a>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div>
+<section class=" no-padding solid-bg">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <div class="col-md-12 text-md-left mt-3">
+                    <h3 class="text-dark widget-title">BOUTIQUE <br><b class="text-warning">LE FERRAILLAGE A PORTEE DE
+                            CLIC</b></h3>
+                    <p>
+                        Notre boutique en ligne est désormais votre nouveau partenaire pour commander fer à béton,
+                        treillis soudé, armatures façonnées et accessoires de chantier, rapidement et en toute
+                        simplicité.
+                    </p><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- Action style box -->
+        </div><!-- Container end -->
+</section>
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/expertise2.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>POURQUOI UNE BOUTIQUE EN LIGNE ?</h3>
+                    <p>Le secteur du BTP évolue, et nous aussi.
+                        Face aux exigences de réactivité, de disponibilité et d’optimisation des chantiers, nous
+                        avons conçu un espace en ligne :
+                    </p>
+                    <i class="fa fa-check text-warning"></i> Accessible 24h/24 et 7j/7 <br>
+                    <i class="fa fa-check text-warning"></i> Catalogue complet avec fiches techniques détaillées <br>
+                    <i class="fa fa-check text-warning"></i> Devis instantané et commande simplifiée <br>
+                    <i class="fa fa-check text-warning"></i> Livraison directe sur chantier ou retrait en dépôt <br>
+                    <i class="fa fa-check text-warning"></i> Suivi de commande en temps réel
+                    <p>
+                    <h3>À QUI S’ADRESSE NOTRE BOUTIQUE ?</h3>
+                    <b>Entreprises du BTP</b> : commandez vos armatures et aciers en quelques clics. <br>
+                    <b>Artisans et auto-entrepreneurs</b> : gagnez du temps et évitez les déplacements inutiles. <br>
+                    <b>Particuliers en auto-construction</b> : bénéficiez de nos conseils et de notre savoir-faire
+                    professionnel. <br>
+
+                    Essayez dès maintenant notre plateforme, conçue pour vous faciliter la vie sur chantier !
+
+
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div><!-- Content row end -->
+    </div><!-- Container end -->
+</section>
+{% endblock %}

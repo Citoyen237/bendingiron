@@ -1,0 +1,48 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+    supprimer un produit en stock
+{% endblock  %}
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Produits en stock</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+          <li class="breadcrumb-item active">Produits en stocks</li>
+          <li class="breadcrumb-item active">supressions d'un produit</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+               
+              </h5>
+              <h1>Confirmer la suppression</h1>
+              <p>Êtes-vous sûr de vouloir supprimer l'élément "{{ object.nom }}" ?</p>
+              <form method="post">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-success">Confirmer</button>
+                  <a href="{% url 'admin.stock.list' %}" class="btn btn-warning">Annuler</a>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+{% endblock  %}
+    

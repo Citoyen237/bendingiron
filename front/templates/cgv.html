@@ -1,0 +1,204 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+cgv
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<style>
+    [id] {
+        scroll-margin-top: 80px;
+        /* adapte selon la hauteur de ton header */
+    }
+</style>
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/cgv.jpg'%}">
+    <div class="banner-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="banner-heading">
+                        <h1 class="banner-title text-warning">Conditions generale de vente</h1>
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb justify-content-center">
+                                <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+                                <li class="breadcrumb-item"><a href="#">CGV</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div><!-- Banner area end -->
+<section id="main-container" class="main-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a href="#1">1. Identité du vendeur</a></li>
+                    <li class="list-group-item"><a href="#2">2. Acceptation des conditions</a></li>
+                    <li class="list-group-item"><a href="#3">3. Produits</a></li>
+                    <li class="list-group-item"><a href="#4">4. Commande</a></li>
+                    <li class="list-group-item"><a href="#5">5. Livraison</a></li>
+                    <li class="list-group-item"><a href="#6">6. Rétraction </a></li>
+                    <li class="list-group-item"><a href="#7">7. Prix</a></li>
+                    <li class="list-group-item"><a href="#8">8. Paiement</a></li>
+                    <li class="list-group-item"><a href="#9">9. Litiges</a></li>
+                    <li class="list-group-item"><a href="#10">10. Garantie</a></li>
+                    <li class="list-group-item"><a href="#11">11. Informations légales</a></li>
+                    <li class="list-group-item"></li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+
+                <h3 class="ts-facts-title text-warning mt-4" id="1">1. Identité du vendeur</h3>
+                <p>
+                    Le site www.bending-iron.com est la propriété de l’entreprise BENDING IRON, ainsi que l'ensemble des
+                    droits y afférents. Toute reproduction, intégrale ou partielle, est systématiquement soumise à
+                    l'autorisation des propriétaires. Toutefois, les liaisons du type hypertextes vers le site sont
+                    autorisées sans demandes spécifiques.
+                </p>
+                <h3 class="ts-facts-title text-warning mt-4" id="2">2. Acceptation des conditions</h3>
+                <p>
+                    Le client reconnaît avoir pris connaissance, au moment de la passation de commande, des conditions
+                    particulières de vente énoncées sur cet écran et déclare expressément les accepter sans réserve.
+                    Les présentes conditions générales de vente régissent les relations contractuelles entre
+                    l’entreprise BENDING IRON et son client, les deux parties les acceptant sans réserve. Ces conditions
+                    générales de vente prévaudront sur toutes autres conditions figurant dans tout autre document, sauf
+                    dérogation préalable, expresse et écrite.
+
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="3">3. Produits</h3>
+                <p>
+                    Les photographies illustrant les produits, n'entrent pas dans le champ contractuel. Si des erreurs
+                    s'y sont introduites, en aucun cas, la responsabilité de l’entreprise BENDING IRON ne pourra être
+                    engagée. La majorité des produits proposés à ses clients par l’entreprise BENDING IRON sont sur
+                    commande et devras être livrée dans le
+                    délai mentionné lors de la commande. </p>
+                <h3 class="ts-facts-title text-warning mt-4" id="4">4. Commande</h3>
+                <p>
+                    Les systèmes d'enregistrement automatique sont considérés comme valant preuve, de la nature, du
+                    contenu et de la date de la commande. L’entreprise BENDING IRON confirme l'acceptation de sa
+                    commande au client à l'adresse mail que celui-ci aura communiqué. La vente ne sera conclue qu'à
+                    compter de la confirmation de la commande. L’entreprise BENDING IRON se réserve le droit d'annuler
+                    toute commande d'un client avec lequel existerait un litige relatif au paiement d'une commande
+                    antérieure. Les informations énoncées par l'acheteur, lors de la prise de commande engagent celui-ci
+                    : en cas d'erreur dans le libellé des coordonnées du destinataire, le vendeur ne saurait être tenu
+                    responsable de l'impossibilité dans laquelle il pourrait être de livrer le produit.
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="5">5. Livraison</h3>
+                <p>Après confirmation de commande, l’entreprise BENDING IRON s'engage à livrer à son transporteur,
+                    toutes les références commandées par l'acheteur et ce dans le délai mentionné lors de la commande.
+                    Ce transporteur s'engage lui par contrat avec l’entreprise BENDING IRON à livrer la commande à
+                    l'adresse de l'acheteur fournie par le client. Dans le cas d'un transport en système dit de contre
+                    remboursement, le client s'engage à régler au transporteur ou à son représentant la totalité de la
+                    somme indiquée lors de la confirmation de commande.
+                    La livraison est effectuée dans le créneau horaire prévu avec le client par la remise directe du
+                    produit au destinataire annoncé, soit en cas d'absence, à une autre personne habilitée par le
+                    client. Les retards éventuels ne donnent pas le droit à l'acheteur de réclamer des dommages et
+                    intérêts.
+                    Dans les cas d'un produit technique, le client veillera particulièrement à vérifier le bon
+                    fonctionnement de l'appareil livré, à lire la notice d'emploi qui lui est fournie, à respecter les
+                    règles et normes d'installation en vigueur, et s’il ne le peut lui-même à faire effectuer cette
+                    installation par un homme de l'art. l’entreprise BENDING IRON ne pourra être tenu responsable d'un
+                    mauvais fonctionnement et de tous dégâts ou accident provoqués par une mauvaise installation.
+                    En cas de défauts apparents, l'acheteur bénéficie du droit de retour dans les conditions prévues
+                    dans ce document.
+                    Sont considérés comme cas de force majeure déchargeant le vendeur de son obligation de livrer, la
+                    guerre, l'émeute, l'incendie, les grèves, les accidents et l'impossibilité d'être approvisionnés.
+                    Vérifiez toujours votre colis à l'arrivée. Vous disposez d'un délai de 48 heures pour faire
+                    d'éventuelles réserves auprès du transporteur en cas de manquant ou de dégradation.
+                    Pour des raisons de disponibilité, une commande peut être livrée en plusieurs fois au client. Le
+                    client ne règle alors qu'une seule livraison. Si le client souhaite 2 lieux de livraison, il passe 2
+                    commandes, avec les frais de livraison liés.
+
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="6">6. Rétraction </h3>
+                <p>
+                    Vous avez 14 jours (à compter de la réception des articles) pour vous faire une opinion. En cas
+                    d'échange ou remboursement, après avoir fait votre demande par écrit, renvoyez-le (les) article(s)
+                    neuf(s) dans son (leurs) emballage d'origine, intact, accompagné de tous les accessoires éventuels,
+                    notices d'emploi et documentations à l'adresse suivante :
+                    BENDING IRON : Douala Cameroun
+                    En cas d'exercice du droit de rétractation, l’entreprise BENDING IRON est tenu au remboursement des
+                    sommes versées par le client. Le remboursement est dû dans un délai maximum de 15 jours.
+
+
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="7">7. Prix</h3>
+                <p>
+                    Le prix est exprimé en FCFA.
+                    Le prix indiqué sur les fiches produit ne comprend pas le transport.
+                    Le prix indiqué dans la confirmation de commande est le prix définitif, ne comprenant aucune taxe.
+                    Ce prix comprend le prix des produits, les frais de manutention, d'emballage et de conservation des
+                    produits. Les frais de transport sont à la charge du client.
+
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="8">8. Paiement</h3>
+                <p>Le prix facturé au client est le prix indiqué sur la confirmation de commande.
+                    La confirmation de la commande est conditionnée par le paiement minimal de 25% du prix total de la
+                    commande. Le reste du paiement se fera à la livraison. Néanmoins, La commande est payable au
+                    comptant le jour de la commande effective.
+                    Le paiement s'effectue soit par MTN MOBILE MONEY soit par ORANGE MONEY
+                    La commande validée par le client ne sera considérée effective que lorsque les centres de paiement
+                    concernés nous auront envoyé une notification de paiement. En cas d’absence de notification des dits
+                    centres, la commande sera automatiquement annulée et le client prévenu par courrier électronique.
+                    Par ailleurs, l’entreprise BENDING IRON se réserve le droit de refuser toute commande d'un client
+                    avec lequel existerait un litige.
+                    .
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="9">9. Litiges</h3>
+                <p>
+                    Le présent contrat est soumis au droit Camerounais. Ne peut être tenu pour responsable des dommages
+                    de toute nature, tant matériels qu'immatériels ou corporels, qui pourraient résulter d'un mauvais
+                    fonctionnement ou de la mauvaise utilisation des produits commercialisés. Il en est de même pour les
+                    éventuelles modifications des produits résultant des fabricants. La responsabilité de l’entreprise
+                    BENDING IRON sera, en tout état de cause, limitée au montant de la commande et ne saurait être mise
+                    en cause pour de simples erreurs ou omissions qui auraient pu subsister malgré toutes les
+                    précautions prises dans la présentation des produits En cas de difficultés dans l'application du
+                    présent contrat, l'acheteur a la possibilité, avant toute action en justice, de rechercher une
+                    solution amiable notamment avec l'aide : d'une association professionnelle de la branche , d'une
+                    association de consommateurs ou de tout autre conseil de son choix . Il est rappelé que la recherche
+                    de la solution amiable n'interrompt pas le " bref délai " de la garantie légale, ni la durée de la
+                    garantie contractuelle. Il est rappelé qu'en règle générale et sous réserve de l'appréciation des
+                    Tribunaux, le respect des dispositions du présent contrat relatives à la garantie contractuelle
+                    suppose que l'acheteur honore ses engagements financiers envers le vendeur.
+                    Les réclamations ou contestations seront toujours reçues avec bienveillance attentive, la bonne foi
+                    étant toujours présumée chez celui qui prend la peine d'exposer ses situations. En cas de litige, le
+                    client s'adressera par priorité à l'entreprise pour obtenir une solution amiable.
+                    A défaut, le Tribunal de Commerce est seul compétent, quels que soient le lieu de livraison et le
+                    mode de paiement acceptés.
+
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="10">10. Garantie</h3>
+                <p>Dans tous les cas l’entreprise BENDING IRON ne pourra être tenu pour responsable pour non-respect des
+                    dispositions réglementaires et législatives en vigueur dans le pays de réception, la responsabilité
+                    de l’entreprise BENDING IRON est systématiquement limitée à la valeur du produit mis en cause,
+                    valeur a sa date de vente et ce sans possibilités de recours envers la marque ou la société
+                    productrice du produit.
+                </p>
+
+                <h3 class="ts-facts-title text-warning mt-4" id="11">11. Informations légales</h3>
+                <p>Le renseignement des informations nominatives collectées aux fins de la vente à distance est
+                    obligatoire, ces informations étant indispensables pour le traitement et l'acheminement des
+                    commandes, l'établissement des factures et contrats de garantie. Le défaut de renseignement entraîne
+                    la non validation de la commande. Le client dispose d'un droit d'accès, de modification, de
+                    rectification et de suppression des données qui le concernent, qu'il peut exercer auprès
+                    l’entreprise BENDING IRON. De plus, l’entreprise BENDING IRON s'engage à ne pas communiquer,
+                    gratuitement ou avec contrepartie, les coordonnées de ses clients à un tiers
+                </p>
+            </div>
+        </div><!-- Content row end -->
+
+    </div><!-- Container end -->
+</section><!-- Main container end -->
+{%endblock%}

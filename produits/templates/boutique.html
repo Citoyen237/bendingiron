@@ -1,0 +1,47 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+boutique
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<!-- <div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/produit.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">BOUTIQUE
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<section id="ts-features" class="ts-features pb-2">
+  <div class="container">
+    <div class="row">
+      <!-- <div class="col-lg-12">
+        <h3><a href="{% url 'boutique' %}" class="text-warning">Boutique</a> / Categories</h3>
+      </div> -->
+      <div class="container mt-4">
+        {% for sous_categorie, produits in produits_groupes.items %}
+        <h2 class="text-warning">{{ sous_categorie|title }}</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in produits %}
+          <div class="card" style="min-width: 300px;">
+           <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}" class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{ produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+</section>
+{% endblock %}

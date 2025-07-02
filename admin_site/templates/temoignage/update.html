@@ -1,0 +1,38 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+Modifier un temoignage
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Les temoignages</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                <li class="breadcrumb-item">Temoignages</li>
+                <li class="breadcrumb-item active">Modifier un temoignage</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{form}}
+                            <button class="btn btn-primary form-control mt-2 mb-2">Mettre a jour</button>
+                        </form>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

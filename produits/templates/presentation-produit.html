@@ -1,0 +1,240 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+ingnerie de projet
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/produits-btp.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">PRODUITS ET SERVICES BTP
+                        </h1>
+                        <p class="text-ligth"><b>
+                                Au coeur de chaque construction solide se trouve une armature fiable. Nos produits
+                                allient resistence, precision et durabilite pour batir l'avenir en toute securite.
+                            </b></p>
+                        <a href="{% url 'boutique' %}" class="btn btn-primary mb-2">BOUTIQUE !</a>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div>
+<section class=" no-padding solid-bg">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <!-- <div class="col-md-12 text-md-left mt-3">
+                    <h3 class="text-dark widget-title">INGÉNIERIE DE PROJETS
+                        <br>
+                        <b class="text-warning">DEFINIR UNE CENEMATIQUE D'ASSEMBLAGE</b>
+                    </h3>
+                    <p>Qu’il s’agisse de projets de grande
+                        envergure en raison de leur ampleur, de leur complexité technique ou de leur localisation, nous
+                        relevons ces défis avec succès à chaque fois, grâce à une collaboration étroite avec nos
+                        clients, pour donner vie à leurs projets.</p>col end
+                </div>row end -->
+            </div><!-- Action style box -->
+        </div><!-- Container end -->
+</section>
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution1.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>BARRES DROITE</h3>
+                    <p>BENDING IRON façonne des barres d’acier droites destinées principalement au secteur de la
+                        construction et de l’industrie. Ces barres, disponibles en différentes longueurs, diamètres et
+                        nuances d’acier, se distinguent par leur haute résistance mécanique, leur durabilité et leur
+                        conformité aux normes de qualité en vigueur. Le processus de façonnage comprend le redressage et
+                        la coupe sur mesure, assurant une finition précise et un produit prêt à l’emploi. Grâce à un
+                        contrôle rigoureux et à une logistique efficace, l’entreprise garantit des délais de livraison
+                        courts et un produit fiable répondant aux exigences des clients professionnels.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div><!-- Content row end -->
+        <div class="row">
+            <!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>BARRES CINTRÉ AUX EXTRÉMITÉES</h3>
+                    <p>BENDING IRON façonne des barres d’acier cintrées aux extrémités, utilisées principalement dans
+                        les ouvrages en béton armé pour renforcer les structures et améliorer l’ancrage dans le béton.
+                        Ces barres sont façonnées selon des plans précis, avec des angles de cintrage adaptés aux
+                        exigences techniques des chantiers. Le processus de production comprend le redressage, le
+                        découpage, le cintrage mécanique et le contrôle qualité, garantissant une haute précision et une
+                        conformité aux normes en vigueur. Grâce à leur robustesse, leur fiabilité et leur facilité
+                        d’intégration sur site, ces barres répondent aux besoins des professionnels du bâtiment et des
+                        travaux publics.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div>
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution2.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution3.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>CADRES</h3>
+                    <p>BENDING IRON est spécialisée dans la fabrication de cadres de ferraillage sur mesure, destinés
+                        aux structures en béton armé. Grâce à des machines performantes et à un personnel qualifié, nous
+                        produisons des cadres de différentes formes et dimensions (carrés, rectangulaires, triangulaire,
+                        etc.), répondant aux exigences des projets de construction les plus complexes. Que ce soit pour
+                        les fondations, poteaux, poutres ou dalles, nous assurons des solutions fiables, rapides et
+                        adaptées aux besoins de nos clients, avec un souci constant de qualité et de délais. Nous
+                        collaborons avec les entreprises de gros œuvre, les bureaux d'études et les maîtres d'ouvrage
+                        pour proposer des produits optimisés, permettant de réduire le temps de mise en œuvre sur
+                        chantier tout en assurant la sécurité et la solidité des ouvrages.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>CINTRAGE DE FORME (PINCE, CROCHET, ÉTRIER, T, U)</h3>
+                    <p>BENDING IRON est spécialisée dans le cintrage de forme de barres d’acier, réalisant des pièces
+                        aux formes variées telles que des pinces, étriers, crochets, T ou U, selon les besoins
+                        spécifiques des chantiers. Ces éléments façonnés sur mesure sont utilisés dans le domaine du
+                        béton armé pour assurer l’assemblage, l’ancrage ou le renfort des structures. Le cintrage est
+                        effectué à l’aide de machines semi-automatisées garantissant une précision, une reproductibilité
+                        et une conformité aux plans fournis. Grâce à son savoir-faire technique et à la flexibilité de
+                        sa production, l’entreprise peut répondre rapidement à des demandes complexes tout en assurant
+                        qualité et fiabilité.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div>
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution4.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution5.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>ÉTRIERS POUR BARDAGE ET TOITURE</h3>
+                    <p>BENDING IRON produit des étriers en acier, aluminium ou inox lisse destinés aux systèmes de
+                        bardage et de toiture. Conçus pour assurer la fixation, le maintien et la stabilité des éléments
+                        de couverture et de façade, ces étriers sont disponibles en plusieurs dimensions et formes,
+                        adaptées aux différentes configurations de pose. Fabriqués à partir de matériaux de haute
+                        qualité, ils offrent une excellente résistance mécanique et une durabilité accrue face aux
+                        conditions climatiques. Grâce à un processus de production maîtrisé, incluant la découpe, le
+                        pliage et le traitement anticorrosion, l’entreprise garantit des produits fiables, conformes aux
+                        normes du bâtiment, et répondant aux attentes des professionnels du secteur.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>BOULONS D’ANCRAGE À BÉTON</h3>
+                    <p>BENDING IRON conçoit et fabrique des boulons d’ancrage à béton destinés à la fixation d’éléments
+                        structurels dans les ouvrages en béton. Ces boulons, disponibles en plusieurs dimensions et
+                        filetages, sont utilisés pour ancrer solidement des poteaux, platines, machines ou structures
+                        métalliques. Fabriqués en acier haute résistance et traités contre la corrosion, ils
+                        garantissent une tenue mécanique optimale et une longue durée de vie. Le processus de
+                        fabrication inclut la coupe, le filetage, le pliage (si nécessaire) et un contrôle qualité
+                        rigoureux. Grâce à leur fiabilité et leur conformité aux normes en vigueur, ces boulons
+                        répondent aux exigences des professionnels du bâtiment et des travaux publics.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div>
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution6.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper border">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/solution7.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>Autres produits</h3>
+                    <p>BENDING IRON propose d'autres produits en dehors des armatures de feraillage, utilisé principalement pour la ligature des
+                        armatures dans les ouvrages en béton armé. Disponible en stock, ce fil se
+                        décline en plusieurs diamètres et finitions (noir recuit et galvanisé) pour s’adapter aux
+                        différentes contraintes de chantier. Souple, résistant et facile à manipuler, il permet un
+                        assemblage rapide et sécurisé des barres d’armature. Grâce à une qualité constante et une
+                        logistique maîtrisée, l’entreprise assure un approvisionnement fiable aux professionnels du
+                        bâtiment et des travaux publics.
+                    </p>
+                    <p>
+                        <a href="{% url 'boutique' %}" class="slider btn btn-primary">BOUTIQUE !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div>
+    </div><!-- Container end -->
+</section>
+{% endblock %}

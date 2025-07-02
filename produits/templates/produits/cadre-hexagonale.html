@@ -1,0 +1,266 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+detail
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+
+<style>
+    h4 {
+        text-transform: initial;
+        font-weight: normal;
+    }
+</style>
+
+<section class="content project-area solid-bg">
+    <div class="container border shadow py-2 my-2">
+        <div class="row">
+            <div class="col-lg-12 "><br>
+                <h3 class="column-title bg-warning p-3 text-center">Parametre du {{product.nom}}</h3>
+            </div><!-- Col end -->
+        
+        <!-- insersion des info -->
+        
+    
+        <div class="col-lg-7 ml-5">
+            <!-- label et input ici-->
+             <form action="" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" id="val" value={{val}}>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.fer.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.fer }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 class=""><b>M. </b>{{form.choix2.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.choix2 }}
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class=""><b>Ang. </b> {{form.choix.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.choix }}
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>R. </b>{{form.rayonCourbure.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.rayonCourbure}}
+                            <div id="rayonCourbure-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>Ldf. </b>{{form.longueurDepartFin.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueurDepartFin}}
+                            <div id="longueurDepartFin-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class=""><b>D. </b>{{form.diametre.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.diametre}}
+                            <div id="cintrage-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.longueurCote.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueurCote}}
+                            <div id="longueurCote-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary">{{form.longueurTotal.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueurTotal}}
+                            <div id="longueurTotal-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.quantite.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.quantite}}
+                            <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+
+                    
+
+        </div>
+
+        <div class="col-lg-4">
+            <!-- image prix unitaire prix total -->
+             <div class="latest-post-media">
+                    <a href="" class="latest-post-img">
+                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}"
+                            alt="img">
+                    </a>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix }}                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prixTotal.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prixTotal }}                    
+                    </div>
+                </div>
+        </div>
+
+    </div>
+
+        <div class="row mb-3">
+            <div class="col-lg-6 text-center "><br>
+                <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
+                    Precedent
+                </a>
+            </div><!-- Col end -->
+            <div class="col-lg-6 text-center"><br>
+                {% if user.is_authenticated %}
+                <button class="btn btn-warning ">
+                    Ajouter au panier
+                </button>
+                {% else %}
+                    <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
+                {% endif %}
+            </div><!-- Col end -->
+        </div>
+    </form>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Récupérer les éléments du formulaire
+        let diametereField = document.getElementById('diametre')
+        let angeField = document.getElementById('angle')
+        let rayonField = document.getElementById('rayonCourbure')
+        let longueurdptField = document.getElementById('longueurDepart')
+        let longueurTotalField = document.getElementById('longueurTotal');
+        let cintrageField = document.getElementById('diametreCin');
+        let cintrageError = document.getElementById('cintrage-error');
+        let prixField = document.getElementById('prix-id');
+        let prixTotalField = document.getElementById('prix-total');
+        let quantiteField = document.getElementById('quantite'); // Quantité de cadre
+        let val = document.getElementById('val');
+       
+
+        // Fonction pour effectuer les calculs
+        const updateFields = () => {
+            //fer
+            let fer =document.querySelector('input[name="fer"]:checked')?.value
+            // Récupérer les valeurs des champs
+            //let longueurCote = parseFloat(longueurCoteField.value || 0);
+            let cintrageCote = parseFloat(cintrageField.value || 0);
+            let diametre = parseInt(diametereField.value)
+            let ange = parseFloat(angeField.value || 60)
+            let quantite = parseFloat(quantiteField.value || 1);
+
+           //calcule rayon, longueur de depart
+            rayonField.value = 5*diametre
+            longueurdptField.value = 5*diametre
+            diametereField.value = diametre
+            angeField.value = ange
+           
+            // Vérification de la valeur minimale pour longueurCote
+            if (cintrageCote < 1 || cintrageCote > 1000) {
+                // Afficher le message d'erreur
+                cintrageError.textContent = "comprise entre 1-1000";
+                cintrageError.style.display = "block"; // Afficher le message
+                // diametre cintrage = 1;  // Fixer la valeur à 8 si elle est inférieure
+                cintrageField.value = cintrageCote;  // Mettre à jour le champ avec la valeur corrigée
+            } else {
+                // Cacher le message d'erreur si la valeur est valide
+                cintrageError.style.display = "none";
+            }
+            // Calcul de la longueur totale du cadre
+            let longueurTotal = 0
+            if(ange=60){
+               longueurTotal = (3.14*cintrageCote) + (25*diametre)
+            }else{
+               longueurTotal = (3.14*cintrageCote) + (25*diametre)
+            }
+              // Exemple de calcul, modifiez-le selon votre logique
+            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            
+            //choix du fer
+            let prixUnitaire = 0
+            if (fer === 'bending iron') {
+                prixUnitaire = 30 + (0.25*longueurTotal) + 2.5;
+                // Calcul du prix unitaire
+            } else {
+                prixUnitaire = 30 + 0.25 + 2.5; // Exemple de calcul
+            } 
+            prixField.value = prixUnitaire.toFixed(2); // Afficher le prix unitaire dans le champ
+
+            // Calcul du prix total
+            let prixTotal = prixUnitaire * quantite;
+            prixTotalField.value = prixTotal.toFixed(2); // Afficher le prix total dans le champ
+        };
+
+        // Mettre à jour les valeurs dès qu'un champ change
+        const fieldsToWatch = [
+            cintrageField,
+            quantiteField,
+            fer,
+            rayonField,
+            longueurdptField,
+            diametereField,
+            angeField
+        ];
+
+        fieldsToWatch.forEach(field => {
+            field.addEventListener('input', updateFields); // Recalcule lorsque l'utilisateur modifie la valeur d'un champ
+        });
+
+        // Mettre à jour les champs lors de l'initialisation
+        updateFields();
+    });
+
+</script>
+
+{% endblock%}

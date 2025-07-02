@@ -1,0 +1,103 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+commandes
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Commandes</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Details de la commande</a></li>
+                <li class="breadcrumb-item active">#BIron{{order.id}}</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-md-4">
+                <b>Nom client</b> : {{order.user}}
+                <b>Date </b>: {{order.created_at}} <br>
+                <b>Prix total: </b> {{totals}} FCFA
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Table with stripped rows -->
+                        <table class="table table-striped">
+                            <thead class=''>
+                                <th>Produit</th>
+                                <th>Description</th>
+                                <th>Quandite</th>
+                                <th>Prix ​​unitaire (fcfa)</th>
+                                <th>Prix ​​total (fcfa)</th>
+                            </thead>
+                            <tbody>
+
+                                {% for item in produits %}
+                                <tr>
+                                    <td>{{item.produit}}</td>
+                                    <td>{{item.details}}
+                                    <td>{{item.quantite}}</td>
+                                    <td>{{item.prix|intcomma}}</td>
+                                    <td>{{item.total|intcomma}}</td>
+                                </tr>
+                                {% endfor %}
+
+
+                                <tr>
+                                    <td colspan="11" class="text-center text-dark">
+                                        <a class="btn btn-primary"><i class="bi bi-download"></i></a>
+
+                                        {% if status == "en_attente" %}
+                                        <a href="{% url 'change.status' orderId %}"
+                                            class="btn btn-warning text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></a>
+                                        {%endif%}
+                                        {% if status == "en_production" %}
+                                        <a href="{% url 'change.status' orderId %}"
+                                            class="btn btn-primary text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></a>
+                                        {%endif%}
+                                        {% if status == "pret_pour_livraison" %}
+                                        <a href="{% url 'change.status' orderId %}"
+                                            class="btn btn-info text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></a>
+
+                                        {%endif%}
+                                        {% if status == "solde_facture" %}
+                                        <a href="{% url 'change.status' orderId %}"
+                                            class="btn btn-secondary text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></a>
+
+                                        {%endif%}
+                                        {%if status == "termine" %}
+                                        <a class="btn btn-success text-lg">{{status}}</a>
+                                        {%endif%}
+
+
+                                        <!-- <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                        <br>
+                                        <span> Aucune commande n'a ete trouver</span> -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Basic Modal -->
+
+
+</main>
+{%endblock%}

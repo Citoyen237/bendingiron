@@ -1,0 +1,26 @@
+-categorie
+    -CINTRAGE DU FER A BETON
+    -CINTRAGE DU FER ROND 
+       - Etrier pour toiture et bardage (03)
+          -produtit
+          -produtit
+          -produtit
+       - Boulon et ancrage à béton (04)
+    -Vente du fer a beton(quintalire)
+      -fils d'attache
+      -barre de fer
+-produit
+    -nom
+    -categorie_id
+    -name_page
+    -date_creation
+
+    nom : Cintrage d’extrémités, Redressage et découpage, Cintrage de cadre (12)
+
+-pour la commande prendre en compte j'ai le fer, ou pas
+
+verifier si le fer en stock permet de realiser la commande
+
+
+-controle du stock : alert,
+-la longueur total du fer

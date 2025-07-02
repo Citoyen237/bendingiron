@@ -1,0 +1,73 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+effectuer le paiement
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<section class="content project-area">
+    <div class="container-fluid border shadow">
+        <div class="row">
+            <div class="col-md-6">   
+                    <table class="table mt-2  border">
+                        <thead class='bg-warning'>
+                            <th>Image</th>
+                            <th>Machine</th>
+                            <th>Prix </th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><img src="{{machine.image.url}}" alt=""></td>
+                                <td>{{machine.name}}</td>
+                                <td>{{machine.prix}} fcfa</td>
+                            </tr>
+                        </tbody>
+                    </table>     
+            </div>
+            <div class="col-md-6">
+                <div class="card bg-light m-2">
+                    <div class="card-body">
+                        <h4 class="card-title">Valider la commande</h4>
+                        <hr>
+                        <p>Vous devez payer au moins les 25% de votre facture. pour lire nos condition generale de vente
+                            <a href="{% url 'cgv' %}" class="text-primary">Cliquez ici</a>
+                        </p>
+
+                        <form action="" method="get">
+                            <div class="input mb-3">
+                                <a class=""><img src="{%static 'mtn.jpg' %}" alt="Profile" class="mr-2"
+                                        style="height:3%;width:30%"></a>
+                                <a class=""><img src="{%static 'orange.png' %}" alt="Profile" class="p-2 m-2"
+                                        style="width:21%"></a>
+
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-2 mt-2">
+                                <!-- Checkbox -->
+                                <div class="form-check mb-0">
+                                    <h6>Total</h6>
+                                </div>
+                                <a class="text-dark">{{machine.prix}} FCFA</a>
+                            </div>
+                            
+                            <div class="input mb-3">
+                                {% if user.is_authenticated %}
+                                <a href="" class="btn btn-primary form-control text-dark">Confirmer</a>
+                                {%else%}
+                                <a href="{% url 'login' %}" class="btn btn-primary form-control text-dark">Connectez vous pour confirmer le paiement</a>
+                                {%endif%}
+                            </div>
+
+                    </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% load static %}
+{%endblock%}

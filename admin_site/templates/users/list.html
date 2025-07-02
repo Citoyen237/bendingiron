@@ -1,0 +1,115 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+utilisateurs
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>utilisateurs</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">utilisateurs</a></li>
+                <li class="breadcrumb-item active">Liste</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Table with stripped rows -->
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Prenom</th>
+                                    <th>Email</th>
+                                    <th>Telephone</th>
+                                    <th>Role</th>
+                                    <th>Changer status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{user.last_name}}</td>
+
+                                    <td>{{user.first_name}}</td>
+                                    <td>{{user.email}}</td>
+                                    <td>{{user.phone_number}}</td>
+                                    <td>                                        
+                                            
+                                            {% if user.groups.first.name == "simple" %}
+                                            <span class="badge bg-secondary text-dark">{{user.groups.first.name}}</span>
+
+                                            {% endif %}
+
+                                            {% if user.groups.first.name == "admin"%}
+                                            <span class="badge bg-warning text-dark">{{user.groups.first.name}}</span>
+                                            {% endif %}
+
+                                            {% if user.groups.first.name == "superadmin" %}
+                                            <span class="badge bg-info text-dark">{{user.groups.first.name}}</span> 
+                                            {% endif %}
+                                                                                     
+                                    </td>
+
+                                    <td class="">
+                                         <a
+                                                    href="{% url 'change_user_role' user.id 'superadmin' %}">
+                                                    <span class="badge bg-info text-dark">
+                                                    SuperAdmin
+                                                </span>
+                                                </a>
+                                                <a href="{% url 'change_user_role' user.id 'admin' %}">
+                                                    <span class="badge bg-warning text-dark">
+                                                    Admin
+                                                </span>
+                                                </a><a href="{% url 'change_user_role' user.id 'simple' %}">
+                                                    <span class="badge bg-secondary text-dark">
+                                                    Utilisateur
+                                                </span>
+                                                </a>
+                                    </td>
+                                    <td>
+                                        {% if user.is_active %}
+                                        <a href=" {% url 'toggle_user_status' user.id %} "  data-bs-toggle="tooltip" data-bs-placement="top" title="bloquer" class='btn btn-success'><i
+                                                class="bi bi-unlock-fill"></i></a>
+                                        {% else %}
+                                        <a href=" {% url 'toggle_user_status' user.id %}"   data-bs-toggle="tooltip" data-bs-placement="top" title="debloquer" class='btn btn-danger'><i
+                                                class="bi bi-lock-fill"></i></a>
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                        <br>
+                                        <span>Acun utilisateur n'a ete trouve</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Basic Modal -->
+
+
+</main>
+{%endblock%}

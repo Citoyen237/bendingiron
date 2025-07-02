@@ -1,0 +1,89 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+stock
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Stock</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item">Suivis de stock</li>
+                <li class="breadcrumb-item active">{{fer}}</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                    <h3 class="text-success"><b>Quandite total : {{fer.quantite_totale}}</b></h3>
+                            </div>
+                            <div class="col-md-6">
+                                <h3 class="text-success"><b>Longueur total :{{fer.longueur_totale}} metres</b></h3>
+                            </div>
+                        </div>
+                        <h5 class="card-title  mb-3"><a href="" class="btn btn-primary"><i
+                                    class="fas fa-download"></i>Telecharger</a>
+                            <br>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            <!-- Table with stripped rows -->
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Longueur</th>
+                                        <th>Quantite</th>
+                                        <th>Prix U</th>
+                                        <th>Prix T</th>
+                                        <th>Longueur total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for mouvement in mouvements %}
+                                    <tr>
+                                        <td>{{mouvement.date}}</td>
+                                        <td>{{mouvement.longueur_m}}</td>
+                                        <td>{{mouvement.quantite}}</td>
+                                        <td>{{mouvement.prix_u}}</td>
+                                        <td>{{mouvement.prix_total}}</td>
+                                        <td>{{mouvement.longueur_total}}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                            <br>
+                                            <span>Acune entree n'a ete teffectuer pour ce produit</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+{%endblock%}

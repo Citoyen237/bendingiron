@@ -1,0 +1,80 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+mes commandes
+{% endblock %}
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+
+<section class="content project-area">
+    <div class="container border shadow">
+        <div class="row">
+            <div class="col-md-12">   
+                    <table class="table mt-2">
+                        <thead class='bg-warning'>
+                            <th>N de facture</th>
+                            <th>Date</th>
+                            <th>Prix totale (FCFA) </th>
+                            <th>status</th>
+                            <th class='text-center'>Action</th>
+                        </thead>
+                        <tbody>
+                          
+                          {% for order in  commandes %}
+                             
+                          <tr>
+                            <td>#BIron{{order.id}}</td>
+                            <td>{{order.created_at}}</td>
+                            <td>{{order.get_prix_total|intcomma}}</td>
+                            <th>
+                                {% if order.get_statut_actuel == "en_attente" %}
+                                <span class="badge bg-warning text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {% if order.get_statut_actuel == "en_production" %}
+                                <span class="badge bg-primary text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {% if order.get_statut_actuel == "pret_pour_livraison" %}
+                                <span class="badge bg-info text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {%if order.get_statut_actuel == "solde_facture" %}
+                                <span class="badge bg-secondary text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {%if order.get_statut_actuel == "termine" %}
+                                <span class="badge bg-success text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                 
+                            </th>
+                            <td class='text-center'>
+                                <a href="{% url 'invoice_download' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a>
+                                <a href="{% url 'detail_commande' order.id %}" class='btn btn-info' name='supprimer'><i class='fas fa-file'></i></a>
+                            </td>
+                        </tr>
+                          {% empty%}
+                          <tr>
+                            <td colspan="6" class="text-center">
+                                <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                <br>
+                                <span> Aucune commande n'a ete trouver</span>
+                            </td>
+                        </tr>
+                          {% endfor %}
+        
+                        </tbody>
+                    </table>     
+            </div>
+        </div>
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock %}

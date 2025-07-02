@@ -1,0 +1,156 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+detail
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+
+<style>
+    h4 {
+        text-transform: initial;
+        font-weight: normal;
+    }
+</style>
+
+<section class="content project-area solid-bg">
+    <div class="container border shadow py-2 my-2">
+        <div class="row">
+            <div class="col-lg-12 "><br>
+                <h3 class="column-title bg-warning p-3 text-center">Parametre  de ferraillage du {{product.nom}}</h3>
+            </div><!-- Col end -->
+        
+        <!-- insersion des info -->
+        
+    
+        <div class="col-lg-7 ml-5">
+            <!-- label et input ici-->
+             <form action="" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" id="val" value={{val}}>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.fer.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.fer }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 class=""><b>M. </b>{{form.diametre.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.diametre }}
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>R. </b>{{form.rayonCourbure.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.rayonCourbure}}
+                            <div id="rayonCourbure-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>A.</b>{{form.largeurCote.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.largeurCote}}
+                            <div id="largeurCote-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>B. </b>{{form.longueurCote.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueurCote}}
+                            <div id="longueurCote-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary">{{form.longueurTotal.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueurTotal}}
+                            <div id="longueurTotal-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.quantite.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.quantite}}
+                            <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+
+                    
+
+        </div>
+
+        <div class="col-lg-4">
+            <!-- image prix unitaire prix total -->
+             <div class="latest-post-media">
+                    <a href="" class="latest-post-img">
+                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}"
+                            alt="img">
+                    </a>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix }}                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prixTotal.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prixTotal }}                    
+                    </div>
+                </div>
+        </div>
+
+    </div>
+
+        <div class="row mb-3">
+            <div class="col-lg-6 text-center "><br>
+                <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
+                    Precedent
+                </a>
+            </div><!-- Col end -->
+            <div class="col-lg-6 text-center"><br>
+                {% if user.is_authenticated %}
+                <button class="btn btn-warning ">
+                    Ajouter au panier
+                </button>
+                {% else %}
+                    <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
+                {% endif %}
+            </div><!-- Col end -->
+        </div>
+    </form>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock%}

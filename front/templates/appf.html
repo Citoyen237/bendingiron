@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Basic Page Needs
+================================================== -->
+    <meta charset="utf-8">
+    <title>Bending Iron |
+        {% block 'title' %}
+
+        {% endblock %}
+    </title>
+
+    <!-- Mobile Specific Metas
+================================================== -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Construction Html5 Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name=author content="Themefisher">
+    <meta name=generator content="Themefisher Constra HTML Template v1.0">
+
+    <!-- Favicon
+================================================== -->
+    <link rel="icon" type="image/png" href="{% static 'front/images/footer-img.png' %}">
+
+    <!-- CSS
+================================================== -->
+    <!-- Bootstrap -->
+    <link href="{% static 'front/plugins/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="{% static 'front/plugins/fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <!-- Animation -->
+    <link href="{% static 'front/plugins/animate-css/animate.css ' %}" rel="stylesheet">
+    <!-- slick Carousel -->
+    <link rel="stylesheet" href="{% static 'front/plugins/slick/slick.css ' %}">
+    <link rel="stylesheet" href="{% static 'front/plugins/slick/slick-theme.css ' %}">
+    <!-- Colorbox -->
+    <link rel="stylesheet" href="{% static 'front/plugins/colorbox/colorbox.css ' %}">
+    <!-- Template styles-->
+    <link href="{% static 'front/css/styles.css' %}" rel="stylesheet">
+    <style>
+        .whatsapp_btn{
+            position: fixed;
+            right: 13px;
+            bottom: 90px;
+            justify-items: start;
+            justify-content: start;
+            text-align: right;
+            /* border:1px solid #173d7c */
+        }
+        .whatsapp_btn:focus{
+            box-shadow: none;
+        }
+        .whatsapp_btn > img{
+            height: 50px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="body-inner">
+        {% include 'include/top-bar.html' %}
+        {% include 'include/header.html' with current_url=current_url %}
+
+
+
+        {% block 'content' %}
+
+        {% endblock %}
+
+        {% include 'include/footer.html' %}
+        <a class="btn btn-lg whatsapp_btn" href="https://api.whatsapp.com/send?phone=+237686088869&text=Plus d'informations"><img src="{% static 'front/whatsapp.png' %}" alt="whatsapp"></a>
+
+
+        <!-- Javascript Files
+  ================================================== -->
+
+        <!-- initialize jQuery Library -->
+        <script src="{% static 'front/plugins/jQuery/jquery.min.js' %}"></script>
+        <!-- Bootstrap jQuery -->
+        <script src="{% static 'front/plugins/bootstrap/bootstrap.min.js' %}" defer></script>
+        <!-- Slick Carousel -->
+        <script src="{% static 'front/plugins/slick/slick.min.js' %}"></script>
+        <script src="{% static 'front/plugins/slick/slick-animation.min.js' %}"></script>
+        <!-- Color box -->
+        <script src="{% static 'front/plugins/colorbox/jquery.colorbox.js' %}"></script>
+        <!-- shuffle -->
+        <script src="{% static 'front/plugins/shuffle/shuffle.min.js' %}" defer></script>
+
+
+        <!-- Google Map API Key-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU"
+            defer></script>
+        <!-- Google Map Plugin-->
+        <script src="{% static 'front/plugins/google-map/map.js' %}" defer></script>
+
+        <!-- Template custom -->
+        <script src="{% static 'front/js/script.js' %}"></script>
+        <!-- <script src="{% static 'front/js/calcul_form.js' %}" ></script> -->
+
+    </div><!-- Body inner end -->
+</body>
+
+</html>

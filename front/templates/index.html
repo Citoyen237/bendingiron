@@ -1,0 +1,567 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+acceuil
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<div class="banner-carousel banner-carousel-2 mb-0">
+    <div class="banner-carousel-item" style="background-image:url({% static 'front/images/slider-main/bg1.jpg'%})">
+        <div class="container">
+            <div class="box-slider-content">
+                <div class="box-slider-text">
+                    <h2 class="box-slide-title">02 ans expertise</h2>
+                    <h3 class="box-slide-sub-title">BENDING IRON <b class="text-warning">AU SERVICE DE VOS PROJETS
+                            BTP</b>
+                    </h3>
+                    <p class="box-slide-description">BENDING IRON est votre partenaire en ferraillage pour des
+                        constructions solides, durables et prêtes à défier le temps. En plus du ferraillage, nous vous
+                        proposons <b class="text-warning">la vente directe de tout le fer</b> dont vous avez besoin.
+                        Ferraillage sur mesure, délais respectés, qualité garantie.
+                    </p>
+                    <p>
+                        <a href="{% url 'solution.btp' %}" class="slider btn btn-primary">PRODDUITS ET SOLUTIONS BTP </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner-carousel-item" style="background-image:url({% static 'front/images/slider-main/bg2.jpg'%})">
+        <div class="slider-content text-left">
+            <div class="container">
+                <div class="box-slider-content">
+                    <div class="box-slider-text">
+                        <h2 class="box-slide-title">Quand les services sont important</h2>
+                        <h3 class="box-slide-sub-title">Votre choix devient plus simple</h3>
+                        <p class="box-slide-description">Choisir une entreprise de ferraillage, c'est opter pour la
+                            solidité, la précision et la fiabilité au cœur de toute construction.</p>
+                        <p><a href="contact.index" class="slider btn btn-primary" aria-label="about-us">Contactez-nous
+                                !</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="banner-carousel-item" style="background-image:url({% static 'front/images/slider-main/bg4.jpg'%})">
+        <div class="slider-content text-left">
+            <div class="container">
+                <div class="box-slider-content">
+                    <div class="box-slider-text">
+                        <h2 class="box-slide-title">Quand les services sont important</h2>
+                        <h3 class="box-slide-sub-title">Votre choix devient plus simple</h3>
+                        <p class="box-slide-description">Choisir une entreprise de ferraillage, c'est opter pour la
+                            solidité, la précision et la fiabilité au cœur de toute construction.</p>
+                        <p><a href="{% url 'contact.index' %}" class="slider btn btn-primary" aria-label="about-us">Contactez-nous
+                                !</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="call-to-action no-padding">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <div class="col-md-8 text-center text-md-left">
+                    <div class="call-to-action-text">
+                        <h3 class="action-title">BENDING IRON UN ACTEUR ENGAGÉ</h3>
+                    </div>
+                </div><!-- Col end -->
+                <div class="col-md-4 text-center text-md-right mt-3 mt-md-0">
+                    <div class="call-to-action-btn">
+                        <a class="btn btn-primary" href="{% url 'about' %}">Qui sommes nous ?</a>
+                    </div>
+                </div><!-- col end -->
+            </div><!-- row end -->
+        </div><!-- Action style box -->
+    </div><!-- Container end -->
+</section><!-- Action end -->
+
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100"
+                            src="{% static 'front/images/services/ingnieurie-projet.jpg'%}" alt="service-image">
+                    </div>
+                    <h3 class="service-box-title">INGÉNIERIE DE PROJETS</h3>
+                    <p><b>Fort de part ces expériences, BENDING IRON propose des solutions qui permettront de
+                            faciliter les modes de construction sur le chantier</b>. <br>
+                        L’ingénierie de projet est un service complémentaire, les missions primordiales de nos
+                        techniciens consiste à retranscrire tous les éléments (semelle, poteaux, poutre,
+                        chaînage, etc.) pour les mettre en production à l’atelier, de faire gagner en
+                        compétitivité notre usine, notre équipe de pose ainsi que nos clients.
+                    </p>
+
+                    <a href="{% url 'domaine.expertise' %}" class="btn btn-warning text-light"><b>EN SAVOIR PLUS</b> </a>
+
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-3 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/services/boutique-ligne.jpg'%}"
+                            alt="service-image">
+                    </div>
+
+                    <h3 class="service-box-title">BOUTIQUE EN LIGNE D’ARMATURE COUPÉES FACONNÉES</h3>
+                    <p><b>Une solution moderne pour un métier exigeant.</b><br>
+                        Avec cette boutique en ligne, nous restons fidèles à notre mission qui est celle de fournir à
+                        nos clients des matériaux de qualité, au bon moment, au bon endroit commander facilement,
+                        rapidement et directement auprès du fabricant
+                    </p>
+                    <a href="{% url 'domaine.boutique' %}" class="btn btn-warning text-light"><b>EN SAVOIR PLUS</b> </a>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+
+            <div class="col-lg-3 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/services/fabricaion.jpg'%}"
+                            alt="service-image">
+                    </div>
+                    <h3 class="service-box-title">FABRICATION D’ARMATURES</h3>
+                    <p><b>Des armatures sur mesure, prêtes à poser</b><br>
+                        La fabrication d’armature constitue l’un des piliers de l’activité de BENDING IRON. Grâce à un
+                        atelier de fabrication d’armatures moderne, réactif ayant une capacité de production élevée,
+                        l’entreprise est en mesure de fournir des cages d’armatures standards ou sur mesure de haute
+                        qualité qui répondent aux exigences des projets Génie civil.
+                    </p>
+                    <a href="{% url 'domaine.faarmature' %}" class="btn btn-warning text-light"><b>EN SAVOIR PLUS</b> </a>
+                </div>
+                <!-- Service3 end -->
+            </div><!-- Col 3 end -->
+
+            <div class="col-lg-3 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/services/pose.jpg'%}"
+                            alt="service-image">
+                    </div>
+                    <h3 class="service-box-title">POSE D’ARMATURES</h3>
+                    <p><b>Avec un savoir-faire reconnu dans la fabrication d’armature, BENDING IRON assure également la
+                            pose professionnelle d’armatures sur les chantiers dans la région du Littoral</b> <br>
+                        BENDING IRON réalise uniquement la pose d’armatures qu’elle a préalablement fabriqué et
+                        assemblé. L’activité de pose de BENDING IRON se distingue par son professionnalisme et son
+                        engagement envers la qualité et la satisfaction client.
+                    </p>
+                    <a href="{% url 'domaine.pose.armature' %}" class="btn btn-warning text-light"><b>EN SAVOIR PLUS</b> </a>
+                </div><!-- Service1 end -->
+            </div><!-- Col 1 end -->
+        </div><!-- Content row end -->
+    </div><!-- Container end -->
+</section>
+
+<section id="facts" class="facts-area dark-bg">
+    <div class="container">
+        <div class="facts-wrapper">
+            <div class="row">
+                <div class="col-md-3 col-sm-6 ts-facts">
+                    <div class="ts-facts-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/fact1.png' %}" alt="facts-img">
+                    </div>
+                    <div class="ts-facts-content">
+                        <h2 class="ts-facts-num"><span class="counterUp" data-count="6">0</span></h2>
+                        <h3 class="ts-facts-title">Projets réalisés</h3>
+                    </div>
+                </div><!-- Col end -->
+
+                <div class="col-md-3 col-sm-6 ts-facts mt-5 mt-sm-0">
+                    <div class="ts-facts-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/fact2.png' %}" alt="facts-img">
+                    </div>
+                    <div class="ts-facts-content">
+                        <h2 class="ts-facts-num">+<span class="counterUp" data-count="10">0</span></h2>
+                        <h3 class="ts-facts-title">Personnels expérimenté</h3>
+                    </div>
+                </div><!-- Col end -->
+
+                <div class="col-md-3 col-sm-6 ts-facts mt-5 mt-md-0">
+                    <div class="ts-facts-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/fact3.png' %}" alt="facts-img">
+                    </div>
+                    <div class="ts-facts-content">
+                        <h2 class="ts-facts-num">+<span class="counterUp" data-count="160000">0</span></h2>
+                        <h3 class="ts-facts-title">Metre de fer ferraillé /mois</h3>
+                    </div>
+                </div><!-- Col end -->
+
+                <div class="col-md-3 col-sm-6 ts-facts mt-5 mt-md-0">
+                    <div class="ts-facts-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/fact4.png' %}" alt="facts-img">
+                    </div>
+                    <div class="ts-facts-content">
+                        <h2 class="ts-facts-num"><span class="counterUp" data-count="1">0</span></h2>
+                        <h3 class="ts-facts-title">Pays servis</h3>
+                    </div>
+                </div><!-- Col end -->
+
+            </div> <!-- Facts end -->
+        </div>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Facts end -->
+
+{% comment %} presentation des form {% endcomment %}
+<section id="ts-service-area" class="ts-service-area pb-0">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12">
+                <h2 class="section-title">Nous Sommes Spécialistes Dans </h2>
+                <h3 class="section-sub-title">Ce Que Nous Faisons</h3>
+            </div>
+        </div>
+        <!--/ Title row end -->
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/barre-droite.jpg'%}"
+                            alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">BARRES DROITE</a></h5>
+                        <p>BENDING IRON façonne des barres d’acier droites destinées principalement au secteur de la
+                            construction et de l’industrie...</p><b><a href="" class="text-warning">en savoir
+                                plus</a></b>
+                    </div>
+                </div><!-- Service 1 end -->
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/barre-cintre.jpg'%}"
+                            alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">BARRES CINTRÉ AUX EXTRÉMITÉES</a></h5>
+                        <p>BENDING IRON façonne des barres d’acier cintrées aux extrémités, utilisées principalement
+                            dans les ouvrages en béton armé pour renforcer les structures et améliorer l’ancrage dans le
+                            béton...</p><b><a href="" class="text-warning">en savoir plus</a></b>
+                    </div>
+                </div>
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/cadre.jpg'%}" alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">CADRES</a></h5>
+                        <p>BENDING IRON est spécialisée dans la fabrication de cadres de ferraillage sur mesure,
+                            destinés aux structures en béton armé. ...</p><b><a href="" class="text-warning">en savoir
+                                plus</a></b>
+                    </div>
+                </div><!-- Service 5 end -->
+
+                <!-- Service 6 end -->
+
+            </div><!-- Col end -->
+
+            <div class="col-lg-4 text-center">
+                <img loading="lazy" class="img-fluid" src="{% static 'front/images/services/service-center1.png'%}"
+                    alt="service-avater-image">
+            </div><!-- Col end -->
+
+            <div class="col-lg-4 mt-5 mt-lg-0 mb-4 mb-lg-0">
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/pied.jpg'%}" alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">BOULONS D’ANCRAGE</a></h5>
+                        <p>BENDING IRON conçoit et fabrique des boulons d’ancrage à béton destinés à la fixation
+                            d’éléments structurels dans les ouvrages en béton...</p><b><a href=""
+                                class="text-warning">en savoir plus</a></b>
+                    </div>
+                </div><!-- Service 3 end -->
+
+
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/pince.jpg'%}" alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">CINTRAGE DE FORME</a></h5>
+                        <p>BENDING IRON est spécialisée dans le cintrage de forme de barres d’acier, réalisant des
+                            pièces aux formes variées telles que des pinces, étriers, crochets, T ou U, selon les
+                            besoins spécifiques des chantiers...</p><b><a href="" class="text-warning">en savoir
+                                plus</a></b>
+                    </div>
+                </div><!-- Service 2 end -->
+                <div class="ts-service-box d-flex">
+                    <div class="ts-service-box-img">
+                        <img loading="lazy" src="{% static 'front/images/icon-image/badage.jpg'%}" alt="service-icon">
+                    </div>
+                    <div class="ts-service-box-info">
+                        <h5 class="service-box-title"><a href="#">ÉTRIERS POUR BARDAGE</a></h5>
+                        <p>BENDING IRON produit des étriers en acier, aluminium ou inox lisse destinés aux systèmes de
+                            bardage et de toiture...</p><b><a href="" class="text-warning">en savoir plus</a></b>
+                    </div>
+                </div><!-- Service 6 end --><!-- Service 4 end -->
+
+                
+            </div><!-- Col end -->
+        </div><!-- Content row end -->
+
+    </div>
+    <!--/ Container end -->
+</section><!-- Service end -->
+
+<section class="content project-area solid-bg ">
+    <div class="container">
+        <div class="row">
+            <!-- Col end -->
+            <!-- <div class="col-lg-6 mt-5 mt-lg-0"> -->
+                <!-- <div class="row"> -->
+                    <div class="col-lg-6 mt-lg-0">
+                        <h3 class="column-title">Témoignages</h3>
+
+                        <div id="testimonial-slide" class="testimonial-slide">
+                            <div class="item">
+                                <div class="quote-item">
+                                    <span class="quote-text">
+                                        Question ran over her cheek When she reached the first hills of the Italic
+                                        Mountains,
+                                        she had a last
+                                        view back on the skyline of her hometown Bookmarksgrove, the headline of
+                                        Alphabet
+                                        Village and the
+                                        subline of her own road.
+                                    </span>
+
+                                    <div class="quote-item-footer">
+                                        <img loading="lazy" class="testimonial-thumb"
+                                            src="{% static 'front/images/clients/testimonial1.png' %}"
+                                            alt="testimonial">
+                                        <div class="quote-item-info">
+                                            <h3 class="quote-author">Gabriel Denis</h3>
+                                            <span class="quote-subtext">Chairman, OKT</span>
+                                        </div>
+                                    </div>
+                                </div><!-- Quote item end -->
+                            </div>
+                            <!--/ Item 1 end -->
+
+                            <div class="item">
+                                <div class="quote-item">
+                                    <span class="quote-text">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                        inci
+                                        done idunt ut
+                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitoa
+                                        tion
+                                        ullamco laboris
+                                        nisi aliquip consequat.
+                                    </span>
+
+                                    <div class="quote-item-footer">
+                                        <img loading="lazy" class="testimonial-thumb"
+                                            src="{% static 'front/images/clients/testimonial2.png' %}"
+                                            alt="testimonial">
+                                        <div class="quote-item-info">
+                                            <h3 class="quote-author">Weldon Cash</h3>
+                                            <span class="quote-subtext">CFO, First Choice</span>
+                                        </div>
+                                    </div>
+                                </div><!-- Quote item end -->
+                            </div>
+                            <!--/ Item 2 end -->
+
+                            <div class="item">
+                                <div class="quote-item">
+                                    <span class="quote-text">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+                                        inci
+                                        done idunt ut
+                                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitoa
+                                        tion
+                                        ullamco laboris
+                                        nisi ut commodo consequat.
+                                    </span>
+
+                                    <div class="quote-item-footer">
+                                        <img loading="lazy" class="testimonial-thumb"
+                                            src="{% static 'front/images/clients/testimonial3.png' %}"
+                                            alt="testimonial">
+                                        <div class="quote-item-info">
+                                            <h3 class="quote-author">Minter Puchan</h3>
+                                            <span class="quote-subtext">Director, AKT</span>
+                                        </div>
+                                    </div>
+                                </div><!-- Quote item end -->
+                            </div>
+                            <!--/ Item 3 end -->
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6 mt-lg-0">
+
+                        <h3 class="column-title">Ils nous font confiance</h3>
+
+                        <div class="row all-clients">
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client1.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 1 end -->
+
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client2.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 2 end -->
+
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client3.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 3 end -->
+
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client4.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 4 end -->
+
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client5.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 5 end -->
+
+                            <div class="col-sm-4 col-6">
+                                <figure class="clients-logo">
+                                    <a href="#!"><img loading="lazy" class="img-fluid"
+                                            src="{% static 'front/images/clients/client6.png' %}"
+                                            alt="clients-logo" /></a>
+                                </figure>
+                            </div><!-- Client 6 end -->
+
+                        </div><!-- Clients row end -->
+
+                    <!-- </div> -->
+                </div>
+                <!--/ Testimonial carousel end-->
+            <!-- </div>Col end -->
+            <div class="col-lg-12 mt-5 mt-lg-0">
+                <center><img loading="lazy" class="img-fluid" src="{% static 'front/images/clients/synoptique.png'%}"
+                    alt="service-avater-image"></center>
+            </div>
+
+
+        </div>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+
+<section id="news" class="news">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-12">
+                <h2 class="section-title">Travail d'Excellence</h2>
+                <h3 class="section-sub-title">Projets Recents</h3>
+            </div>
+        </div>
+        <!--/ Title row end -->
+
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="latest-post">
+                    <div class="latest-post-media">
+                        <a href="" class="latest-post-img">
+                            <img loading="lazy" class="img-fluid" src="{% static 'front/images/projects/galerie1.jpg'%}" alt="img">
+                        </a>
+                    </div>
+                    <div class="post-body">
+                        <h4 class="post-title">
+                            <a href="" class="d-inline-block">nom</a>
+                        </h4>
+                        <div class="latest-post-meta">
+                            <span class="post-item-date">
+                                <i class="fa fa-clock-o"></i> Publié il y’ à {{machine.created_at|timesince}}
+                            </span>
+                        </div>
+                    </div>
+                </div><!-- Latest post end -->
+            </div><!-- 1st post col end -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="latest-post">
+                    <div class="latest-post-media">
+                        <a href="" class="latest-post-img">
+                            <img loading="lazy" class="img-fluid" src="{% static 'front/images/projects/galerie4.jpg'%}" alt="img">
+                        </a>
+                    </div>
+                    <div class="post-body">
+                        <h4 class="post-title">
+                            <a href="" class="d-inline-block">nom</a>
+                        </h4>
+                        <div class="latest-post-meta">
+                            <span class="post-item-date">
+                                <i class="fa fa-clock-o"></i> Publié il y’ à {{machine.created_at|timesince}}
+                            </span>
+                        </div>
+                    </div>
+                </div><!-- Latest post end -->
+            </div><!-- 1st post col end -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="latest-post">
+                    <div class="latest-post-media">
+                        <a href="" class="latest-post-img">
+                            <img loading="lazy" class="img-fluid" src="{% static 'front/images/projects/galerie3.jpg'%}" alt="img">
+                        </a>
+                    </div>
+                    <div class="post-body">
+                        <h4 class="post-title">
+                            <a href="" class="d-inline-block">nom</a>
+                        </h4>
+                        <div class="latest-post-meta">
+                            <span class="post-item-date">
+                                <i class="fa fa-clock-o"></i> Publié il y’ à {{machine.created_at|timesince}}
+                            </span>
+                        </div>
+                    </div>
+                </div><!-- Latest post end -->
+            </div><!-- 1st post col end -->
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="latest-post">
+                    <div class="latest-post-media">
+                        <a href="" class="latest-post-img">
+                            <img loading="lazy" class="img-fluid" src="{% static 'front/images/projects/galerie2.jpg'%}" alt="img">
+                        </a>
+                    </div>
+                    <div class="post-body">
+                        <h4 class="post-title">
+                            <a href="" class="d-inline-block">nom</a>
+                        </h4>
+                        <div class="latest-post-meta">
+                            <span class="post-item-date">
+                                <i class="fa fa-clock-o"></i> Publié il y’ à {{machine.created_at|timesince}}
+                            </span>
+                        </div>
+                    </div>
+                </div><!-- Latest post end -->
+            </div><!-- 1st post col end -->
+        </div>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section>
+{% endblock %}

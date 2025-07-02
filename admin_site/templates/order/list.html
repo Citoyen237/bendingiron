@@ -1,0 +1,106 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+commandes
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Commandes</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Commandes</a></li>
+                <li class="breadcrumb-item active">Liste</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Table with stripped rows -->
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>Client</th>
+                                    <th>Date</th>
+                                    <th>Prix total</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>#BIron{{order.id}}</td>
+                                    <td>{{order.user}}</td>
+                                    <td>{{order.created_at}}</td>
+                                    <td>{{order.get_prix_total|intcomma}}</td>
+                                    <th>
+                                        {% if order.get_statut_actuel == "en_attente" %}
+                                        <span class="badge bg-warning text-dark">
+                                            {{order.get_statut_actuel}}
+                                        </span>
+                                        {%endif%}
+                                        {% if order.get_statut_actuel == "en_production" %}
+                                        <span class="badge bg-primary text-dark">
+                                            {{order.get_statut_actuel}}
+                                        </span>
+                                        {%endif%}
+                                        {% if order.get_statut_actuel == "pret_pour_livraison" %}
+                                        <span class="badge bg-info text-dark">
+                                            {{order.get_statut_actuel}}
+                                        </span>
+                                        {%endif%}
+                                        {%if order.get_statut_actuel == "solde_facture" %}
+                                        <span class="badge bg-secondary text-dark">
+                                            {{order.get_statut_actuel}}
+                                        </span>
+                                        {%endif%}
+                                        {%if order.get_statut_actuel == "termine" %}
+                                        <span class="badge bg-success text-dark">
+                                            {{order.get_statut_actuel}}
+                                        </span>
+                                        {%endif%}
+                                         
+                                    </th>
+                                    <td class='text-center'>
+                                        <a href="{% url 'order.detail' order.id %}" class='btn btn-info'
+                                            name='supprimer'>detail</a>
+                                            <a href="{% url 'order.suivis' order.id %}" class='btn btn-success'
+                                            name='supprimer'>suivis</a>
+                                    </td>
+
+
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                        <br>
+                                        <span>Acun utilisateur n'a ete trouve</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Basic Modal -->
+
+
+</main>
+{%endblock%}

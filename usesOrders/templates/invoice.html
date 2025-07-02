@@ -1,0 +1,158 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+
+        .invoice-container {
+            width: 800px;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .header .invoice-number {
+            text-align: right;
+        }
+
+        .company-info, .client-info {
+            margin-top: 20px;
+        }
+
+        .company-info h2, .client-info h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #d9f2d9;
+        }
+
+        .total {
+            text-align: right;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container" style="background-image: url(../../static/front/images/logo-footer.png);">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img loading="lazy" src="../../static/front/images/logo-footer.png">
+            </div>
+            <div class="invoice-number">
+                <strong>Facture N° DIron{{order.id}}</strong><br>
+                {{order.created_at}}
+            </div>
+        </div>
+
+        <!-- Company Info -->
+        <div class="company-info">
+            <h2>Dending Iron</h2>
+            <p>
+                BendingIron@gmail.com<br>
+                Douala, Cameroun<br>
+                (+237) 686 088 869<br>
+            </p>
+        </div>
+
+        <!-- Client Info -->
+        <div class="client-info">
+            <h2>{{order.user.last_name}}, {{order.user.first_name}}</h2>
+            <p>
+                {{order.user.phone_number}}<br>
+                {{order.user.email}}
+            </p>
+        </div>
+
+        <!-- Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Description</th>
+                    <th>Quandite</th>
+                    <th>Prix unitaire</th>
+                    <th>Prix total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in produits %}
+              <tr>
+                <td>{{item.produit}}</td>
+                <td>{{item.details}}
+                <td>{{item.quantite}}</td>
+                <td>{{item.prix|intcomma}} FCFA</td>
+                <td>{{item.total|intcomma}} FCFA</td>
+              </tr>
+              {% endfor %}
+                <!-- Ajouter d'autres lignes ici si nécessaire -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="total"><strong>Total HTTC</strong></td>
+                    <td>{{totals|intcomma}} FCFA</td>
+                </tr>
+                <!-- <tr>
+                    <td colspan="4" class="total"><strong>Total TTC</strong></td>
+                    <td>__ €</td>
+                </tr> -->
+            </tfoot>
+        </table>
+
+        <!-- Additional Information -->
+        <div class="additional-info">
+            <p>Modalités et conditions de règlement :</p>
+            <p>Date d'échéance : __/__/__</p>
+        </div>
+
+        <!-- Footer -->
+        <!-- <div class="footer">
+            <p>Mon entreprise — Société au capital de __ euros</p>
+        </div> -->
+
+        <!-- Signature -->
+        <div class="signature">
+            Signature
+        </div>
+    </div>
+</body>
+</html>

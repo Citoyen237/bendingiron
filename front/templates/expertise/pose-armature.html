@@ -1,0 +1,106 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+pose d'armature
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/pose.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">POSE D’ARMATURES</h1>
+                        <p class="text-ligth"><b>
+                                BENDING IRON ne fait pas que fournir de l’acier pour béton armé. Nous assurons également
+                                la pose professionnelle d’armatures, sur plans ou sur mesure, pour garantir à chaque
+                                chantier une mise en œuvre conforme aux normes de construction les plus exigeantes.
+                            </b></p>
+                        <a href="{% url 'contact.index' %}" class="btn btn-primary mb-2">DEMANDER UN DEVIS !</a>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div>
+<section class=" no-padding solid-bg">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <div class="col-md-12 text-md-left mt-3">
+                    <h3 class="text-dark widget-title">POSE D’ARMATURES <br><b class="text-warning">FERRAILLAGE PRECIS
+                            POUR DES STRUCTURES SOLIDES</b></h3>
+                    <p>Chaque projet est encadré par un interlocuteur unique qui assure un suivi attentif des chantiers
+                        nos équipes sont habilite à travailler sur des sites sensibles, garantissant la sécurité et la
+                        qualité des interventions</p>
+                    <!-- col end -->
+                </div><!-- row end -->
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-5"><!-- Service2 end -->
+                    <h4>UN SAVOIR-FAIRE TECHNIQUE AU SERVICE DE VOS PROJETS</h4>
+                    <p>Nos équipes spécialisées interviennent pour la pose d’armatures façonnées, treillis soudés,
+                        cadres, épingles et barres droites sur tous types de chantiers :
+                        <b>Dalles, fondations, poteaux et poutres
+                            Voiles, radiers, planchers
+                            Villas, immeubles, bâtiments industriels
+                            Génie civil et ouvrages spécifiques
+                        </b>
+                    </p>
+                </div><!-- Col 2 end -->
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="ts-service-box">
+                        <h4>NOS ENGAGEMENTS</h4>
+                        <i class="fa fa-check text-warning"></i> Conformité aux plans et aux normes (BAEL /
+                        Eurocode)<br>
+                        <i class="fa fa-check text-warning"></i> Personnel qualifié et expérimenté<br>
+                        <i class="fa fa-check text-warning"></i> Rapidité d’exécution et respect des délais<br>
+                        <i class="fa fa-check text-warning"></i> Intervention en coordination avec les autres corps de
+                        métier<br>
+                        <i class="fa fa-check text-warning"></i> Respect des règles de sécurité sur chantier<br>
+
+                    </div><!-- Service2 end -->
+                </div><!-- Col 2 end -->
+                <div class="col-lg-4 col-md-6 mb-5">
+                    <div class="ts-service-box">
+                        <h4>POURQUOI FAIRE APPEL A NOUS ?</h4>
+                        <p>
+                            <b>Gain de temps</b> : pas besoin de gérer la pose en interne <br>
+                            <b>Pose optimisée</b> : pas d’erreurs, pas de gaspillage <br>
+                            <b>Résultat durable</b> : un béton armé fiable, résistant et bien ancré <br>
+                        </p>
+                    </div><!-- Service2 end -->
+                </div>
+            </div><!-- Action style box -->
+        </div><!-- Container end -->
+</section>
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/pose.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>UN FERRAILLAGE PRECIS POUR DES STRUCTURES SOLIDES</h3>
+                    <p>Notre service s’adresse aux entreprises générales, artisans, promoteurs, et particuliers en
+                        auto-construction, à la recherche d’un prestataire fiable pour la partie ferraillage.
+                        Vous avez un chantier en cours ou à venir ? Confiez-nous la pose de vos armatures. Nous
+                        assurons
+                        un suivi personnalisé du projet, de la lecture des plans à la réception de l’ouvrage.
+                    </p>
+                    <p> <a href="{% url 'contact.index' %}" class="slider btn btn-primary">DEMANDER UN DEVIS !</a>
+                        </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div><!-- Content row end -->
+    </div><!-- Container end -->
+</section>
+{% endblock %}
