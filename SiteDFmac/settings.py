@@ -75,6 +75,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     
 ]
 
@@ -162,12 +163,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
 
-'''localisation des fichiers static'''
+# ✅ URL des fichiers statiques
+STATIC_URL = '/static/'
+
+# ✅ Emplacement des fichiers statiques en développement
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
+
+# ✅ Emplacement des fichiers statiques collectés (prod)
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# STATIC_URL = 'static/'
+
+# '''localisation des fichiers static'''
+# STATICFILES_DIRS = [
+#     BASE_DIR / "static",
+# ]
 
 '''manipulation des medias'''
 MEDIA_ROOT = os.path.join(BASE_DIR, "medias")
