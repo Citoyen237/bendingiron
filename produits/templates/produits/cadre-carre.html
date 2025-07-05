@@ -196,27 +196,49 @@ detail
             }
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
-            if(ange=90){
-               longueurTotal = (4*longueurCote) + (20.5*diametre)
-            }else{
-               longueurTotal = (4*longueurCote) + (20.5*diametre)
-            }
+            longueurTotal = (4*longueurCote) + (20.5*diametre)
+            
               // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
             
-            //choix du fer
-            let prixUnitaire = 0
-            if (fer === 'bending iron') {
-                prixUnitaire = 30 + (0.25*longueurTotal) + 2.5;
-                // Calcul du prix unitaire
-            } else {
-                prixUnitaire = 30 + 0.25 + 2.5; // Exemple de calcul
-            } 
-            prixField.value = prixUnitaire.toFixed(2); // Afficher le prix unitaire dans le champ
+            const donnees = JSON.parse('{{constantes|safe|escapejs}}');
+            let taxe = donnees.taxe;
+            let taux = donnees.taux;
+            let prixferCon = "m" + diametre
+            //coeficient fonction du fer
+            let prixfer = donnees[prixferCon]
+            let prix_revient=0;
 
-            // Calcul du prix total
-            let prixTotal = prixUnitaire * quantite;
-            prixTotalField.value = prixTotal.toFixed(2); // Afficher le prix total dans le champ
+            switch (diametre) {
+                case 6:
+                    prix_revient=30
+                    break
+                case 8:
+                    prix_revient=32
+                    break
+                case 10:
+                    prix_revient=34
+                    break
+                case 12:
+                    prix_revient=36
+                    break
+            }
+            let prixUnitaire = 0
+            let cal2=prix_revient+(prixfer*longueurTotal)
+            let  cal3=prixfer*10
+            if (fer === 'bending iron') {
+                cal4=cal2+cal3
+                cal5=cal4 + (cal4*taux)
+                prixUnitaire=cal5
+            } 
+            if (fer === 'le client') {
+                prixUnitaire=6+prix_revient + (cal2+cal3)*taux; // Exemple de calcul
+            }
+
+            prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
+
+            let prixTotal = (prixUnitaire*quantite);
+            prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
         };
 
         // Mettre à jour les valeurs dès qu'un champ change
@@ -227,7 +249,9 @@ detail
             rayonField,
             longueurdptField,
             diametereField,
-            angeField
+            angeField,
+            prixField,
+            prixTotalField
         ];
 
         fieldsToWatch.forEach(field => {

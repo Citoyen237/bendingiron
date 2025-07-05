@@ -226,14 +226,15 @@ detail
             }
             let prixUnitaire = 0
             let cal1=(prix_revient*longueurTotal)/1000
+            let cal2=prixfer*longueurTotal
             if (fer === 'bending iron') {
-                cal2=prixfer*longueurTotal
                 cal3=prixfer*10
                 cal4=cal1+cal2+cal3
                 cal5=cal4*(1+taux)
                 prixUnitaire=cal5
-            } else {
-                prixUnitaire = 6+cal1+(cal1*taux); // Exemple de calcul
+            } 
+            if (fer === 'le client') {
+                prixUnitaire = 6+cal1+(cal1+cal2)*taux; // Exemple de calcul
             }
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ

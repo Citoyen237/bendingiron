@@ -261,7 +261,6 @@ def detail_produit(request, product_id):
                 produit=product,
                 details=details  # doit matcher exactement le JSON
             ).first()
-           
 
             if existing_item:
                 # Mettre à jour la quantité si le produit existe déjà

@@ -139,12 +139,6 @@ detail
             
             //choix du fer
             let prixUnitaire = 25 + diametre
-            {% comment %} if (fer === 'bending iron') {
-                prixUnitaire = 30 + (0.25*longueurTotal) + 2.5;
-                // Calcul du prix unitaire
-            } else {
-                prixUnitaire = 30 + 0.25 + 2.5; // Exemple de calcul
-            }  {% endcomment %}
             prixField.value = prixUnitaire.toFixed(2); // Afficher le prix unitaire dans le champ
 
             // Calcul du prix total
