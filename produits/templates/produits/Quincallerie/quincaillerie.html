@@ -1,0 +1,246 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+detail
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+
+<style>
+    h4 {
+        text-transform: initial;
+        font-weight: normal;
+    }
+</style>
+
+<section class="content project-area solid-bg">
+    <div class="container border shadow py-2 my-2">
+        <div class="row">
+            <div class="col-lg-12 "><br>
+                <h3 class="column-title bg-warning p-3 text-center">{{product.nom}}</h3>
+            </div><!-- Col end -->
+
+            <!-- insersion des info -->
+
+
+            <div class="col-lg-7 ml-5">
+                <!-- label et input ici-->
+                <form action="" method="post">
+                    {% csrf_token %}
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.Diametre_fer.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.Diametre_fer }}
+                        </div>
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.type_de_fer.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.type_de_fer}}
+                        </div>
+                    </div>
+                    </br>
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.longueur_Barre.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{form.longueur_Barre}}
+                            <div id="longueurBarre-error" class="error-message" style="color: red; display: none;">
+                            </div>
+
+                        </div>
+                    </div>
+                    </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.quantite.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.quantite}}
+                            <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+
+
+
+            </div>
+
+            <div class="col-lg-4">
+                <!-- image prix unitaire prix total -->
+                <div class="latest-post-media">
+                    <a href="" class="latest-post-img">
+                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}" alt="img">
+                    </a>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix_Total.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix_Total }}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-lg-6 text-center "><br>
+                <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
+                    Precedent
+                </a>
+            </div><!-- Col end -->
+            <div class="col-lg-6 text-center"><br>
+                {% if user.is_authenticated %}
+                <button class="btn btn-warning ">
+                    Ajouter au panier
+                </button>
+                {% else %}
+                <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
+                {% endif %}
+            </div><!-- Col end -->
+        </div>
+        </form>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Récupérer les éléments du formulaire
+        let diametereField = document.getElementById('diametre')
+        let typeFerField = document.getElementById('typeFer')
+        let prixField = document.getElementById('prix-id');
+        let prixTotalField = document.getElementById('prix-total');
+        let quantiteField = document.getElementById('quantite'); // Quantité de cadre
+        let val = document.getElementById('val');
+
+        // Fonction pour effectuer les calculs
+        const updateFields = () => {
+            let diametre = parseInt(diametereField.value)
+            let quantite = parseFloat(quantiteField.value || 1);
+            diametereField.value = diametre
+
+            let prix_revient = 0
+
+            if (typeFerField.value === 'Fe400') {
+                switch (diametre) {
+                    case 6:
+                        prix_revient = 80
+                        break
+                    case 8:
+                        prix_revient = 100
+                        break
+                    case 10:
+                        prix_revient = 120
+                        break
+                    case 12:
+                        prix_revient = 140
+                        break
+                    case 14:
+                        prix_revient = 160
+                        break
+                    case 16:
+                        prix_revient = 180
+                        break
+                    case 20:
+                        prix_revient = 220
+                        break
+                    case 24:
+                        prix_revient = 220
+                        break
+                    case 27:
+                        prix_revient = 220
+                        break
+                    case 32:
+                        prix_revient = 220
+                        break
+                }
+
+            }
+
+            if (typeFerField.value === 'Fe500') {
+                switch (diametre) {
+                    case 6:
+                        prix_revient = 800
+                        break
+                    case 8:
+                        prix_revient = 100
+                        break
+                    case 10:
+                        prix_revient = 120
+                        break
+                    case 12:
+                        prix_revient = 140
+                        break
+                    case 14:
+                        prix_revient = 160
+                        break
+                    case 16:
+                        prix_revient = 180
+                        break
+                    case 20:
+                        prix_revient = 220
+                        break
+                    case 24:
+                        prix_revient = 220
+                        break
+                    case 27:
+                        prix_revient = 220
+                        break
+                    case 32:
+                        prix_revient = 220
+                        break
+                }
+
+            }
+
+
+            //choix du fer
+            let prixUnitaire = prix_revient
+            prixField.value = prixUnitaire.toFixed(2); // Afficher le prix unitaire dans le champ
+
+            // Calcul du prix total
+            let prixTotal = prixUnitaire * quantite;
+            prixTotalField.value = prixTotal.toFixed(2); // Afficher le prix total dans le champ
+        };
+
+        // Mettre à jour les valeurs dès qu'un champ change
+        const fieldsToWatch = [
+            quantiteField,
+            diametereField,
+            typeFerField,
+            prixField,
+            prixTotalField
+        ];
+
+        fieldsToWatch.forEach(field => {
+            field.addEventListener('input', updateFields); // Recalcule lorsque l'utilisateur modifie la valeur d'un champ
+        });
+        // Mettre à jour les champs lors de l'initialisation
+        updateFields();
+    });
+
+</script>
+
+{% endblock%}

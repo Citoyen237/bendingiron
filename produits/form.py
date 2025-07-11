@@ -40,8 +40,8 @@ class CarreForm(forms.Form):
         })
     )
 
-    longueurCote = forms.FloatField(
-        label="Longueur du cote",
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=80, 
@@ -55,8 +55,8 @@ class CarreForm(forms.Form):
     )
   
      #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -68,8 +68,8 @@ class CarreForm(forms.Form):
     )
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -82,8 +82,8 @@ class CarreForm(forms.Form):
         })
     )
 
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/Tolerance +10 mm",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -104,7 +104,7 @@ class CarreForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -133,7 +133,7 @@ class CarreForm(forms.Form):
         ('135', '135°'),
     ]
 
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
         label="Choix de l’angle",
         required=True,  # Champ requis
@@ -152,7 +152,7 @@ class CarreForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du diametre du fer (mm)",
         required=True,  # Champ requis
@@ -183,8 +183,8 @@ class RectangleForm(forms.Form):
             'initial':'bending iron',
         })
     )
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -197,8 +197,8 @@ class RectangleForm(forms.Form):
         })
     )
     
-    longueurDepartFin = forms.FloatField(
-        label="longueur Depart & Fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" longueur Depart & Fin",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -212,8 +212,8 @@ class RectangleForm(forms.Form):
     )
     
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/Tolerance+-10 mm",
+    longueur_Total = forms.FloatField(
+        label="Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -233,7 +233,7 @@ class RectangleForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -262,9 +262,9 @@ class RectangleForm(forms.Form):
         ('135', '135°'),
     ]
 
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle",
+        label=" Choix de l’angle",
         required=True,  # Champ requis
         initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -279,23 +279,11 @@ class RectangleForm(forms.Form):
         ('8', 'M8'),
         ('10', 'M10'),
         ('12', 'M12'),
-    ]
-
-    # choix = forms.ChoiceField(
-    #     choices=CHOICES,
-    #     label="Choix de l’angle ",
-    #     required=True,  # Champ requis
-    #     initial='90°',  # Valeur par défaut
-    #     widget=forms.Select(attrs={
-    #         'class':{ 'form-select','mt-4'},  # Classe CSS
-    #         'id': 'angle',  # Attribut id
-    #         # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-    #     })
-    # )   
+    ] 
      
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         #initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -304,8 +292,8 @@ class RectangleForm(forms.Form):
             # 'readonly': 'readonly',  # Attribut readonly (facultatif)
         })
     )
-    largeurCote = forms.FloatField(
-        label="Largeur du cote(mm)",
+    largeur_Cote = forms.FloatField(
+        label=" Largeur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -318,7 +306,7 @@ class RectangleForm(forms.Form):
         })
     )
     
-    longueurCote = forms.FloatField(
+    longueur_Cote = forms.FloatField(
         label="Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -362,9 +350,9 @@ class TriangleForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -380,9 +368,9 @@ class TriangleForm(forms.Form):
         ('135', '135°'),
     ]
     
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle ",
+        label=" Choix de l’angle ",
         required=True,  # Champ requis
         initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -393,8 +381,8 @@ class TriangleForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -408,8 +396,8 @@ class TriangleForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -420,7 +408,7 @@ class TriangleForm(forms.Form):
         })
     )
     
-    longueurCote = forms.FloatField(
+    longueur_Cote = forms.FloatField(
         label=" Longueur du cote",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -435,7 +423,7 @@ class TriangleForm(forms.Form):
     )
     
     
-    longueurTotal = forms.FloatField(
+    longueur_Total = forms.FloatField(
         label="Longueur totale du cadre",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
@@ -456,7 +444,7 @@ class TriangleForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -508,9 +496,9 @@ class HexagonaleForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -526,7 +514,7 @@ class HexagonaleForm(forms.Form):
         ('120', '120°'),
     ]
     
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
         label=" Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
@@ -539,8 +527,8 @@ class HexagonaleForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -554,8 +542,8 @@ class HexagonaleForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -567,7 +555,7 @@ class HexagonaleForm(forms.Form):
     )
     
     diametre = forms.FloatField(
-        label="Diametre de cintrage(mm)",
+        label=" Diametre de cintrage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -579,22 +567,9 @@ class HexagonaleForm(forms.Form):
             'id': 'diametreCin'  # Attribut id
         })
     )
-    
-    longueurFin = forms.FloatField(
-        label="Longueur de fin",
-        # required=True,  # Champ requis
-        initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'value':'6.5',
-            'id': 'longueurFin'  # Attribut id
-        })
-    )
-    
-    
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+        
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -604,7 +579,7 @@ class HexagonaleForm(forms.Form):
         })
     )
     prix = forms.FloatField(
-        label="Prix unitaire",
+        label=" Prix unitaire",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -614,7 +589,7 @@ class HexagonaleForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -666,9 +641,9 @@ class EtrierForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -683,9 +658,9 @@ class EtrierForm(forms.Form):
         ('180', '180°'),
     ]
     
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='180°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -696,8 +671,8 @@ class EtrierForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -711,8 +686,8 @@ class EtrierForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -723,8 +698,8 @@ class EtrierForm(forms.Form):
         })
     )
     
-    longueurCote = forms.FloatField(
-        label="Longueur du cote(mm)",
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -738,8 +713,8 @@ class EtrierForm(forms.Form):
     )
     
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre (mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -759,7 +734,7 @@ class EtrierForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -813,7 +788,7 @@ class EtrierFondRondForm(forms.Form):
         ('20', 'M20'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du diametre du fer (mm)",
         required=True,  # Champ requis
@@ -853,7 +828,7 @@ class EtrierFondRondForm(forms.Form):
         })
     )
     
-    hauteurFiletage = forms.FloatField(
+    hauteur_Filetage = forms.FloatField(
         label="hauteur du Filetage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -867,7 +842,7 @@ class EtrierFondRondForm(forms.Form):
         })
     )
     
-    longueurTotal = forms.FloatField(
+    longueur_Total = forms.FloatField(
         label="Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
@@ -890,7 +865,7 @@ class EtrierFondRondForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -941,9 +916,9 @@ class PinceForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -959,9 +934,9 @@ class PinceForm(forms.Form):
         ('180', '180°')
     ]
     
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='135°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -972,8 +947,8 @@ class PinceForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -987,8 +962,8 @@ class PinceForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -999,8 +974,8 @@ class PinceForm(forms.Form):
         })
     )
     
-    longueurCote = forms.FloatField(
-        label="Longueur du cote(mm)",
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -1013,8 +988,8 @@ class PinceForm(forms.Form):
         })
     )
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre (mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1034,7 +1009,7 @@ class PinceForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1087,9 +1062,9 @@ class CrochetForm(forms.Form):
         ('12', 'M12'),
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1105,9 +1080,9 @@ class CrochetForm(forms.Form):
         ('180', '180°')
     ]
     
-    choix = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='135°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1118,8 +1093,8 @@ class CrochetForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -1133,8 +1108,8 @@ class CrochetForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1146,8 +1121,8 @@ class CrochetForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre (mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1157,8 +1132,8 @@ class CrochetForm(forms.Form):
         })
     )
     
-    longueurCote = forms.FloatField(
-        label="Longueur du cote(mm)",
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -1172,18 +1147,7 @@ class CrochetForm(forms.Form):
     )
     
       
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
-        required=True,  # Champ requis
-        # initial=0.6,  # Valeur par défaut
-        min_value=1,
-        max_value=1000,
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'id': 'longueurTotal'  # Attribut id
-        })
-    )
+    
     prix = forms.FloatField(
         label="Prix unitaire",
         # required=True,  # Champ requis
@@ -1195,7 +1159,7 @@ class CrochetForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1247,9 +1211,9 @@ class TForm(forms.Form):
         ('8', 'M8')       
     ]
     
-    diametre = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre de fer(mm) ",
+        label=" Choix du diametre de fer(mm) ",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1260,8 +1224,8 @@ class TForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -1275,8 +1239,8 @@ class TForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1288,8 +1252,8 @@ class TForm(forms.Form):
     )
     
     
-    longueurCote = forms.FloatField(
-        label="Longueur du cote(mm)",
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1299,8 +1263,8 @@ class TForm(forms.Form):
             'id': 'longueurCote'  # Attribut id
         })
     )
-    largeurCote = forms.FloatField(
-        label="Largeur du cote(mm)",
+    largeur_Cote = forms.FloatField(
+        label=" Largeur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1311,8 +1275,8 @@ class TForm(forms.Form):
         })
     )
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/tolerance +-10 mm",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1333,7 +1297,7 @@ class TForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1361,7 +1325,7 @@ class TForm(forms.Form):
 #cintrage en T economique
 class TeconoForm(forms.Form):
     choix_fer = [
-        ('bending iron','Bending Iron'),
+        ('bending iron','Bending Iron (Fe400)'),
         ('le client','le client'),
     ]
 
@@ -1385,21 +1349,20 @@ class TeconoForm(forms.Form):
         ('8', 'M8')       
     ]
     
-    diametre = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre de fer(mm) ",
+        label=" Choix du diametre de fer(mm) ",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'diametre',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
         })
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -1407,27 +1370,14 @@ class TeconoForm(forms.Form):
         widget=forms.NumberInput(attrs={
             'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
-            'value': '10',  # Valeur initiale spécifique
+            'value': '30',  # Valeur initiale spécifique
             'id': 'rayonCourbure'  # Attribut id
         })
     )
     
-    #longueur depart et fin
-    # longueurDepartFin = forms.FloatField(
-    #     label="ldf. Longueur de départ & fin",
-    #     # required=True,  # Champ requis
-    #     #initial=6.5,  # Valeur par défaut
-    #     widget=forms.NumberInput(attrs={
-    #         'readonly': 'readonly',
-    #         'class': 'form-control',  # Classe CSS
-    #         'value':'30',
-    #         'id': 'longueurDepartFin'  # Attribut id
-    #     })
-    # )
-    
-    
-    longueurCote = forms.FloatField(
-        label="Longueur du cote(mm)",
+     
+    longueur_Cote = forms.FloatField(
+        label=" Longueur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1437,8 +1387,8 @@ class TeconoForm(forms.Form):
             'id': 'longueurCote'  # Attribut id
         })
     )
-    largeurCote = forms.FloatField(
-        label="Largeur du cote(mm)",
+    largeur_Cote = forms.FloatField(
+        label=" Largeur du cote(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1449,8 +1399,8 @@ class TeconoForm(forms.Form):
         })
     )
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/tolerance +-10 mm",
+    longueur_Total = forms.FloatField(
+        label="Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1471,7 +1421,7 @@ class TeconoForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1528,9 +1478,9 @@ class UForm(forms.Form):
         ('20', 'M20')       
     ]
     
-    diametre = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre de fer(mm) ",
+        label=" Choix du diametre de fer(mm) ",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1541,8 +1491,8 @@ class UForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -1556,8 +1506,8 @@ class UForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
+    longueur_Depart_et_Fin = forms.FloatField(
+        label=" Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1568,8 +1518,8 @@ class UForm(forms.Form):
         })
     )
     
-    hauteurGauche = forms.FloatField(
-        label="Hauteur Gauche (mm)",
+    hauteur_Gauche = forms.FloatField(
+        label=" Hauteur Gauche (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -1582,8 +1532,8 @@ class UForm(forms.Form):
         })
     )
     
-    largeurFond = forms.FloatField(
-        label="Largeur de fond (mm)",
+    largeur_Fond = forms.FloatField(
+        label=" Largeur de fond (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -1596,8 +1546,8 @@ class UForm(forms.Form):
         })
     )
     
-    hauteurDroite = forms.FloatField(
-        label="Hauteur Droite(mm)",
+    hauteur_Droite = forms.FloatField(
+        label=" Hauteur Droite(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -1611,8 +1561,8 @@ class UForm(forms.Form):
     )
     
    
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/tolerance +-10 mm",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1633,7 +1583,7 @@ class UForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1689,9 +1639,9 @@ class UouvertForm(forms.Form):
         ('20', 'M20')       
     ]
     
-    diametre = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre de fer(mm) ",
+        label=" Choix du diametre de fer(mm) ",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1708,9 +1658,9 @@ class UouvertForm(forms.Form):
         ('180', '180°')     
     ]
     
-    angle = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l'angle de cintrage(degre) ",
+        label=" Choix de l'angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1721,7 +1671,7 @@ class UouvertForm(forms.Form):
     )  
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
+    rayon_Courbure = forms.FloatField(
         label="Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1736,7 +1686,7 @@ class UouvertForm(forms.Form):
     )
     
     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
+    longueur_Depart_et_Fin = forms.FloatField(
         label="Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
@@ -1748,7 +1698,7 @@ class UouvertForm(forms.Form):
         })
     )
     
-    hauteurGauche = forms.FloatField(
+    hauteur_Gauche = forms.FloatField(
         label="Hauteur Gauche (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1762,7 +1712,7 @@ class UouvertForm(forms.Form):
         })
     )
     
-    largeurFond = forms.FloatField(
+    largeur_Fond = forms.FloatField(
         label="Largeur de fond (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1776,7 +1726,7 @@ class UouvertForm(forms.Form):
         })
     )
     
-    hauteurDroite = forms.FloatField(
+    hauteur_Droite = forms.FloatField(
         label="Hauteur Droite(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1791,7 +1741,7 @@ class UouvertForm(forms.Form):
     )
     
    
-    longueurTotal = forms.FloatField(
+    longueur_Total = forms.FloatField(
         label="Longueur totale du cadre(mm)/tolerance +-10 mm",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
@@ -1813,7 +1763,7 @@ class UouvertForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -1869,9 +1819,9 @@ class UfermeForm(forms.Form):
         ('20', 'M20')       
     ]
     
-    diametre = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre de fer(mm) ",
+        label=" Choix du diametre de fer(mm) ",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1888,9 +1838,9 @@ class UfermeForm(forms.Form):
         ('180', '180°')     
     ]
     
-    angle = forms.ChoiceField(
+    Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l'angle de cintrage(degre) ",
+        label=" Choix de l'angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -1901,8 +1851,8 @@ class UfermeForm(forms.Form):
     )  
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -1916,7 +1866,7 @@ class UfermeForm(forms.Form):
     )
     
      #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
+    longueur_Depart_et_Fin = forms.FloatField(
         label="Longueur de départ & fin",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
@@ -1928,7 +1878,7 @@ class UfermeForm(forms.Form):
         })
     )
     
-    hauteurGauche = forms.FloatField(
+    hauteur_Gauche = forms.FloatField(
         label="Hauteur Gauche (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1942,7 +1892,7 @@ class UfermeForm(forms.Form):
         })
     )
     
-    largeurFond = forms.FloatField(
+    largeur_Fond = forms.FloatField(
         label="Largeur de fond (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1956,7 +1906,7 @@ class UfermeForm(forms.Form):
         })
     )
     
-    hauteurDroite = forms.FloatField(
+    hauteur_Droite = forms.FloatField(
         label="Hauteur Droite(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -1971,8 +1921,8 @@ class UfermeForm(forms.Form):
     )
     
    
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/tolerance +-10 mm",
+    longueur_Total = forms.FloatField(
+        label="Longueur totale du cadre (mm)",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -1993,7 +1943,7 @@ class UfermeForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2051,7 +2001,7 @@ class BarreDroiteForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
@@ -2063,53 +2013,7 @@ class BarreDroiteForm(forms.Form):
         })
     )
     
-    # choix angle de cintrage
-    CHOICES = [
-        ('135', '135°'),
-        ('180', '180°')
-    ]
-    
-    choix = forms.ChoiceField(
-        choices=CHOICES,
-        label="Ang. Choix de l’angle de cintrage(degre) ",
-        required=True,  # Champ requis
-        initial='180°',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'angle',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-        })
-    )   
-    
-    #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="R. Rayon de courbure (mm)",
-        #required=True,  # Champ requis
-        # initial,  # Valeur par défaut
-        #min_value=8, 
-        #max_value=50,
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
-            #'value': '5',  # Valeur initiale spécifique
-            'id': 'rayonCourbure'  # Attribut id
-        })
-    )
-    
-    #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="ldf. Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'value':'5',
-            'id': 'longueurDepartFin'  # Attribut id
-        })
-    )
-    
-    longueurBarre = forms.FloatField(
+    longueur_Barre = forms.FloatField(
         label=" Longueur de la barre(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2123,25 +2027,12 @@ class BarreDroiteForm(forms.Form):
         })
     )
     
-    longueurFin = forms.FloatField(
-        label="3. Longueur de fin",
-        # required=True,  # Champ requis
-        initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'value':'6.5',
-            'id': 'longueurFin'  # Attribut id
-        })
-    )
-    
-    
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+    longueur_Total = forms.FloatField(
+        label="Longueur totale du cadre(mm)",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
-        min_value=1,
-        max_value=1000,
+        #min_value=1,
+        #max_value=1000,
         widget=forms.NumberInput(attrs={
             'readonly': 'readonly',
             'class': 'form-control',  # Classe CSS
@@ -2159,7 +2050,7 @@ class BarreDroiteForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2217,9 +2108,9 @@ class BarreCouUneExForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -2236,9 +2127,9 @@ class BarreCouUneExForm(forms.Form):
         ('180', '180°')
     ]
     
-    choix = forms.ChoiceField(
+    angle_cintrage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
         initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -2249,12 +2140,12 @@ class BarreCouUneExForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+    rayon_Courbure = forms.FloatField(
+        label=" Rayon de courbure (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=6000,
+        #min_value=300, 
+        #max_value=6000,
         widget=forms.NumberInput(attrs={
             'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -2263,21 +2154,9 @@ class BarreCouUneExForm(forms.Form):
         })
     )
     
-    #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'value':'5',
-            'id': 'longueurDepartFin'  # Attribut id
-        })
-    )
-    
-    longueurBarre = forms.FloatField(
-        label="Longueur de la barre(mm)",
+
+    longueur_Barre = forms.FloatField(
+        label=" Longueur de la barre(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=300, 
@@ -2291,8 +2170,8 @@ class BarreCouUneExForm(forms.Form):
     )
     
     
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+    longueur_Total = forms.FloatField(
+        label=" Longueur totale du cadre",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         #min_value=1,
@@ -2314,7 +2193,7 @@ class BarreCouUneExForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2326,7 +2205,7 @@ class BarreCouUneExForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label=" Quantite de barre(u)",
         required=True,  # Champ requis
         min_value=1,
         max_value=10000,
@@ -2372,7 +2251,7 @@ class BarreCouDeuxExForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
@@ -2391,7 +2270,7 @@ class BarreCouDeuxExForm(forms.Form):
         ('180', '180°')
     ]
     
-    choix = forms.ChoiceField(
+    angle_cintrage = forms.ChoiceField(
         choices=CHOICES,
         label="Choix de l’angle de cintrage(degre) ",
         required=True,  # Champ requis
@@ -2404,12 +2283,12 @@ class BarreCouDeuxExForm(forms.Form):
     )   
     
     #rayon de courbure
-    rayonCourbure = forms.FloatField(
+    rayon_Courbure = forms.FloatField(
         label="Rayon de courbure (mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=6000,
+        #min_value=300, 
+        #max_value=6000,
         widget=forms.NumberInput(attrs={
             'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -2418,20 +2297,7 @@ class BarreCouDeuxExForm(forms.Form):
         })
     )
     
-    #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            #'value':'30',
-            'id': 'longueurDepartFin'  # Attribut id
-        })
-    )
-    
-    longueurBarre = forms.FloatField(
+    longueur_Barre = forms.FloatField(
         label="Longueur de la barre(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2444,22 +2310,9 @@ class BarreCouDeuxExForm(forms.Form):
             'id': 'longueurBarre'  # Attribut id
         })
     )
-    
-    longueurFin = forms.FloatField(
-        label="3. Longueur de fin",
-        # required=True,  # Champ requis
-        initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'value':'6.5',
-            'id': 'longueurFin'  # Attribut id
-        })
-    )
-    
-    
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre/tolerance +-10(mm)",
+       
+    longueur_Total = forms.FloatField(
+        label="Longueur totale du cadre (mm)",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         #min_value=1,
@@ -2481,7 +2334,7 @@ class BarreCouDeuxExForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2537,7 +2390,7 @@ class AncrageJForm(forms.Form):
         ('32', 'M32')
     ]
     
- choix2 = forms.ChoiceField(
+ Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
@@ -2549,25 +2402,7 @@ class AncrageJForm(forms.Form):
         })
     )
     
-    # choix angle de cintrage
- CHOICES = [
-        ('180', '180°')
-        
-    ]
-    
- choix = forms.ChoiceField(
-        choices=CHOICES,
-        label=" Choix de l’angle de cintrage(degre) ",
-        required=True,  # Champ requis
-        initial='180°',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'angle',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-        })
-    )   
-    
- longeurFiletage = forms.FloatField(
+ longeur_Filetage = forms.FloatField(
         label=" Longueur filtetage(mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2579,7 +2414,7 @@ class AncrageJForm(forms.Form):
         })
     )
     
- longeurAncrage = forms.FloatField(
+ longeur_Ancrage = forms.FloatField(
         label=" Longueur Ancrage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2594,7 +2429,7 @@ class AncrageJForm(forms.Form):
     )
     
     #rayon de courbure
- rayonCourbure = forms.FloatField(
+ rayon_Courbure = forms.FloatField(
         label=" Rayon de Courbure (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2608,7 +2443,7 @@ class AncrageJForm(forms.Form):
         })
     )
     
- hauteurCintrage = forms.FloatField(
+ hauteur_Cintrage = forms.FloatField(
         label=" Hauteur de cintrage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2620,7 +2455,7 @@ class AncrageJForm(forms.Form):
         })
     )
     
- longueurTotal = forms.FloatField(
+ longueur_Total = forms.FloatField(
         label="Longueur totale du cadre",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
@@ -2642,7 +2477,7 @@ class AncrageJForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
- prixTotal = forms.FloatField(
+ prix_Total = forms.FloatField(
         label=" Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2696,7 +2531,7 @@ class AncrageCrossForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label=" Choix du Diametre du fer en (mm)",
         required=True,  # Champ requis
@@ -2708,25 +2543,8 @@ class AncrageCrossForm(forms.Form):
         })
     )
     
-    # choix angle de cintrage
-    CHOICES = [
-        ('180', '180°')
-        
-    ]
     
-    choix = forms.ChoiceField(
-        choices=CHOICES,
-        label=" Choix de l’angle de cintrage(degre) ",
-        required=True,  # Champ requis
-        initial='180°',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'angle',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-        })
-    )   
-    
-    longeurFiletage = forms.FloatField(
+    longeur_Filetage = forms.FloatField(
         label="Longueur filtetage(mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2738,7 +2556,7 @@ class AncrageCrossForm(forms.Form):
         })
     )
     
-    longeurAncrage = forms.FloatField(
+    longeur_Ancrage = forms.FloatField(
         label=" Longueur Ancrage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2753,7 +2571,7 @@ class AncrageCrossForm(forms.Form):
     )
     
     #rayon de courbure
-    diametreCin = forms.FloatField(
+    diametre_Cintrage = forms.FloatField(
         label=" Diametre (mm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2767,7 +2585,7 @@ class AncrageCrossForm(forms.Form):
         })
     )
     
-    hauteurCintrage = forms.FloatField(
+    hauteur_Cintrage = forms.FloatField(
         label=" Hauteur de cintrage(mm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -2779,7 +2597,7 @@ class AncrageCrossForm(forms.Form):
         })
     )
     
-    longueurTotal = forms.FloatField(
+    longueur_Total = forms.FloatField(
         label="Longueur totale du cadre",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
@@ -2801,7 +2619,7 @@ class AncrageCrossForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label=" Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2826,46 +2644,6 @@ class AncrageCrossForm(forms.Form):
     
 class EcrouForm(forms.Form):
 
-  
-     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            # 'value':'30',
-            'id': 'longueurDepart'  # Attribut id
-        })
-    )
-    
-    #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
-        #required=True,  # Champ requis
-        # initial,  # Valeur par défaut
-        #min_value=8, 
-        #max_value=50,
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
-            # 'value': '30',  # Valeur initiale spécifique
-            'id': 'rayonCourbure'  # Attribut id
-        })
-    )
-
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/Tolerance +10 mm",
-        # required=True,  # Champ requis
-        # initial=0.6,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'value':'0',
-            'class': 'form-control',  # Classe CSS
-            'id': 'longueurTotal'  # Attribut id
-        })
-    )
     prix = forms.FloatField(
         label="Prix unitaire",
         # required=True,  # Champ requis
@@ -2877,7 +2655,7 @@ class EcrouForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2916,7 +2694,7 @@ class EcrouForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_ecrou = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix de l'ecrou",
         required=True,  # Champ requis
@@ -2930,46 +2708,6 @@ class EcrouForm(forms.Form):
     
 class FerABetonForm(forms.Form):
 
-  
-     #longueur depart et fin
-    longueurDepartFin = forms.FloatField(
-        label="Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            # 'value':'30',
-            'id': 'longueurDepart'  # Attribut id
-        })
-    )
-    
-    #rayon de courbure
-    rayonCourbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
-        #required=True,  # Champ requis
-        # initial,  # Valeur par défaut
-        #min_value=8, 
-        #max_value=50,
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
-            # 'value': '30',  # Valeur initiale spécifique
-            'id': 'rayonCourbure'  # Attribut id
-        })
-    )
-
-    longueurTotal = forms.FloatField(
-        label="Longueur totale du cadre(mm)/Tolerance +10 mm",
-        # required=True,  # Champ requis
-        # initial=0.6,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'value':'0',
-            'class': 'form-control',  # Classe CSS
-            'id': 'longueurTotal'  # Attribut id
-        })
-    )
     prix = forms.FloatField(
         label="Prix unitaire",
         # required=True,  # Champ requis
@@ -2981,7 +2719,7 @@ class FerABetonForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -2993,7 +2731,7 @@ class FerABetonForm(forms.Form):
         })
     )
     
-    longueurBarre = forms.FloatField(
+    longueur_Barre = forms.FloatField(
         label="Longueur de la barre (m)",
         required=False,  # Champ requis
         # initial,  # Valeur par défaut
@@ -3034,7 +2772,7 @@ class FerABetonForm(forms.Form):
         ('32', 'M32')
     ]
     
-    choix2 = forms.ChoiceField(
+    Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du diametre",
         required=True,  # Champ requis
@@ -3051,7 +2789,7 @@ class FerABetonForm(forms.Form):
         ('Fe500', 'Fe E500')
     ]
     
-    choix = forms.ChoiceField(
+    type_de_fer = forms.ChoiceField(
         choices=CHOICES,
         label="Choix du type de fer",
         required=True,  # Champ requis
@@ -3066,7 +2804,7 @@ class FerABetonForm(forms.Form):
 class FilForm(forms.Form):
 
 
-    longueurTotal = forms.FloatField(
+    longueur_Total = forms.FloatField(
         label="Longueur totale d'un anneau (mm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
@@ -3088,7 +2826,7 @@ class FilForm(forms.Form):
             'id': 'prix-id'  # Attribut id
         })
     )
-    prixTotal = forms.FloatField(
+    prix_Total = forms.FloatField(
         label="Prix Total",
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
@@ -3100,7 +2838,7 @@ class FilForm(forms.Form):
         })
     )
     
-    poidsAnneau = forms.FloatField(
+    poids_Anneau = forms.FloatField(
         label="Poids d'un anneau  (Kg)",
         required=False,  # Champ requis
         # initial,  # Valeur par défaut
@@ -3133,7 +2871,7 @@ class FilForm(forms.Form):
         ('fil_galvanise', 'fil galvanise')
     ]
     
-    choix2 = forms.ChoiceField(
+    type_de_fil = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du materiaux du fil",
         required=True,  # Champ requis

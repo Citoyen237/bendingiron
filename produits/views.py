@@ -101,130 +101,130 @@ def detail_produit(request, product_id):
 
     if(product.nom=="cadre carre"):
         form=CarreForm(request.POST or None)
-        template="produits/cadre-carre.html"
+        template="produits/cintrages_cadres/cadre-carre.html"
     
     if(product.nom=="cadre rectangle"):
         form=RectangleForm(request.POST or None)
-        template="produits/cadre-rectangle.html"
+        template="produits/cintrages_cadres/cadre-rectangle.html"
         
     if(product.nom=="cadre hexagonale"):
         form=HexagonaleForm(request.POST or None)
-        template="produits/cadre-hexagonale.html"
+        template="produits/cintrages_cadres/cadre-hexagonale.html"
     
     if(product.nom=="cadre triangulaire"):
         form=TriangleForm(request.POST or None)
-        template="produits/cadre-triangulaire.html"
+        template="produits/cintrages_cadres/cadre-triangulaire.html"
         
     if(product.nom=="cintrage de l'etrier"):
         form=EtrierForm(request.POST or None)
-        template="produits/cintrage-etrier.html"
+        template="produits/cintrages_formes/cintrage-etrier.html"
         
     if(product.nom=="cintrage en T"):
         form=TForm(request.POST or None)
-        template="produits/cintrage-T.html"
+        template="produits/cintrages_formes/cintrage-T.html"
         
     if(product.nom=="cintrage en T economique"):
         form=TeconoForm(request.POST or None)
-        template="produits/cintrage-T-economique.html"
+        template="produits/cintrages_formes/cintrage-T-economique.html"
         
     if(product.nom=="cintrage en U"):
         form=UForm(request.POST or None)
-        template="produits/cintrage-U.html"
+        template="produits/cintrages_formes/cintrage-U.html"
         
     if(product.nom=="cintrage en U ouvert"):
         form=UouvertForm(request.POST or None)
-        template="produits/cintrage-U-ouvert.html"
+        template="produits/cintrages_formes/cintrage-U-ouvert.html"
         
     if(product.nom=="cintrage en U ferme"):
         form=UfermeForm(request.POST or None)
-        template="produits/cintrage-U-ferme.html"
+        template="produits/cintrages_formes/cintrage-U-ferme.html"
         
     if(product.nom=="cintrage de la pince"):
         form=PinceForm(request.POST or None)
-        template="produits/cintrage-pince.html"
+        template="produits/cintrages_formes/cintrage-pince.html"
         
     if(product.nom=="cintrage du crochet"):
         form=CrochetForm(request.POST or None)
-        template="produits/cintrage-crochet.html"
+        template="produits/cintrages_formes/cintrage-crochet.html"
         
     #redressage et decoupage
     if(product.nom=="barre droite"):
         form=BarreDroiteForm(request.POST or None)
-        template="produits/barre-droite.html"
+        template="produits/cintrages_extremites_redressage_et_decoupages/barre-droite.html"
     
     #Cintrage
     if(product.nom=="barre coude a une extremite"):
         form=BarreCouUneExForm(request.POST or None)
-        template="produits/barre-coude-a-une-extremite.html"
+        template="produits/cintrages_extremites_redressage_et_decoupages/barre-coude-a-une-extremite.html"
     
     if(product.nom=="barre coude aux deux extremites"):
         form=BarreCouDeuxExForm(request.POST or None)
-        template="produits/barre-coude-aux-deux-extremite.html"
+        template="produits/cintrages_extremites_redressage_et_decoupages/barre-coude-aux-deux-extremite.html"
     
     #pour les bardages et toitures
     if(product.nom=="etrier a fond circulaire"):
         form=EtrierFondRondForm(request.POST or None)
-        template="produits/etrier-fond-circulaire.html"
+        template="produits/Etriers_pour_badages_et_toitures/etrier-fond-circulaire.html"
         
     if(product.nom=="etrier a une seul branche a fond circulaire"):
         form=EtrierFondRondForm(request.POST or None)
-        template="produits/etrier-une-branche-fond-circulaire.html"
+        template="produits/Etriers_pour_badages_et_toitures/etrier-une-branche-fond-circulaire.html"
         
     if(product.nom=="etrier a fond droit"):
         form=EtrierFondRondForm(request.POST or None)
-        template="produits/etrier-fond-droit.html"
+        template="produits/Etriers_pour_badages_et_toitures/etrier-fond-droit.html"
         
     if(product.nom=="etrier a une seul branche a fond droit"):
         form=EtrierFondRondForm(request.POST or None)
-        template="produits/etrier-une-branche-fond-droit.html"
+        template="produits/Etriers_pour_badages_et_toitures/etrier-une-branche-fond-droit.html"
         
     if(product.nom=="etrier a fond triangulaire"):
         form=EtrierFondRondForm(request.POST or None)
-        template="produits/etrier-fond-triangulaire.html"
+        template="produits/Etriers_pour_badages_et_toitures/etrier-fond-triangulaire.html"
         
     if(product.nom=="Ancrage forme J"):
         form=AncrageJForm(request.POST or None)
-        template="produits/ancrage-forme-J.html"
+        template="produits/Boulon_ancrage_beton/ancrage-forme-J.html"
     
     if(product.nom=="Ancrage forme L"):
         form=AncrageJForm(request.POST or None)
-        template="produits/ancrage-forme-L.html"
+        template="produits/Boulon_ancrage_beton/ancrage-forme-L.html"
     
     if(product.nom=="Ancrage simple"):
         form=AncrageJForm(request.POST or None)
-        template="produits/ancrage-simple.html"
+        template="produits/Boulon_ancrage_beton/ancrage-simple.html"
     
     if(product.nom=="Ancrage en forme de crosse"):
         form=AncrageCrossForm(request.POST or None)
-        template="produits/ancrage-forme-crosse.html"
+        template="produits/Boulon_ancrage_beton/ancrage-forme-crosse.html"
         
     if(product.nom=="Ancrage en forme de crochet"):
         form=AncrageCrossForm(request.POST or None)
-        template="produits/ancrage-forme-crochet.html"
+        template="produits/Boulon_ancrage_beton/ancrage-forme-crochet.html"
     
     if(product.nom=="Ancrage en forme de crochet à double cambrure"):
         form=AncrageCrossForm(request.POST or None)
-        template="produits/ancrage-crochet-double-cambrure.html"
+        template="produits/Boulon_ancrage_beton/ancrage-crochet-double-cambrure.html"
     
  #print(product.nom)
     if(product.nom=="Ecrou hexagonale"):
         form=EcrouForm(request.POST or None)
-        template="produits/ecrou.html"
+        template="produits/Quincallerie/ecrou.html"
         
     #print(product.nom)
     if(product.nom=="fer a beton de 12m"):
         form=FerABetonForm(request.POST or None)
-        template="produits/quincaillerie.html"
+        template="produits/Quincallerie/quincaillerie.html"
         
     #print(product.nom)
     if(product.nom=="fil d'attache"):
        form=FilForm(request.POST or None)
-       template="produits/file-attache.html"
+       template="produits/Quincallerie/file-attache.html"
        
     #print(product.nom)
     if(product.nom=="rondelle plate"):
        form=EcrouForm(request.POST or None)
-       template="produits/rondelle.html"
+       template="produits/Quincallerie/rondelle.html"
        
     
     # if(product.name=="cadre triangulaire"):
