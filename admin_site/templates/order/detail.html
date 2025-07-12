@@ -53,7 +53,7 @@ commandes
 
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
-                                        <a class="btn btn-primary"><i class="bi bi-download"></i></a>
+                                        <a class="btn btn-primary" href="{% url 'invoice_download' invoice_id=order.id %}"><i class="bi bi-download"></i></a>
 
                                         {% if status == "en_attente" %}
                                         <a href="{% url 'change.status' orderId %}"
