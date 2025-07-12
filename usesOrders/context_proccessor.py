@@ -5,8 +5,16 @@ from .models import *
 def panier_count(request):
     # count_order=Commande.objects.filter(statut='en_attente')
     if request.user.is_authenticated:
-        paniers = Cart.objects.filter(user=request.user)
-        total_articles = paniers.count()
+        panier = Cart.objects.filter(user=request.user).first()
+        if panier :
+            items=CartItem.objects.filter(cart_id=panier.id)
+            total_articles = items.count()
+            if total_articles :
+                total_articles = items.count() 
+            else :
+                total_articles = 0 
+        else:
+         total_articles = 0 
     else:
         total_articles = 0  # Si l'utilisateur n'est pas connecté, il n'y a pas de panier
     return {'panier_count': total_articles,}

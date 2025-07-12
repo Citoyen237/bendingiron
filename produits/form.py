@@ -1505,18 +1505,6 @@ class UForm(forms.Form):
         })
     )
     
-    #longueur depart et fin
-    longueur_Depart_et_Fin = forms.FloatField(
-        label=" Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            #'value':'30',
-            'id': 'longueurDepart'  # Attribut id
-        })
-    )
     
     hauteur_Gauche = forms.FloatField(
         label=" Hauteur Gauche (mm)",
@@ -1742,7 +1730,7 @@ class UouvertForm(forms.Form):
     
    
     longueur_Total = forms.FloatField(
-        label="Longueur totale du cadre(mm)/tolerance +-10 mm",
+        label="Longueur totale du cadre(mm)",
         # required=True,  # Champ requis
         #initial=60,  # Valeur par défaut
         widget=forms.NumberInput(attrs={

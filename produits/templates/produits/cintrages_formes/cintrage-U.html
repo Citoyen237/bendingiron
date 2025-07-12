@@ -61,16 +61,6 @@ detail
                 </br>
                     <div class="row">
                         <div class="col">
-                            <h4 class="text-secondary"><b>Ldf. </b>{{form.longueur_Depart_et_Fin.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.longueur_Depart_et_Fin}}
-                            <div id="longueurDepartFin-error" class="error-message" style="color: red; display: none;"></div>
-                        </div>
-                    </div>
-                </br>
-                    <div class="row">
-                        <div class="col">
                             <h4 class=""><b>A. </b>{{form.hauteur_Gauche.label}}</h4>
                         </div>
                         <div class="col">
@@ -180,7 +170,6 @@ detail
         let diametereField = document.getElementById('diametre');
         //let angeField = document.getElementById('angle')
         let rayonField = document.getElementById('rayonCourbure');
-        let longueurdptField = document.getElementById('longueurDepart');
         let hauteurGaucheField = document.getElementById('hauteurGauche');
         let hauteurGaucheError = document.getElementById('hauteurGauche-error');  // Élément pour afficher l'erreur
         let largeurFondField = document.getElementById('largeurFond');
@@ -208,7 +197,6 @@ detail
 
            //calcule rayon, longueur de depart
             rayonField.value = 5*diametre
-            longueurdptField.value = 5*diametre
             diametereField.value = diametre
             //angeField.value = ange
            
@@ -299,7 +287,6 @@ detail
             quantiteField,
             fer,
             rayonField,
-            longueurdptField,
             diametereField,
             prixField,
             prixTotalField

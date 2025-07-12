@@ -40,7 +40,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_HOST_USER = 'prodistributionltd237@gmail.com'
-EMAIL_HOST_PASSWORD = 'dovm cgou tqpn yldu'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'prodistributionltd237@gmail.com'
 
 # nouvelle route de login
