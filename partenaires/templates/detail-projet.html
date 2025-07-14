@@ -1,0 +1,63 @@
+{% extends 'appf.html' %}
+{% block 'title' %}
+details sur le projet
+{% endblock %}
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+
+<section class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Nom du projet : <b>Projet 4</b></h4>
+                <h4>Date creation : <b>04/12/2025</b></h4>
+                <h4>Statut : <span class="text-success">termine</span></h4>
+            </div>
+            <div class="col-md-6">
+                <h4>Couts total : <b>5.000.000 fcfa</b></h4>
+                <h4>Montant recus : <b>3.000.000</b></h4>
+                <h4>Montant restant : <b>2.000.000</b></h4>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <table class="table mt-2 table-responsive">
+                <thead class='bg-warning'>
+                    <th>Produit</th>
+                    <th>Description</th>
+                    <th>Quantite total</th>
+                    <th>Quantite livre</th>
+                    <th>Quantite restante</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>Cadre crre</td>
+                        <td>Description Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolore, ut quaerat nihil suscipit blanditiis ratione tempora veritatis consequatur, non dicta inventore perferendis. Voluptas dicta aperiam quia qui voluptatem, sint enim.</td>
+                        <td>5000</td>
+                        <td>3000</td>
+                        <td>2000</td>
+                        <td class='text-center'>
+                            <a href="" class='btn btn-success' name='supprimer'><i
+                                    class="fas fa-download"></i></a>
+                            <a href="" class='btn btn-info' name='supprimer'><i
+                                    class='fas fa-file'></i></a>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                            <br>
+                            <span> Aucune commande n'a ete trouver</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock %}t

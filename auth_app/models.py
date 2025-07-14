@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class CustomUser(AbstractUser):
     phone_number = models.CharField(max_length=200)
+    is_partenaire = models.BooleanField(default=0)
     groups = models.ManyToManyField(Group, related_name="customuser_set")
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_set")
 

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TemoignageConfig(AppConfig):
+class PartenairesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'temoignage'
+    name = 'partenaires'

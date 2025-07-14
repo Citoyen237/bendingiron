@@ -1,0 +1,36 @@
+{% extends 'appf.html' %}
+{% block 'title' %}
+projets
+{% endblock %}
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+
+<section class="content project-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 mb-2 border shadow">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        
+                            <img loading="lazy" class="w-100" src="{% static 'front/images/folder1.jpg'%}">
+                        
+                    </div>
+                    <h4 class="card-title text-warning text-center"><a href="{% url 'partenaire.detail' %}">Project name</a> <span class="badge badge-secondary">En cour</span></h4>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-3 col-md-6 mb-2 border shadow">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/folder1.jpg'%}"
+                            alt="service-image">
+                    </div>
+                    <h4 class="card-title text-warning text-center"><a href="{% url 'partenaire.detail' %}">Project name</a> <span class="badge badge-success">Termine</span></h4>
+                </div><!-- Service2 end -->
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock %}t

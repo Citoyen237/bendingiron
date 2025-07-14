@@ -9,7 +9,8 @@ urlpatterns = [
     path('auth/', include('auth_app.urls')),
     path('produits/',include('produits.urls')),
     path('mes-commandes/',include('usesOrders.urls')),
-    path('dashboard/',include('admin_site.urls')),
+    path('cpanel/',include('admin_site.urls')),
     path('contact/',include('contact.urls')),
-    path('admin/', admin.site.urls),   
+    path('partenaire/',include('partenaires.urls')),
+    path('larue/', admin.site.urls),   
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

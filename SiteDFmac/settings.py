@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'admin_site',
-    'temoignage',
     'front',
     'auth_app',
     'produits',
@@ -65,6 +64,7 @@ INSTALLED_APPS = [
     'contact',
     'tinymce',
     'django.contrib.humanize',
+    'partenaires',
 ]
 
 MIDDLEWARE = [

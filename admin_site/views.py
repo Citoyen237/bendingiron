@@ -1,8 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import ListView
 import os
-from temoignage.models import Temoignage
-from temoignage.form import *
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
@@ -40,45 +38,6 @@ def indexA(request):
     return render(request, 'indexA.html')
 
 
-'''crud temoignage'''
-class ListTemoignage(AdminOrSuperAdminRequiredMixin,ListView):
-    model = Temoignage
-    context_object_name = 'temoignages'
-    paginate_by = 10
-    template_name = "temoignage/list.html"
-
-class CreateTemoignage(AdminOrSuperAdminRequiredMixin,CreateView):
-   model = Temoignage
-   form_class = TemoignageForm
-   template_name = "temoignage/create.html"
-   success_url="../temoignages/"
-
-   def form_valid(self, form):
-         messages.success(self.request, 'Temoignage creer avec succes.')
-         return super().form_valid(form)
-
-class UpdateTemoignage(AdminOrSuperAdminRequiredMixin,UpdateView):
-   model = Temoignage
-   form_class=TemoignageForm
-   template_name="Temoignage/update.html"
-   success_url="../../temoignages/"
-
-   def form_valid(self, form):
-      messages.success(self.request, 'Le temoignage a été modifier avec succes')
-      return super().form_valid(form)
-   
-class DeleteTemoignage(AdminOrSuperAdminRequiredMixin,DeleteView):
-   model = Temoignage
-   template_name = "Temoignage/delete.html"
-   success_url="../../temoignages/"
-
-   def delete(self, request, *args, **kwargs):
-      response = super().delete(request, *args, **kwargs)
-      message = messages.success(self.request, "Le temoignage a été supprimé avec succès")
-      reponses = [response,message]
-      return reponses
-
-
 # produits en stock
 class ListProduits(ListView):
     model=Produit
@@ -90,18 +49,6 @@ class ListFer(ListView):
     context_object_name = 'fers'
     template_name = "fer/list.html"
 
-   #  surcharge de http_method_names
-   #  def get_queryset(self):
-   #      return Fer.objects.annotate(
-   #          total_longueur=Coalesce(
-   #              Sum(
-   #                  ExpressionWrapper(
-   #                      F('mouvement__quantite') * F('mouvement__longueur_m'),
-   #                      output_field=DecimalField()
-   #                  )
-   #              ), 0
-   #          )
-   #      ).order_by('total_longueur') 
 
 class CreateFer(CreateView):
    model = Fer
@@ -160,6 +107,7 @@ def mark_message_as_read(request, message_id):
     message.is_read = 1
     message.save()
     return redirect('contact.list')
+
 @user_passes_test(is_admin)
 def send_response(request, message_id):
    message=get_object_or_404(Contact, id=message_id)
@@ -172,6 +120,7 @@ def send_response(request, message_id):
          response = form.cleaned_data['reponse']
         #  file_response = form.cleaned_data['file_response']
          message.is_read = 1
+         message.reponse=response
          form.save()
          messages.success(request, 'Votre reponse a ete envoyer succès.')
         #  send_mail(
@@ -186,7 +135,7 @@ def send_response(request, message_id):
 
          email = EmailMessage(
             subject='Réponse à votre message',
-            body=f'Vous: {message.message}\n\ndfmacinfo@gmail.com: {response}',
+            body=f'Vous: {message.message}\n\nbending.info@gmail.com\n: {response}',
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[message.email],
             )
@@ -254,7 +203,8 @@ def read_devis_response(request, message_id):
 class SuperAdminRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.is_superuser
-class ListUser(SuperAdminRequiredMixin,ListView):
+    
+class ListUser(AdminOrSuperAdminRequiredMixin,ListView):
     model=CustomUser
     context_object_name = 'users'
     template_name = "users/list.html"
@@ -301,6 +251,18 @@ def change_user_role(request, user_id, group_name):
         
         # Trouver le groupe auquel vous voulez assigner l'utilisateur
         group = Group.objects.get(name=group_name)
+
+        if group_name == 'admin':
+           user.is_staff = 1
+           user.is_superuser = 0
+
+        if group_name == 'superadmin': 
+            user.is_superuser = 1
+            user.is_staff = 1
+        
+        if group_name == 'simple': 
+            user.is_superuser = 0
+            user.is_staff = 0
         
         # Changer le rôle de l'utilisateur
         user.groups.clear()  # Efface les groupes existants

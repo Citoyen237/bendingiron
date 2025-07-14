@@ -3,10 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('', indexA, name='admin.index'),
-    path('temoignages/',ListTemoignage.as_view() ,name='admin.temoignage.list'),
-    path('temoignages/creer',CreateTemoignage.as_view() ,name='admin.temoignage.create'),
-    path('temoignages/<int:pk>/supprimer',DeleteTemoignage.as_view() ,name='admin.temoignage.delete'),
-    path('temoignages/<int:pk>/modifier',UpdateTemoignage.as_view() ,name='admin.temoignage.update'), 
 
     # gestion du stock
     path('stocks/',ListFer.as_view() ,name='admin.fer.list'),

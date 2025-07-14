@@ -117,6 +117,22 @@
 
                 </li>
                 {% endif %}
+               
+                <li class="nav-item dropdown
+                       {% if current_url == '/partenaire/' %}
+                            active
+                         {% endif %}  
+                      ">
+                  <a href="{% url 'partenaire.index' %}" class="nav-link dropdown-toggle">Partenaire</a>
+
+                </li>
+                {% if user.is_staff %}
+                <li class="nav-item dropdown 
+                      ">
+                  <a href="{% url 'admin.index' %}" class="nav-link dropdown-toggle">Dashboard</a>
+
+                </li>
+                {% endif %}
                 <li class="nav-item
                        {% if current_url == '/a-propos/' %}
                             active
