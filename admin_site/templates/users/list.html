@@ -34,6 +34,7 @@ utilisateurs
                                     <th>Telephone</th>
                                     <th>Role</th>
                                     <th>Changer status</th>
+                                    <th>Partenaire</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -45,46 +46,61 @@ utilisateurs
                                     <td>{{user.first_name}}</td>
                                     <td>{{user.email}}</td>
                                     <td>{{user.phone_number}}</td>
-                                    <td>                                        
-                                            
-                                            {% if user.groups.first.name == "simple" %}
-                                            <span class="badge bg-secondary text-dark">{{user.groups.first.name}}</span>
+                                    <td>
 
-                                            {% endif %}
+                                        {% if user.groups.first.name == "simple" %}
+                                        <span class="badge bg-secondary text-dark">{{user.groups.first.name}}</span>
 
-                                            {% if user.groups.first.name == "admin"%}
-                                            <span class="badge bg-warning text-dark">{{user.groups.first.name}}</span>
-                                            {% endif %}
+                                        {% endif %}
 
-                                            {% if user.groups.first.name == "superadmin" %}
-                                            <span class="badge bg-info text-dark">{{user.groups.first.name}}</span> 
-                                            {% endif %}
-                                                                                     
+                                        {% if user.groups.first.name == "admin"%}
+                                        <span class="badge bg-warning text-dark">{{user.groups.first.name}}</span>
+                                        {% endif %}
+
+                                        {% if user.groups.first.name == "superadmin" %}
+                                        <span class="badge bg-info text-dark">{{user.groups.first.name}}</span>
+                                        {% endif %}
+
                                     </td>
-
                                     <td class="">
-                                         <a
-                                                    href="{% url 'change_user_role' user.id 'superadmin' %}">
-                                                    <span class="badge bg-info text-dark">
-                                                    SuperAdmin
-                                                </span>
-                                                </a>
-                                                <a href="{% url 'change_user_role' user.id 'admin' %}">
-                                                    <span class="badge bg-warning text-dark">
-                                                    Admin
-                                                </span>
-                                                </a><a href="{% url 'change_user_role' user.id 'simple' %}">
-                                                    <span class="badge bg-secondary text-dark">
-                                                    Utilisateur
-                                                </span>
-                                                </a>
+                                        <a href="{% url 'change_user_role' user.id 'superadmin' %}">
+                                            <span class="badge bg-info text-dark">
+                                                SuperAdmin
+                                            </span>
+                                        </a>
+                                        <a href="{% url 'change_user_role' user.id 'admin' %}">
+                                            <span class="badge bg-warning text-dark">
+                                                Admin
+                                            </span>
+                                        </a><a href="{% url 'change_user_role' user.id 'simple' %}">
+                                            <span class="badge bg-secondary text-dark">
+                                                Utilisateur
+                                            </span>
+                                        </a>
+                                        <a href="{% url 'change_user_role' user.id 'partenaire' %}">
+                                            <span class="badge bg-primary text-dark">
+                                                Partenaire
+                                            </span>
+                                        </a>
                                     </td>
+                                       <td>
+                                        
+                                        {% if user.is_partenaire %}
+                                        <span class="badge bg-info text-dark">Partenaire</span>
+                                        {% else %}
+                                          <span class="badge bg-secondary text-dark">Non partenaire</span>
+                                        {% endif %}
+                                            
+                                    </td>
+
                                     <td>
                                         {% if user.is_active %}
-                                        <a href=" {% url 'toggle_user_status' user.id %} "  data-bs-toggle="tooltip" data-bs-placement="top" title="bloquer" class='btn btn-success'><i
+                                        <a href=" {% url 'toggle_user_status' user.id %} " data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="bloquer" class='btn btn-success'><i
                                                 class="bi bi-unlock-fill"></i></a>
                                         {% else %}
-                                        <a href=" {% url 'toggle_user_status' user.id %}"   data-bs-toggle="tooltip" data-bs-placement="top" title="debloquer" class='btn btn-danger'><i
+                                        <a href=" {% url 'toggle_user_status' user.id %}" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="debloquer" class='btn btn-danger'><i
                                                 class="bi bi-lock-fill"></i></a>
                                         {% endif %}
 

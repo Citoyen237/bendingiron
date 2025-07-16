@@ -1,0 +1,93 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+creer un partenariat
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Partenariats</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Projets</li>
+                <li class="breadcrumb-item active">Liste des projets</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+ <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <br />
+            {% if messages %} {% for message in messages %}
+            <div
+              class="alert alert-success alert-dismissible fade show"
+              role="alert"
+            >
+              {{ message }}!
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            {% endfor %} {% endif %}
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Partenaire</th>
+                  <th>Utilisateur</th>
+                  <th>Nom du projet</th>
+                  <th>Montant total</th>
+                  <th>Statut</th>
+                  <th>Solde</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for projet in projets %}
+                <tr>
+                  <td>{{projet.created_at}}</td>
+                  <td>{{projet.partenariat}}</td>
+                  <td>{{projet.user}}</td>
+                  <td>{{projet.name}}</td>
+                  <td>{{projet.montant_total}}</td>
+                  <td>{{projet.statut}}</td>
+                  <td class="">
+                    {% if projet.is_solde %}
+                    <span class="text-success">oui</span>
+                    {% else %}
+                    <span class="text-warning">non</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{% url 'partenariat.projet.detail' projet_id=projet.id %}" class="btn btn-primary">
+                      detail</a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">
+                    <img src="{% static 'nodata.png'%}" alt="" height="100px" />
+                    <br />
+                    <span>Acun projet trouver</span>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

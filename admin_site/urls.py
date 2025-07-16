@@ -12,20 +12,7 @@ urlpatterns = [
     path("stocks/suivis-produit/<int:fer_id>", get_suivis, name="admin.suivis.produit"),
 
     path('stocks/produits-en-stock',ListProduits.as_view() ,name='admin.stock.list'),
-    # path('stocks/produits-en-stock/<int:pk>/update',UpdateProduitStock.as_view(),name='admin.stock.update'),
-    # path('stocks/produits-en-stock/<int:pk>/delete',DeleteProduitStock.as_view(),name='admin.stock.delete'),
-    # path('stocks/produits-en-stock/create',CreateProduit.as_view() ,name='admin.stock.create'),
-
-    # path('formes/',ListForme.as_view() ,name='admin.forme.list'),
-    # path('formes/<int:pk>/update',UpdateForme.as_view() ,name='admin.forme.update'),
-    # path('formes/create',CreateForme.as_view() ,name='admin.forme.create'),
-    # path('formes/<int:pk>/delete',DeleteForme.as_view(),name='admin.forme.delete'),
-
-    # path('dimensions/',ListDimenssion.as_view() ,name='admin.dimenssion.list'),
-    # path('dimensions/<int:pk>/update',UpdateDimenssion.as_view() ,name='admin.dimenssion.update'),
-    # path('dimensions/create',CreateDimenssion.as_view() ,name='admin.dimenssion.create'),
-    # path('dimensions/<int:pk>/delete',DeleteDimenssion.as_view(),name='admin.dimenssion.delete'),
-
+    
     path('contact/', ListMessage.as_view(), name="contact.list"),
     path('contact/<int:message_id>/lecture', mark_message_as_read, name="is_read"),
     path('contact/<int:message_id>/reponse', send_response, name="contact.reponse"),
@@ -42,4 +29,11 @@ urlpatterns = [
     path('commandes/<int:order_id>', detail_commande, name='order.detail'),
     path('commandes/<int:order_id>/suivis', suivis_commande, name='order.suivis'),
     path('commandes/change-statut/<int:order_id>', change_statut, name='change.status'),
+
+    
+    path('partenariats/', ListPartenariats.as_view(), name='partenariat.list'),
+    path('partenariats/ajouter-un-partenariat/', CreatePartenariat.as_view(), name='partenariat.create'),
+    path('partenariats/<int:pk>/modifier/', UpdatePartenriat.as_view(), name='partenariat.update'),
+    path('partenariats/projets/', ListProjets.as_view(), name='partenariat.projet'),
+    path('partenariats/projets/<int:projet_id>', get_detail_projet, name='partenariat.projet.detail'),
 ]

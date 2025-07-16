@@ -20,6 +20,9 @@ from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView
 from django.db.models.functions import Coalesce
 from django.http import FileResponse, Http404
+from partenaires.models import *
+from partenaires.form import *
+from django.urls import reverse_lazy
 
 # Create your views here.
 # Mixin personnalisé pour vérifier si l'utilisateur appartient aux groupes 'admin' ou 'superadmin'
@@ -246,31 +249,34 @@ def toggle_user_status(request, user_id):
 @user_passes_test(is_admin)
 def change_user_role(request, user_id, group_name):
     try:
-        # Trouver l'utilisateur par ID
+# Trouver l'utilisateur par ID
         user = CustomUser.objects.get(id=user_id)
-        
+        if group_name == 'partenaire' : 
+            user.is_partenaire = 1
+        else :
         # Trouver le groupe auquel vous voulez assigner l'utilisateur
-        group = Group.objects.get(name=group_name)
+            group = Group.objects.get(name=group_name)
 
-        if group_name == 'admin':
-           user.is_staff = 1
-           user.is_superuser = 0
+            if group_name == 'admin':
+                user.is_staff = 1
+                user.is_superuser = 0
 
-        if group_name == 'superadmin': 
-            user.is_superuser = 1
-            user.is_staff = 1
-        
-        if group_name == 'simple': 
-            user.is_superuser = 0
-            user.is_staff = 0
-        
-        # Changer le rôle de l'utilisateur
-        user.groups.clear()  # Efface les groupes existants
-        user.groups.add(group)  # Assigne le nouvel groupe
+            if group_name == 'superadmin': 
+                user.is_superuser = 1
+                user.is_staff = 1
+            
+            if group_name == 'simple': 
+                user.is_superuser = 0
+                user.is_staff = 0
+                                
+            # Changer le rôle de l'utilisateur
+            user.groups.clear()  # Efface les groupes existants
+            user.groups.add(group)  # Assigne le nouvel groupe
+            messages.success(request, f"Le rôle de {user.username} a été changé avec succès en {group.name}.")
+
 
         user.save()
 
-        messages.success(request, f"Le rôle de {user.username} a été changé avec succès en {group.name}.")
     except CustomUser.DoesNotExist:
         messages.error(request, "Utilisateur introuvable.")
     except Group.DoesNotExist:
@@ -353,3 +359,61 @@ def change_statut(request, order_id):
 
     #   Rediriger (par exemple, vers la page des commandes)
    return redirect('order.list')  # Modifie selon le nom de ta vue cible
+
+
+# partenariats
+class ListPartenariats(ListView):
+    model=Partenariats
+    context_object_name = 'partenariats'
+    template_name = "partenaires/partenariats.html"
+
+class CreatePartenariat(AdminOrSuperAdminRequiredMixin, CreateView):
+   model = Partenariats
+   form_class = ParteriatForm
+   template_name = "partenaires/create.html"
+   success_url=".."
+
+   def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Fer ajouté avec succès !")
+        return response
+
+class UpdatePartenriat(AdminOrSuperAdminRequiredMixin, UpdateView):
+    model = Partenariats
+    form_class = ParteriatForm
+    template_name = 'partenaires/update.html'  # ou ton chemin réel
+    success_url = reverse_lazy('partenariat.list')
+
+class ListProjets(AdminOrSuperAdminRequiredMixin, ListView):
+    model=Projet
+    context_object_name = 'projets'
+    template_name = "partenaires/projet.html"
+
+@user_passes_test(is_admin)
+def get_detail_projet(request,projet_id):
+    print("gkkk")
+     # Récupérer la commande avec son ID
+    projet = get_object_or_404(Order, id=projet_id)
+
+     # Récupérer les produits associés à ce projet
+    produits = ProjetItem.objects.filter(projet=projet_id)
+
+     # Ajouter un champ 'prix_total' calculé pour chaque produit
+    produits_details = []
+    for item in produits:
+        produits_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+
+        context = {
+        'produits':produits_details,
+        # 'totals':commande.get_prix_total,
+        # 'status':commande.get_statut_actuel,
+        # 'order':commande.id
+    }
+    return render(request,'partenaires/detail-projet.html', context)

@@ -6,6 +6,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 # from weasyprint import HTML
 
+@login_required
 def show_cart(request):
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
@@ -29,6 +30,7 @@ def show_cart(request):
 
     return render(request, 'panier.html', {'paniers': paniers_details, 'total_prix': total_prix})
 
+@login_required
 def get_resumer(request, product_id):
     current_url = '/produits/'
     product = get_object_or_404(Produit, id=product_id)
@@ -129,7 +131,7 @@ def detail_commande(request, order_id):
     }
     return render(request, 'detail-commande.html',context)
 
-
+@login_required
 def generate_invoice_pdf(request, invoice_id):
   # Charger les données nécessaires (exemple : une commande)
     order = get_object_or_404(Order, id=invoice_id)
