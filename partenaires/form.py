@@ -32,3 +32,42 @@ class ParteriatForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             if field_name not in ['date_debut', 'date_fin']:
                 field.widget.attrs.update({'class': 'form-control'})
+
+class ProjetForm(forms.ModelForm):
+    class Meta:
+        model = Projet
+        fields = ['partenariat', 'name','reduction']
+        labels = {
+            'partenariat': "Choisir le partenaire",
+            'name': "Nom du projet",
+            'reduction': "Reduction (%)"
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(ProjetForm, self).__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+    
+    def clean_partenariat(self):
+        partenariat = self.cleaned_data.get('partenariat')
+        if partenariat and partenariat.is_expired:
+            raise ValidationError("Ce partenariat a expiré.")
+        return partenariat
+
+# class ProjetOrderForm(forms.ModelForm):
+#     class Meta:
+#         model = ProjetOrder
+
+#     pass
+    #     fields = ['partenariat', 'name','reduction']
+    #     labels = {
+    #         'partenariat': "Choisir le partenaire",
+    #         'name': "Nom du projet",
+    #         'reduction': "Reduction (%)"
+    #     }
+
+    # def __init__(self, *args, **kwargs):
+    #     super(ProjetForm, self).__init__(*args, **kwargs)
+    #     for field in self.fields.values():
+    #         field.widget.attrs.update({'class': 'form-control'})
+    

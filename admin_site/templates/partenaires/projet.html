@@ -19,6 +19,7 @@ creer un partenariat
     </div><!-- End Page Title -->
  <section class="section">
     <div class="row">
+      
       <div class="col-lg-12">
         <div class="card">
           <div class="card-body">
@@ -45,6 +46,7 @@ creer un partenariat
                   <th>Partenaire</th>
                   <th>Utilisateur</th>
                   <th>Nom du projet</th>
+                  <th>Remise</th>
                   <th>Montant total</th>
                   <th>Statut</th>
                   <th>Solde</th>
@@ -58,6 +60,7 @@ creer un partenariat
                   <td>{{projet.partenariat}}</td>
                   <td>{{projet.user}}</td>
                   <td>{{projet.name}}</td>
+                  <td>{{projet.reduction}}%</td>
                   <td>{{projet.montant_total}}</td>
                   <td>{{projet.statut}}</td>
                   <td class="">
@@ -68,7 +71,7 @@ creer un partenariat
                     {% endif %}
                   </td>
                   <td>
-                    <a href="{% url 'partenariat.projet.detail' projet_id=projet.id %}" class="btn btn-primary">
+                    <a href="{% url 'partenariat.projet.detail' projet.id%}" class="btn btn-primary">
                       detail</a>
                   </td>
                 </tr>

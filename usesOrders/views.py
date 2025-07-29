@@ -31,16 +31,6 @@ def show_cart(request):
     return render(request, 'panier.html', {'paniers': paniers_details, 'total_prix': total_prix})
 
 @login_required
-def get_resumer(request, product_id):
-    current_url = '/produits/'
-    product = get_object_or_404(Produit, id=product_id)
-    context = {
-        'current_url':current_url,
-        'product':product
-    }
-    return render(request, 'resume-item.html', context)
-
-@login_required
 def supprimer_du_panier(request, item_id):
      # Trouver l'élément CartItem dans le panier de l'utilisateur connecté
     item = CartItem.objects.filter(id=item_id, cart__user=request.user).first()
@@ -57,7 +47,6 @@ def supprimer_du_panier(request, item_id):
 @login_required
 def confirmer_commande(request):
     user = request.user
-
     # 1. Récupérer le panier
     cart = Cart.objects.filter(user=user).first()
     if not cart:
@@ -90,7 +79,6 @@ def confirmer_commande(request):
     # 5. Rediriger vers la page de confirmation ou liste des commandes
     return redirect('mes_commande')  # à adapter selon ton URL
 
-
 # # Create your views here.
 @login_required
 def mes_commande(request):
@@ -103,6 +91,7 @@ def mes_commande(request):
     }
     return render(request, 'commandes.html',context)
 
+@login_required
 def detail_commande(request, order_id):
      # Récupérer la commande avec son ID
     commande = get_object_or_404(Order, id=order_id, user=request.user)
@@ -130,6 +119,28 @@ def detail_commande(request, order_id):
         'order':commande.id
     }
     return render(request, 'detail-commande.html',context)
+
+@login_required
+def send_info_user(request):
+    # Récupérer le panier de l'utilisateur
+    panier = Cart.objects.filter(user=request.user).first()
+    paniers_details = []
+    total_prix = 0
+    if panier:
+        for item in panier.cartitem_set.all():
+            paniers_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+            # Calculer le prix total du panier si nécessaire
+        total_prix = panier.get_prix_total
+    else:
+        panier = None  # ou crée un panier vide, selon besoin
+    return render(request, 'confirmer-commande.html', {'paniers': paniers_details, 'total_prix': total_prix})
 
 @login_required
 def generate_invoice_pdf(request, invoice_id):

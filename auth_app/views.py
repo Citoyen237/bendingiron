@@ -20,7 +20,6 @@ def loginPage(request):
            UserModel = get_user_model()
            try:
                 user = UserModel.objects.get(email=email)
-                print(user)
                 if user.check_password(password):
                     if not user.is_active:
                         messages.error(request, "Votre compte est bloqué. Veuillez contacter l'administration.")

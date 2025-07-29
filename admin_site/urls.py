@@ -35,5 +35,6 @@ urlpatterns = [
     path('partenariats/ajouter-un-partenariat/', CreatePartenariat.as_view(), name='partenariat.create'),
     path('partenariats/<int:pk>/modifier/', UpdatePartenriat.as_view(), name='partenariat.update'),
     path('partenariats/projets/', ListProjets.as_view(), name='partenariat.projet'),
-    path('partenariats/projets/<int:projet_id>', get_detail_projet, name='partenariat.projet.detail'),
+    path('partenariats/projets/<int:projet_id>/', get_detail_projet, name='partenariat.projet.detail'),
+    path('partenariats/detail/<int:partenariat_id>/', get_detail_partenariat, name='partenariat.detail'),
 ]

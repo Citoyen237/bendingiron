@@ -1,11 +1,12 @@
 {% extends '../app.html' %}
 
 {% block 'title' %}
-creer un partenariat
+detail projet
 {% endblock %}
 
 {% block 'content' %}
 {% load static %}
+{% load humanize %}
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -13,21 +14,77 @@ creer un partenariat
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item">Projets</li>
-                <li class="breadcrumb-item">Details</li>
-                <li class="breadcrumb-item active">Details</li>
+                <li class="breadcrumb-item active">{{projet.name}}</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
 
     <section class="section">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                       <h1>hello</h1>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mt-2">
+                        <h6>Date du projet : <b>{{projet.created_at}}</b></h6>
+                        <h6>Nom du partenaire : <b><a
+                                    href="{% url 'partenariat.detail' projet.partenariat.id %}">{{projet.partenariat}}</a></b>
+                        </h6>
+                        <h6>Creer par: <b>{{projet.user}}</b></h6>
+                        <h6>Remise: <b>{{projet.reduction}}%</b></h6>
+                        <h6>Statut : <b>{{projet.statut}}</b> </h6>
                     </div>
-                  </div>
+                    <div class="col-md-4 mt-2">
+                        <h6>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h6>
+                        <h6>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h6>
+                        <h6>TVA : <b>{{projet.montant_tva|intcomma}} fcfa</b></h6>
+                        <h6>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b></h6>
+                    </div>
+                    <div class="col-md-4 mt-2">
+                        <h6>Tranche 1 : {{projet.tranche1|intcomma}} fcfa <b><input type="checkbox" checked name=""
+                                    id=""></b> </h6>
+                        <h6>Tranche 2 : {{projet.tranche2|intcomma}} fcfa<b><input type="checkbox" checked name=""
+                                    id=""></b> </h6>
+                        <h6>Tranche 3 : {{projet.tranche3|intcomma}} fcfa <b><input type="checkbox" checked name=""
+                                    id=""></b> </h6>
+                        <h6><a href="" class="btn btn-primary">Voir historique</a></h6>
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Description</th>
+                                    <th>Quantite total</th>
+                                    <th>Quantite livre</th>
+                                    <th>Quantite restante</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for produit in produits %}
+                                <tr>
+                                    <td>{{produit.produit}}</td>
+                                    <td>{{produit.details}}</td>
+                                    <td>{{produit.quantite}}</td>
+                                    <td>{{produit.quantite_commande}}</td>
+                                    <td>{{produit.quantite_restant}}</td>
+                                </tr>
+                                {%empty%}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <img src="{% static 'nodata.png'%}" alt="" height="100px" />
+                                        <br />
+                                        <span>Acun projet trouver</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+        </div>
+        </div>
         </div>
     </section>
 </main>

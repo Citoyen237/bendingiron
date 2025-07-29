@@ -1,7 +1,7 @@
 {% extends 'appf.html' %}
 
 {% block 'title' %}
-panier
+confirmer la commande
 {% endblock %}
 
 
@@ -52,14 +52,21 @@ panier
             <div class="col-md-4">
                 <div class="card bg-light m-2">
                     <div class="card-body">
-                        <h4 class="card-title">Valider la commande</h4>
+                        <h4 class="card-title">Informations de facturation</h4>
                         <hr>
-                        <p>Vous devez payer au moins les 30% de votre facture. pour lire nos condition generale de vente
-                            <a href="{% url 'cgv' %}" class="text-primary">Cliquez ici</a>
-                        </p>
-                        {% if paniers %}
                         <form action="">
-                            <input type="text" class="form-control" placeholder="code renvendeur">
+                            <label for="">Nom : </label>
+                            <input type="text" class="form-control" placeholder="nom complet">
+                            <br>
+                            <label for="">Telephone : </label>
+                            <input type="text" class="form-control" placeholder="numero de telephone">
+                            <br>
+                            <label for="">Adresse de livraison : </label>
+                            <input type="text" class="form-control" placeholder="adresse de livraison">
+                            <br>
+                            <input class="form-checkbox" type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
+                            <br>
+                           <input class="form-checkbox" type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
                         </form>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center">
@@ -93,25 +100,21 @@ panier
                             </div>
                             <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
                         </div>
-                    </div>             
-                        <div class="input m-2">
-                            <a href="{% url 'info_user' %}" class="btn btn-primary form-control">
-                                {% if user.is_staff %}
-                                Client
-                                {% else %}
-                                Confirmer
-                                {% endif %}
-                            </a>
-                        {% if user.is_staff %}
-                        <a href="{% url 'partanaire.confirm' %}" class="btn btn-primary form-control mt-2">Partenaire</a>
-                        {% endif %}
-                          </div>
-                        
                     </div>
-                {% endif %}
+                    {% if paniers %}
+                    <div class="input m-2">
+                        <a href="{% url 'confirmer' %}" class="btn btn-primary form-control">
+                            Payer
+                        </a>
+                    </div>
+                    {% endif %}
+
                 </div>
+
+                </form>
             </div>
         </div>
+    </div>
     </div>
     {% else %}
     <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier

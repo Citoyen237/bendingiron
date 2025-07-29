@@ -390,10 +390,20 @@ class ListProjets(AdminOrSuperAdminRequiredMixin, ListView):
     template_name = "partenaires/projet.html"
 
 @user_passes_test(is_admin)
-def get_detail_projet(request,projet_id):
-    print("gkkk")
+def get_detail_partenariat(request, partenariat_id):
+    partenariat = get_object_or_404(Partenariats, id=partenariat_id)
+    projets=Projet.objects.filter(partenariat=partenariat_id)
+    context = {
+        'partenariat': partenariat,
+        'projets':projets
+
+    }
+    return render(request, 'partenaires/detail-partenariat.html',context)
+
+@user_passes_test(is_admin)
+def get_detail_projet(request, projet_id):
      # Récupérer la commande avec son ID
-    projet = get_object_or_404(Order, id=projet_id)
+    projet = get_object_or_404(Projet, id=projet_id)
 
      # Récupérer les produits associés à ce projet
     produits = ProjetItem.objects.filter(projet=projet_id)
@@ -407,13 +417,15 @@ def get_detail_projet(request,projet_id):
                 'details': item.details_to_text(),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
+                'quantite_restant':item.quantite_restant,
+                'quantite_commande':item.quantite_commande,
                 'total': item.get_prix_total,
             })
 
-        context = {
-        'produits':produits_details,
-        # 'totals':commande.get_prix_total,
-        # 'status':commande.get_statut_actuel,
-        # 'order':commande.id
+    context = {
+    'produits':produits_details,
+    # 'totals':commande.get_prix_total,
+    # 'status':commande.get_statut_actuel,
+    'projet':projet
     }
     return render(request,'partenaires/detail-projet.html', context)
