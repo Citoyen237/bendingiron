@@ -13,7 +13,8 @@ details sur le projet
                 <h4>Nom du projet : <b>{{projet.name}}</b></h4>
                 <h4>Date creation : <b>{{projet.created_at}}</b></h4>
                 <h4>Remise : <b>{{projet.reduction}}%</b></h4>
-                <h4>Statut : <span class="text-success">{{projet.statut}}</span></h4>
+                <h4>Statut : <span class="text-success">{{projet.get_statut}}</span></h4>
+                <h4>Réalisation : {{ projet.pourcentage_realisation }} %</h4>
             </div>
             <div class="col-md-4">
                 <h4>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h4>
@@ -22,18 +23,35 @@ details sur le projet
                 <h4>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b> </h4>
             </div>
             <div class="col-md-4">
-                <h4>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa</b> <i class="fa fa-check text-success"></i></h4>
-                <h4>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa</b> <i class="fa fa-check text-success"></i></h4>
-                <h4>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa</b> <i class="fa fa-check text-success"></i></h4>
+                <h4>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa</b>
+                    {% if projet.tranche1_payee %}
+                    <i class="fa fa-check text-success"></i>
+                    {% endif %}
+                </h4>
+                <h4>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa</b>
+                    {% if projet.tranche2_payee %}
+                    <i class="fa fa-check text-success"></i>
+                    {% endif %}
+                </h4>
+                <h4>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa</b>
+                    {% if projet.tranche3_payee %}
+                    <i class="fa fa-check text-success"></i>
+                    {% endif %}
+                </h4>
                 <h4>
                     <button class="btn btn-outline-warning" onclick="validerCommande()">Commander</button>
                     <div id="message" class="mt-2"></div>
-                    <a href="" class="btn btn-warning">Voir historique</a>
+                    <a href="{% url 'historique-order' projet.id%}" class="btn btn-warning">Voir historique</a>
                 </h4>
 
             </div>
         </div>
-        <div class="col-md-12">
+
+        <div class="col-md-12">    
+            <div class="alert alert-info text-center text-dark" role="alert">
+                {{projet.message_etape_suivante}}
+            </div>
+
             <table class="table mt-2 table-responsive">
                 <thead class='bg-warning'>
                     <th>Produit</th>
@@ -46,21 +64,22 @@ details sur le projet
                 </thead>
                 <tbody>
                     {% for produit in produits %}
-                    {% comment %} <!-- <tr data-id="{{ produit.id }}" data-nom="{{ produit.produit }}" data-restant="{{ produit.quantite - produit.quantite_commandee }}"> -->
-                    <!-- data-restant="{{ produit.quantite_restant|add:""|add:""|default:0|floatformat:0 }}" --> {% endcomment %}
-                    <tr data-id="{{ produit.id }}" data-nom="{{ produit.produit }}" data-restant='{{produit.quantite_restant}}'>
+
+                    <tr data-id="{{ produit.id }}" data-nom="{{ produit.produit }}"
+                        data-restant='{{produit.quantite_restant}}'>
                         <td>{{ produit.produit }}</td>
                         <td>{{ produit.details }}</td>
                         <td>{{ produit.quantite }}</td>
                         <td>{{produit.quantite_commande}}</td>
                         <td>{{produit.quantite_restant}}</td>
-                        
+
                         {% if produit.quantite_commande >= produit.quantite %}
                         <td>
                             <span class="text-success">atteint</span>
                         </td>
-                       {% else %}
-                          <td colspan="2">
+                        {% else %}
+                        {% if projet.peut_commander %}
+                        <td colspan="2">
                             <input type="number" min="1" value="1" class="form-control d-inline w-50 qty-input">
                             <button class="btn btn-primary"
                                 onclick="addToCart({{ produit.id }}, '{{ produit.produit }}', this)">
@@ -69,6 +88,8 @@ details sur le projet
                             <div class="text-danger mt-1 error-message small"></div>
                         </td>
                         {% endif %}
+                        {% endif %}
+
                         <td class="panier-cell">
                             <!-- Affichage dynamique JS ici -->
                         </td>
@@ -106,13 +127,13 @@ details sur le projet
             return;
         }
 
-         const quantiteDejaDansPanier = panier[produitId]?.quantite || 0;
+        const quantiteDejaDansPanier = panier[produitId]?.quantite || 0;
         const quantiteTotalDemandee = quantiteDejaDansPanier + qty;
 
         if (quantiteTotalDemandee > restant) {
-             const disponible = restant - quantiteDejaDansPanier;
-             errorDiv.textContent = `Vous ne pouvez commander que ${disponible} unité(s) supplémentaire(s).`;
-        return;
+            const disponible = restant - quantiteDejaDansPanier;
+            errorDiv.textContent = `Vous ne pouvez commander que ${disponible} unité(s) supplémentaire(s).`;
+            return;
         }
 
         if (panier[produitId]) {
@@ -185,6 +206,11 @@ details sur le projet
                 localStorage.removeItem("panier");
                 panier = {};
                 afficherPanier();
+
+                // Attendre un petit délai pour afficher le message, puis rafraîchir
+                setTimeout(() => {
+                    location.reload();
+                }, 1000); // 1.5 seconde de délai
             } else {
                 alert("Erreur : " + data.error);
             }

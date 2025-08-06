@@ -14,8 +14,7 @@ projets
                 <h6>Email : <b>{{partenariat.email}}</b></h6>
                 <h6>Adresse: <b>{{partenariat.adresse}}</b></h6>
                 <h6>Telephone : <b>{{partenariat.telephone}}</b> </h6>
-                <h6>Projets : <b>06 <span class="badge bg-success text-dark">termine</span>06 <span
-                            class="badge bg-warning text-dark">en cour</span></b></h6>
+                <h6>Nombre de projets : <b>{{projets.count}}</b>
             </div>
             <div class="col-md-6 mb-2">
                 <h6>Nom interimaire : <b>{{partenariat.user}}</b></h6>
@@ -23,7 +22,7 @@ projets
                 <h6>Date de debut : <b> {{partenariat.date_debut}} </b></h6>
                 <h6>Date de fin : <b> {{partenariat.date_fin}} </b></h6>
                 <h6>Statut: <b> {% if partenariat.is_expired %}
-                        <span class="text-success">termine</span>
+                        <span class="text-success">termine </span>
                         {% else %}
                         <span class="text-warning">en cour</span>
                         {% endif %}
@@ -42,7 +41,7 @@ projets
                     </div>
                     <h4 class="card-title text-warning text-center"><a
                             href="{% url 'partenaire.detail' projet.id %}">{{projet.name}}</a> <span
-                            class="badge badge-secondary">{{projet.statut}}</span></h4>
+                            class="badge badge-success">{{projet.get_statut}}</span></h4>
                 </div><!-- Service2 end -->
             </div><!-- Col 2 end -->
             {% empty %}

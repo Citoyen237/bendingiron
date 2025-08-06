@@ -27,8 +27,7 @@ creer un partenariat
                         <h6>Email : <b>{{partenariat.email}}</b></h6>
                         <h6>Adresse: <b>{{partenariat.adresse}}</b></h6>
                         <h6>Telephone : <b>{{partenariat.telephone}}</b> </h6>
-                        <h6>Projets : <b>06 <span class="badge bg-success text-dark">termine</span>06 <span
-                                    class="badge bg-warning text-dark">en cour</span></b></h6>
+                        <h6>Nombre de projets : <b>{{projets.count}}</b></h6>
                     </div>
                     <div class="col-md-6 mt-2">
                         <h6>Nom interimaire : <b>{{partenariat.user}}</b></h6>
@@ -63,7 +62,7 @@ creer un partenariat
                                     <td>{{projet.user}}</td>
                                     <td>{{projet.name}}</td>
                                     <td>{{projet.montant_total}}</td>
-                                    <td>{{projet.statut}}</td>
+                                    <td>{{projet.get_statut}}</td>
                                     <td class="">
                                         {% if projet.is_solde %}
                                         <span class="text-success">oui</span>

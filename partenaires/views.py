@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
+from collections import defaultdict
+from django.utils.decorators import method_decorator
 # Fonction pour vérifier si l'utilisateur appartient au groupe 'admin'
 def is_admin(user):
    return user.groups.filter(name='admin').exists() or user.groups.filter(name='superadmin').exists()
@@ -104,34 +106,71 @@ def confirm_projet(request):
 
     return render(request, 'nouveau-projet.html', {'paniers': paniers_details, 'total_prix': total_prix,'form':form})
 
+# @method_decorator(csrf_exempt, name='dispatch')  # seulement si CSRFToken non présent
 @login_required
-@csrf_exempt
-def valider_commande(request):
-    if request.method == 'POST':
+def valider_commande_partenaire(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+
+    try:
         data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Données JSON invalides'}, status=400)
 
-        panier = data.get('panier')
-        projet_id = data.get('projet_id')
+    panier = data.get('panier')
+    projet_id = data.get('projet_id')
 
-        if not projet_id or not panier:
-            return JsonResponse({'error': 'Projet ou panier manquant'}, status=400)
+    if not panier or not projet_id:
+        return JsonResponse({'error': 'Projet ou panier manquant'}, status=400)
 
+    try:
+        projet = Projet.objects.get(id=projet_id)
+    except Projet.DoesNotExist:
+        return JsonResponse({'error': 'Projet introuvable'}, status=404)
+
+    # Étape 1 : Créer la commande principale
+    commande = ProjetOrder.objects.create(
+        projet=projet
+    )
+
+    # Étape 2 : Ajouter les produits de la commande
+    for item_id, info in panier.items():
         try:
-            projet = Projet.objects.get(id=projet_id)
-        except Projet.DoesNotExist:
-            return JsonResponse({'error': 'Projet introuvable'}, status=404)
+            produit = ProjetItem.objects.get(id=item_id)
+            quantite = int(info['quantite'])
+            ProjetOrderItem.objects.create(
+                projet_order=commande,
+                projet_item=produit,
+                quantite=quantite
+            )
+        except (ProjetItem.DoesNotExist, ValueError, KeyError):
+            continue  # Ignore les entrées invalides
 
-        for item_id, info in panier.items():
-            try:
-                produit = ProjetItem.objects.get(id=item_id)
-                ProjetOrder.objects.create(
-                    projet=projet,
-                    projet_item=produit,
-                    quantite=info['quantite']
-                )
-            except ProjetItem.DoesNotExist:
-                continue  # on ignore les produits invalides
+    # Étape 3 : Ajouter une ligne de traitement associée à l'utilisateur
+    TraimentOrder.objects.create(
+        projet_order=commande,
+        user=request.user
+    )
 
-        return JsonResponse({'success': 'Commande enregistrée'})
-    
-    return JsonResponse({'error': 'Méthode non autorisée'}, status=405)
+    return JsonResponse({'success': 'Commande enregistrée'})
+
+@login_required
+def historique_order(request, projet_id):
+    projet = Projet.objects.get(pk=projet_id)
+    orders = ProjetOrder.objects.filter(projet=projet).order_by('created_at')
+    paiements =PaiementProjet.objects.filter(projet=projet_id).all() 
+
+    grouped_orders = defaultdict(list)
+
+    for order in orders:
+        # tronquer à l'année, mois, jour, heure et minute
+        created_minute = order.created_at.replace(second=0, microsecond=0)
+        grouped_orders[created_minute].append(order)
+
+    context = {
+        'projet': projet,
+        'paiements':paiements,
+        'orders': orders
+    }
+
+    return render(request, 'historique.html', context)

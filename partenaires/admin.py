@@ -4,3 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(Partenariats)
 admin.site.register(Projet)
+admin.site.register(ProjetOrder)

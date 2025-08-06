@@ -7,6 +7,7 @@ detail projet
 {% block 'content' %}
 {% load static %}
 {% load humanize %}
+{% load dict_extras %}
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -30,7 +31,8 @@ detail projet
                         </h6>
                         <h6>Creer par: <b>{{projet.user}}</b></h6>
                         <h6>Remise: <b>{{projet.reduction}}%</b></h6>
-                        <h6>Statut : <b>{{projet.statut}}</b> </h6>
+                        <h6>Statut : <b>{{projet.get_statut}}</b> </h6>
+                        <h6>Réalisation : <b>{{ projet.pourcentage_realisation }} %</b></h6>
                     </div>
                     <div class="col-md-4 mt-2">
                         <h6>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h6>
@@ -39,13 +41,34 @@ detail projet
                         <h6>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b></h6>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <h6>Tranche 1 : {{projet.tranche1|intcomma}} fcfa <b><input type="checkbox" checked name=""
-                                    id=""></b> </h6>
-                        <h6>Tranche 2 : {{projet.tranche2|intcomma}} fcfa<b><input type="checkbox" checked name=""
-                                    id=""></b> </h6>
-                        <h6>Tranche 3 : {{projet.tranche3|intcomma}} fcfa <b><input type="checkbox" checked name=""
-                                    id=""></b> </h6>
-                        <h6><a href="" class="btn btn-primary">Voir historique</a></h6>
+                        <h6>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa </b>
+
+                            {% if projet.tranche1_payee %}
+                            <i class="bi bi-check2-circle text-success"></i>
+                            {% endif %}
+                            </b>
+                        </h6>
+                        <h6>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa </b> 
+                            {% if projet.tranche2_payee %}
+                            <i class="bi bi-check2-circle text-success"></i>
+                            {% endif %}</b>
+                        </h6>
+                        <h6>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa </b>{% if projet.tranche3_payee %}
+                            <i class="bi bi-check2-circle text-success"></i>
+                            {% endif %}</b>
+                        </h6>
+                        <h6><a href="" class="btn btn-outline-info">Voir historique</a>
+
+                            <!-- Vertically centered Modal -->
+                             
+                             {% if projet.is_solde %}
+                             {% else %} 
+                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#verticalycentered">
+                                <i class="bi bi-plus">Paiement</i>
+                            </button>
+                             {% endif %}
+                        </h6>
                     </div>
                     <div class="col-md-12">
                         <table class="table datatable">
@@ -87,5 +110,27 @@ detail projet
         </div>
         </div>
     </section>
+    <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Paiement pour le projet : <b>{{ projet.name }}</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success">Enregistrer le paiement</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div><!-- End Vertically centered Modal-->
 </main>
+
 {% endblock %}

@@ -50,6 +50,7 @@ creer un partenariat
                   <th>Montant total</th>
                   <th>Statut</th>
                   <th>Solde</th>
+                  <th>Realisation</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -62,7 +63,7 @@ creer un partenariat
                   <td>{{projet.name}}</td>
                   <td>{{projet.reduction}}%</td>
                   <td>{{projet.montant_total}}</td>
-                  <td>{{projet.statut}}</td>
+                  <td>{{projet.get_statut}}</td>
                   <td class="">
                     {% if projet.is_solde %}
                     <span class="text-success">oui</span>
@@ -70,6 +71,8 @@ creer un partenariat
                     <span class="text-warning">non</span>
                     {% endif %}
                   </td>
+                  <td>{{ projet.pourcentage_realisation }} %</td>
+                  
                   <td>
                     <a href="{% url 'partenariat.projet.detail' projet.id%}" class="btn btn-primary">
                       detail</a>

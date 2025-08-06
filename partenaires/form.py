@@ -54,20 +54,25 @@ class ProjetForm(forms.ModelForm):
             raise ValidationError("Ce partenariat a expiré.")
         return partenariat
 
-# class ProjetOrderForm(forms.ModelForm):
-#     class Meta:
-#         model = ProjetOrder
+class PaiementProjetForm(forms.ModelForm):
+    class Meta:
+        model = PaiementProjet
+        fields = ['tranche', 'mode_paiement']
 
-#     pass
-    #     fields = ['partenariat', 'name','reduction']
-    #     labels = {
-    #         'partenariat': "Choisir le partenaire",
-    #         'name': "Nom du projet",
-    #         'reduction': "Reduction (%)"
-    #     }
+    def __init__(self, *args, **kwargs):
+        self.projet = kwargs.pop('projet')
+        super().__init__(*args, **kwargs)
 
-    # def __init__(self, *args, **kwargs):
-    #     super(ProjetForm, self).__init__(*args, **kwargs)
-    #     for field in self.fields.values():
-    #         field.widget.attrs.update({'class': 'form-control'})
-    
+        tranches_payees = self.projet.paiements.values_list('tranche', flat=True)
+        self.fields['tranche'].choices = [
+            (num, label) for num, label in self.fields['tranche'].choices
+            if num not in tranches_payees
+        ]
+
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.projet = self.projet
+        return instance if not commit else instance.save() or instance

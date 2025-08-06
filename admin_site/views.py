@@ -23,6 +23,8 @@ from django.http import FileResponse, Http404
 from partenaires.models import *
 from partenaires.form import *
 from django.urls import reverse_lazy
+from collections import defaultdict
+
 
 # Create your views here.
 # Mixin personnalisé pour vérifier si l'utilisateur appartient aux groupes 'admin' ou 'superadmin'
@@ -408,6 +410,16 @@ def get_detail_projet(request, projet_id):
      # Récupérer les produits associés à ce projet
     produits = ProjetItem.objects.filter(projet=projet_id)
 
+    
+    if request.method == 'POST':
+        form = PaiementProjetForm(request.POST, projet=projet)
+        if form.is_valid():
+            paiement = form.save(commit=False)
+            paiement.user = request.user  # on attribue l'admin qui enregistre
+            paiement.save()
+    else :
+        form = PaiementProjetForm(request.POST, projet=projet)
+
      # Ajouter un champ 'prix_total' calculé pour chaque produit
     produits_details = []
     for item in produits:
@@ -424,8 +436,76 @@ def get_detail_projet(request, projet_id):
 
     context = {
     'produits':produits_details,
-    # 'totals':commande.get_prix_total,
+    'form':PaiementProjetForm(request.POST, projet=projet),
     # 'status':commande.get_statut_actuel,
     'projet':projet
     }
     return render(request,'partenaires/detail-projet.html', context)
+
+@user_passes_test(is_admin)
+def get_commandes(request):
+    orders = ProjetOrder.objects.order_by('created_at')
+    context = {
+        'orders': orders
+    }
+    return render(request, "partenaires/order.html", context)
+
+@user_passes_test(is_admin)
+def get_detail_order(request, order_id):
+      # Récupérer la commande avec son ID
+    commande = get_object_or_404(ProjetOrder, id=order_id)
+
+    # Récupérer les produits associés à cette commande
+    produits = ProjetOrderItem.objects.filter(projet_order=commande)
+
+     # Ajouter un champ 'prix_total' calculé pour chaque produit
+    produits_details = []
+    for item in produits:
+        produits_details.append({
+                'id':item.id,
+                'produit': item.projet_item.produit,
+                'details': item.projet_item.details_to_text(),
+                'quantite': item.quantite,
+            })
+    context = {
+        'produits':produits_details,
+        'status':commande.get_statut_actuel,
+        'orderId':commande.id,
+        'order':commande
+    }
+    return render(request, "partenaires/detail-order.html", context)
+
+@user_passes_test(is_admin)
+def change_statut_order(request, order_id):
+    user=request.user
+    #   Récupérer l'objet
+    order = get_object_or_404(ProjetOrder, id=order_id)
+    new_status=order.get_statut_actuel
+  
+ 
+    if (order.get_statut_actuel == "en_attente" ):
+        new_status = "en_production"
+    elif (order.get_statut_actuel == "en_production" ):
+        new_status = "pret_pour_livraison"
+    if (order.get_statut_actuel == "pret_pour_livraison" ):
+        new_status = "solde_facture"
+    elif (order.get_statut_actuel == "termine" ):
+        new_status = "termine"
+        # Mettre à jour le statut
+    TraimentOrder.objects.create(
+            projet_order=order,
+            user=user,
+            statut=new_status
+        )
+    #   Rediriger (par exemple, vers la page des commandes)
+    return redirect('partenariat.orders')  # Modifie selon le nom de ta vue cible 
+
+@user_passes_test(is_admin)
+def suivis_order(request, order_id):
+    commande = get_object_or_404(ProjetOrder, id=order_id)
+    traitements = TraimentOrder.objects.filter(projet_order=order_id).order_by('-created_at')
+    context = {
+        'traitements':traitements,
+        'order':commande
+    }
+    return render(request, 'partenaires/suivis-order.html',context)
