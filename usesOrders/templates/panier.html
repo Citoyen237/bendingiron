@@ -73,25 +73,25 @@ panier
                             <div class="form-check mb-0">
                                 <h6>TVA 19,25% </h6>
                             </div>
-                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Montant TTC</h6>
                             </div>
-                            <b><a class="text-dark">{{total_prix|intcomma}} FCFA</a></b>
+                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6><u>Net a payer (30%)</u></h6>
                             </div>
-                            <u><a class="text-dark">{{total_prix|intcomma}} FCFA</a></u>
+                            <u><a class="text-dark">{{get_tranche1|intcomma}} FCFA</a></u>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Reste a payer (70%)</h6>
                             </div>
-                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                            <a class="text-dark">{{get_tranche2|intcomma}} FCFA</a>
                         </div>
                     </div>             
                         <div class="input m-2">

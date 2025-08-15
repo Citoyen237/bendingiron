@@ -46,13 +46,13 @@
 
                 <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
                     <i class="bi bi-people"></i>
-                    <span class="badge bg-primary badge-number">0</span>
+                    <span class="badge bg-primary badge-number">{{nb_order_partenaire}}</span>
                 </a><!-- End Notification Icon -->
 
                 <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
                     <li class="dropdown-header">
                         Nouvelles commandes des partenaires
-                        <a href="{% url 'admin.fer.list' %}"><span class="badge rounded-pill bg-primary p-2 ms-2">Tous
+                        <a href="{% url 'partenariat.orders' %}"><span class="badge rounded-pill bg-primary p-2 ms-2">Tous
                                 voir</span></a>
                     </li>
                     <li>

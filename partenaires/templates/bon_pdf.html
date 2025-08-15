@@ -9,10 +9,11 @@
     <title>Facture</title>
     <!-- <link href="{% static 'front/plugins/bootstrap/bootstrap.min.css' %}" rel="stylesheet"> -->
     <style>
-        @page{
+        @page {
             size: A4;
             margin: 20mm;
         }
+
         body {
             font-family: Adobe Arabic;
             background-image: url('{{background_url}}');
@@ -96,7 +97,7 @@
             margin-top: 4%;
         }
 
-        .pied{
+        .pied {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -118,7 +119,7 @@
                 <img src="{{image_url}}" alt="Logo" style="width:170px;">
             </div>
             <div class="invoice-number">
-                <span style="font-size:26px"><b>FACTURE N°</b></span><strong
+                <span style="font-size:26px"><b>BON N°</b></span><strong
                     style="color:#ffa310; font-size:26px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
                 <span style="font-size: 18px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
             </div>
@@ -135,73 +136,33 @@
 
         <!-- Client Info -->
         <div class="client-info">
-            <strong style="font-size:26px">{{order.infoclient.nom}}</strong>
-            <br>
-            <span style="font-size:18px">{{order.infoclient.telephone}}</span><br>
-            <span style="font-size:18px">{{order.infoclient.adresse}}</span>
-
+             Projet : <strong style="font-size:26px">{{order.projet}}</strong><br>
+            Partenaire : <span style="font-size:18px">{{order.projet.partenariat}}</span><br>
+            Telephone : <span style="font-size:18px">{{order.projet.partenariat.telephone}}</span><br>
+            Adresse : <span style="font-size:18px">{{order.projet.partenariat.adresse}}</span><br>
+           
         </div>
 
         <!-- Table -->
         <table>
-
             <tr>
                 <th>Produit</th>
                 <th>Description</th>
                 <th>Qte</th>
-                <th>Prix unitaire(FCFA)</th>
-                <th>Prix total(FCFA)</th>
             </tr>
-
             {% for item in produits %}
             <tr>
                 <td>{{item.produit}}</td>
                 <td>{{item.details}}
                 <td>{{item.quantite}}</td>
-                <td>{{item.prix|intcomma}}</td>
-                <td>{{item.total|intcomma}}</td>
             </tr>
             {% endfor %}
-            <tr>
-                <td colspan="5"></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>Montant HT</b></td>
-                <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-                <td colspan="2"><b>{{montant_tva|intcomma}} FCFA</b></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>Montant TTC</b></td>
-                <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
-            </tr>
-            <tr>
-
-                <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
-                        30%</b></td>
-                <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
-            </tr>
     </div>
-    <!-- Ajouter d'autres lignes ici si nécessaire -->
-
-    <!-- <tr>
-                    <td colspan="4" class="total"><strong>Total TTC</strong></td>
-                    <td>__ €</td>
-                </tr> -->
     </table>
 
     <div class="footer">
         <!-- Additional Information -->
         <div class="additional-info">
-            <b><u>Modalité et condition de règlement :</u></b><br>
-            Pour garantir votre satisfaction, un acompte <br>
-            de 30% est règle en ligne à la commande,<br> le
-            solde de 70% <b>à la livraison sous 48h.</b>
-            <br>
-            Les produits restent notre propriété<br>
-            jusqu’au paiement intégral.
         </div>
         <!-- Signature -->
 

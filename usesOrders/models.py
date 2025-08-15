@@ -2,6 +2,7 @@ from django.db import models
 # from auth_app.models import *
 from auth_app.models import CustomUser
 from produits.models import *
+from decimal import Decimal
 
 # # Create your models here.
 class Cart(models.Model):
@@ -15,6 +16,22 @@ class Cart(models.Model):
         #  reduction
         # tva
         return sum(item.prix_u * item.quantite for item in self.cartitem_set.all())
+
+    @property
+    def montant_tva(self):
+        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    @property
+    def net_payer(self):
+        return round(self.montant_tva + self.get_prix_total)
+    
+    @property
+    def get_tranche1(self):
+        return round((self.net_payer*30)/100)
+    
+    @property
+    def get_tranche2(self):
+        return round((self.net_payer*70)/100)
+        
     
     def __str__(self):
         return self.get_prix_total
@@ -35,6 +52,8 @@ class CartItem(models.Model):
         if not self.details:
             return ""
         return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
+    
+    
 
 
     def __str__(self):
@@ -48,14 +67,35 @@ class Order(models.Model):
 
     @property
     def get_prix_total(self):
-        #  reduction
-        # tva
         return sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+    
+    @property
+    def montant_tva(self):
+        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    
+    @property
+    def net_payer(self):
+        return round(self.montant_tva + self.get_prix_total)
+    
+    @property
+    def get_tranche1(self):
+        return round((self.net_payer*30)/100)
+    
+    @property
+    def get_tranche2(self):
+        return round((self.net_payer*70)/100)
     
     @property
     def get_statut_actuel(self):
         dernier_traiment = self.traiment_set.order_by('-created_at').first()
         return dernier_traiment.statut if dernier_traiment else "Aucun traitement"
+    
+    @property
+    def infoclient(self):
+        try:
+            return self.orderuserinfo_set.first()  # si OneToOneField
+        except OrderUserInfo.DoesNotExist:
+            return None
     
     def __str__(self):
         return f"{self.user} - {self.get_prix_total}"
@@ -95,15 +135,26 @@ class Traiment(models.Model):
     def __str__(self):
         return f"{self.order}-{self.statut}"
     
-# class Payment(models.Model):
-#     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
-#     amount_paid = models.FloatField(help_text="Montant payé par l'utilisateur")
-#     payment_method = models.CharField(max_length=50, choices=[
-#         ('full', 'Paiement intégral'),
-#         ('partial', 'Paiement partiel (35%)')
-#     ])
-#     is_completed = models.BooleanField(default=False, help_text="Indique si le paiement est validé")
-#     created_at = models.DateTimeField(auto_now_add=True)
+class OrderUserInfo(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    nom = models.CharField(max_length=255)
+    telephone = models.CharField(max_length=255)
+    adresse = models.CharField(max_length=255)
 
-#     def __str__(self):
-#         return f"Paiement - Commande {self.order.id} : {self.amount_paid} fcfa"
+    def __str__(self):
+        return self.nom
+
+class Payment(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    amount_paid = models.FloatField(help_text="Montant payé par l'utilisateur")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Paiement - Commande {self.order.id} : {self.amount_paid} fcfa"
+
+class CodePromo(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='client')
+    remise = models.DecimalField(max_digits=10, decimal_places=2)
+    code = models.CharField(max_length=255)
+    expiration = models.CharField(max_length=255)

@@ -55,31 +55,36 @@
           </a>
         </li>
       </ul>
-  </li>
-  <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-people-fill"></i><span>Partenariats</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a href="{% url 'partenariat.orders' %}">
-              <i class="bi bi-circle"></i><span>Commandes</span>
-            </a>
-          </li>
-           <li>
-            <a href="{% url 'partenariat.projet' %}">
-              <i class="bi bi-circle"></i><span>Projets</span>
-            </a>
-          </li>
-          <li>
-            <a href="{% url 'partenariat.list' %}">
-              <i class="bi bi-circle"></i><span>Partenaires</span>
-            </a>
-          </li>
-        </ul>
-      </li>
-  <!-- End Tables Nav -->
-
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-people-fill"></i><span>Partenariats</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'partenariat.orders' %}">
+            <i class="bi bi-circle"></i><span>Commandes</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'partenariat.projet' %}">
+            <i class="bi bi-circle"></i><span>Projets</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'partenariat.list' %}">
+            <i class="bi bi-circle"></i><span>Partenaires</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <!-- End Tables Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'code.revendeur' %}">
+        <i class="bi bi-receipt"></i>
+        <span>Codes revendeurs</span>
+      </a>
+    </li>
     <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'contact.list' %}">
         <i class="bi bi-envelope"></i>
@@ -93,13 +98,13 @@
         <span>Utilisateurs</span>
       </a>
     </li>
-   {%endif%}
+    {%endif%}
     <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'font.index' %}">
-          <i class="bi bi-house-door"></i>
-          <span>Accueil</span>
+        <i class="bi bi-house-door"></i>
+        <span>Accueil</span>
       </a>
-  </li>
+    </li>
     <li class="nav-item">
       <a class="nav-link collapsed text-danger" href="{% url 'logout' %}">
         <i class="bi bi-box-arrow-in-right"></i>

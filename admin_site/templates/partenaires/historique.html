@@ -1,51 +1,41 @@
 {% extends '../app.html' %}
+{% block 'title' %} partenariats {% endblock %}
 
-{% block 'title' %}
-commandes
-{% endblock %}
-
-
-{% block 'content' %}
-{% load static %}
-{% load humanize %}
+{% block 'content' %} {% load static %}
 <main id="main" class="main">
-
     <div class="pagetitle">
-        <h1>Commandes</h1>
+        <h1>Partenariats</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Commandes</a></li>
-                <li class="breadcrumb-item active">Liste</li>
+                <li class="breadcrumb-item">Commandes</li>
+                <li class="breadcrumb-item">{{projet.name}}</li>
+                <li class="breadcrumb-item">Historique</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
+    </div>
+    <!-- End Page Title -->
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
-
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body m-2">
                         <!-- Table with stripped rows -->
+                         <h3>Historique des commandes</h3>
                         <table class="table datatable">
                             <thead>
                                 <tr>
                                     <th>Code</th>
-                                    <th>Utilisateur</th>
-                                    <th>Nom client</th>
                                     <th>Date</th>
-                                    <th>Prix total</th>
-                                    <th>Status</th>
+                                    <th>Statut</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for order in orders %}
+
+                                {% for order in orders%}
                                 <tr>
                                     <td>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</td>
-                                    <td>{{order.user}}</td>
-                                    <td>{{order.infoclient.nom}}</td>
                                     <td>{{order.created_at}}</td>
-                                    <td>{{order.get_prix_total|intcomma}}</td>
                                     <th>
                                         {% if order.get_statut_actuel == "en_attente" %}
                                         <span class="badge bg-warning text-dark">
@@ -72,23 +62,20 @@ commandes
                                             {{order.get_statut_actuel}}
                                         </span>
                                         {%endif%}
-                                         
                                     </th>
-                                    <td class='text-center'>
-                                        <a href="{% url 'order.detail' order.id %}" class='btn btn-info'
-                                            name='supprimer'>detail</a>
-                                            <a href="{% url 'order.suivis' order.id %}" class='btn btn-success'
-                                            name='supprimer'>suivis</a>
+                                    <td><a href="{% url 'partenariat.orders.details' order.id %}"
+                                            class='btn btn-info'>detail</a>
+                                        <a href="{% url 'partenariat.orders.suivis' order.id %}"
+                                            class='btn btn-success'>suivis</a>
                                     </td>
-
-
                                 </tr>
-                                {% empty %}
+
+                                {%empty%}
                                 <tr>
                                     <td colspan="4" class="text-center">
-                                        <img src="{% static 'nodata.png'%}" alt="" height="100px">
-                                        <br>
-                                        <span>Acun utilisateur n'a ete trouve</span>
+                                        <img src="{% static 'nodata.png'%}" alt="" height="100px" />
+                                        <br />
+                                        <span>Acune commande trouvee</span>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -97,12 +84,37 @@ commandes
                         <!-- End Table with stripped rows -->
                     </div>
                 </div>
-
+            </div>
+            <div class="col-md-12 shadow-sm">
+                <div class="card">
+                    <div class="card-body m-2">
+                        <h3>Historique des paiements</h3>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Tranche</th>
+                                    <th>Date</th>
+                                    <th>Confierme par</th>
+                                    <th>Mode de paiement</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for paiement in paiements %}
+                                <tr>
+                                    <td>Tranche {{paiement.tranche}}</td>
+                                    <td>{{paiement.date_paiement}}</td>
+                                    <td>{{paiement.user}}</td>
+                                    <td>{{paiement.mode_paiement}}</td>
+                                </tr>
+                                {% empty %}
+                                <p>Aucun paiement n'a ete effectué</p>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <!-- Basic Modal -->
-
-
 </main>
 {%endblock%}

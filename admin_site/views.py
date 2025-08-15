@@ -509,3 +509,20 @@ def suivis_order(request, order_id):
         'order':commande
     }
     return render(request, 'partenaires/suivis-order.html',context)
+
+@user_passes_test(is_admin)
+def historique_projet(request, projet_id):
+    projet = get_object_or_404(Projet, id=projet_id)
+    orders = ProjetOrder.objects.filter(projet=projet_id).order_by('-created_at')
+    paiements =PaiementProjet.objects.filter(projet=projet_id).all() 
+    context = {
+        'orders':orders,
+        'projet':projet,
+        'paiements':paiements
+    }
+    return render(request, 'partenaires/historique.html',context)
+
+class ListCodeRevendeur(ListView):
+    model=CodePromo
+    context_object_name = 'codes'
+    template_name = "codepromo/list.html"

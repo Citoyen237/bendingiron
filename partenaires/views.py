@@ -8,7 +8,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 from collections import defaultdict
+from django.template.loader import get_template, render_to_string
 from django.utils.decorators import method_decorator
+from weasyprint import HTML
+from django.conf import settings
+from django.http import HttpResponse
 # Fonction pour vérifier si l'utilisateur appartient au groupe 'admin'
 def is_admin(user):
    return user.groups.filter(name='admin').exists() or user.groups.filter(name='superadmin').exists()
@@ -174,3 +178,123 @@ def historique_order(request, projet_id):
     }
 
     return render(request, 'historique.html', context)
+
+@login_required
+def genrate_bon(request, projet_id):
+    # Charger les données nécessaires (exemple : une commande)
+    order = get_object_or_404(ProjetOrder, id=projet_id)
+
+    produits = ProjetOrderItem.objects.filter(projet_order=order)
+
+    produits_details = []
+    for item in produits:
+       produits_details.append({
+                'id':item.id,
+                'produit': item.projet_item.produit,
+                'details': item.projet_item.details_to_text(),
+                'quantite': item.quantite,
+            })
+    # from pathlib import Path
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # os.path.join(BASE_DIR, "medias")
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    
+    # Charger le template HTML 
+    template_path = 'bon_pdf.html'
+    context = {'order': order,
+               'produits':produits_details,
+                'status':order.get_statut_actuel,
+                'image_url': image_url,
+                'background_url':background_url,
+                'cachet_url':cachet_url,
+                'footer_url':footer_url,
+               }  # Contexte à passer au template
+    # Préparation du HTML avec image
+    html_string = render_to_string('bon_pdf.html', context)
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    date=order.created_at.strftime("%d%m%y")
+    filename=f'bon_{date}B-iron{order.id}_{order.projet.partenariat}_{order.projet.name}'
+    
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+    return response
+
+@login_required
+def download_projet(request, projet_id):
+    # Charger les données nécessaires (exemple : une commande)
+    order = get_object_or_404(Projet, id=projet_id)
+
+    produits = ProjetItem.objects.filter(projet=order)
+
+    produits_details = []
+    for item in produits:
+       produits_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+    # from pathlib import Path
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # os.path.join(BASE_DIR, "medias")
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    
+    # Charger le template HTML 
+    template_path = 'projet_pdf.html'
+    context = {'order': order,
+               'produits':produits_details,
+                'image_url': image_url,
+                'background_url':background_url,
+                'cachet_url':cachet_url,
+                'footer_url':footer_url,
+               }  # Contexte à passer au template
+    # Préparation du HTML avec image
+    html_string = render_to_string('projet_pdf.html', context)
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    date=order.created_at.strftime("%d%m%y")
+    filename=f'projet_{date}B-iron{order.id}_{order.name}_{order.partenariat}'
+    
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+    return response
+
+@login_required
+def get_detail_order(request, order_id):
+      # Récupérer la commande avec son ID
+    commande = get_object_or_404(ProjetOrder, id=order_id)
+
+    # Récupérer les produits associés à cette commande
+    produits = ProjetOrderItem.objects.filter(projet_order=commande)
+
+     # Ajouter un champ 'prix_total' calculé pour chaque produit
+    produits_details = []
+    for item in produits:
+        produits_details.append({
+                'id':item.id,
+                'produit': item.projet_item.produit,
+                'details': item.projet_item.details_to_text(),
+                'quantite': item.quantite,
+            })
+    context = {
+        'produits':produits_details,
+        'status':commande.get_statut_actuel,
+        'orderId':commande.id,
+        'order':commande
+    }
+    return render(request, "detail-order.html", context)

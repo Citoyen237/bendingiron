@@ -24,7 +24,7 @@ projets
                     </thead>
                     <tbody>
                         <tr>
-                            <td>#BIron{{order.id}}</td>
+                            <td>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</td>
                             <td>{{ order.created_at }}</td>
                             <th>
                                 {% if order.get_statut_actuel == "en_attente" %}
@@ -55,8 +55,8 @@ projets
                                  
                             </th>
                            <td class='text-center'>
-                                <a href="{% url 'invoice_download' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a>
-                                <a href="{% url 'detail_commande' order.id %}" class='btn btn-info' name='supprimer'><i class='fas fa-file'></i></a>
+                                <a href="{% url 'download-bon' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a>
+                                <a href="{% url 'front.orders.details' order.id %}" class='btn btn-info' name='supprimer'><i class='fas fa-file'></i></a>
                             </td>
                         </tr>
                     </tbody>
@@ -66,7 +66,7 @@ projets
                 {% endfor %}
             </div>
             <div class="col-md-4 shadow-sm">
-                <h3>historique de Paiements</h3>
+                <h3>Historique des paiements</h3>
                 <table>
                     <thead class="table bordered bg-warning">
                         <tr>

@@ -52,22 +52,17 @@ confirmer la commande
             <div class="col-md-4">
                 <div class="card bg-light m-2">
                     <div class="card-body">
+                        {% if paniers %}
                         <h4 class="card-title">Informations de facturation</h4>
                         <hr>
-                        <form action="">
-                            <label for="">Nom : </label>
-                            <input type="text" class="form-control" placeholder="nom complet">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {{form.as_p}}
                             <br>
-                            <label for="">Telephone : </label>
-                            <input type="text" class="form-control" placeholder="numero de telephone">
+                            <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
                             <br>
-                            <label for="">Adresse de livraison : </label>
-                            <input type="text" class="form-control" placeholder="adresse de livraison">
-                            <br>
-                            <input class="form-checkbox" type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
-                            <br>
-                           <input class="form-checkbox" type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
-                        </form>
+                           <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
+                        
                         <hr>
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
@@ -80,34 +75,35 @@ confirmer la commande
                             <div class="form-check mb-0">
                                 <h6>TVA 19,25% </h6>
                             </div>
-                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Montant TTC</h6>
                             </div>
-                            <b><a class="text-dark">{{total_prix|intcomma}} FCFA</a></b>
+                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6><u>Net a payer (30%)</u></h6>
                             </div>
-                            <u><a class="text-dark">{{total_prix|intcomma}} FCFA</a></u>
+                            <u><a class="text-dark">{{get_tranche1|intcomma}} FCFA</a></u>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Reste a payer (70%)</h6>
                             </div>
-                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                            <a class="text-dark">{{get_tranche1|intcomma}} FCFA</a>
                         </div>
                     </div>
-                    {% if paniers %}
                     <div class="input m-2">
-                        <a href="{% url 'confirmer' %}" class="btn btn-primary form-control">
+                        <button type="submit" class="btn btn-primary form-control">
                             Payer
-                        </a>
+                        </button>
                     </div>
+                    </form>
                     {% endif %}
+                    
 
                 </div>
 

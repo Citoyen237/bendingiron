@@ -41,5 +41,8 @@ urlpatterns = [
     path('partenariats/commandes/<int:order_id>', get_detail_order, name='partenariat.orders.details'),
     path('partenariats/commandes/statut/<int:order_id>', change_statut_order, name='partenariat.orders.statut'),
     path('partenariats/commandes/Suivis/<int:order_id>', suivis_order, name='partenariat.orders.suivis'),
+    path('partenariats/projets/historique/<int:projet_id>', historique_projet, name='partenariat.projet.historique'),
 
+
+    path('codes-revendeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),
 ]

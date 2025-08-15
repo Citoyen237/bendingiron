@@ -15,7 +15,7 @@ commandes
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Details de la commande</a></li>
-                <li class="breadcrumb-item active">#BIron{{order.id}}</li>
+                <li class="breadcrumb-item active">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -44,15 +44,11 @@ commandes
                                     <td>{{item.produit}}</td>
                                     <td>{{item.details}}
                                     <td>{{item.quantite}}</td>
-                                    <td>{{item.prix|intcomma}}</td>
-                                    <td>{{item.total|intcomma}}</td>
                                 </tr>
                                 {% endfor %}
-
-
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
-                                        <a class="btn btn-primary" href="{% url 'invoice_download' invoice_id=order.id %}"><i class="bi bi-download"></i></a>
+                                        <a class="btn btn-primary" href="{% url 'download-bon' projet_id=order.id %}"><i class="bi bi-download"></i></a>
 
                                         {% if status == "en_attente" %}
                                         <a href="{% url 'partenariat.orders.statut' orderId %}"

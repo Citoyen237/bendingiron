@@ -175,11 +175,6 @@ class ProjetItem(models.Model):
     def get_prix_total(self):
         return self.prix_u*self.quantite
     
-    # @property
-    # def quantite_commande(self):
-    #     return self.orders.aggregate(
-    #         total=models.Sum('quantite')
-    #     )['total'] or 0
     @property
     def quantite_commande(self):
         """

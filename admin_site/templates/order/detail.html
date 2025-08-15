@@ -15,16 +15,21 @@ commandes
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Details de la commande</a></li>
-                <li class="breadcrumb-item active">#BIron{{order.id}}</li>
+                <li class="breadcrumb-item active">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
     <section class="section">
         <div class="row">
-            <div class="col-md-4">
-                <b>Nom client</b> : {{order.user}}
-                <b>Date </b>: {{order.created_at}} <br>
-                <b>Prix total: </b> {{totals}} FCFA
+            <div class="col-md-6 mt-2">
+                <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
+                <h6>Date : <b>{{order.created_at}}</b></h6>
+                <h6>Montant total: <b>{{order.get_prix_total|intcomma}} fcfa</b></h6>
+            </div>
+            <div class="col-md-6 mt-2">
+                <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
+                <h6>Telephone : <b>{{order.infoclient.telephone}}</b></h6>
+                <h6>Adresse : <b>{{order.infoclient.adresse}} </b></h6>
             </div>
             <div class="col-lg-12">
                 <div class="card">
@@ -53,7 +58,9 @@ commandes
 
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
-                                        <a class="btn btn-primary" href="{% url 'invoice_download' invoice_id=order.id %}"><i class="bi bi-download"></i></a>
+                                        <a class="btn btn-primary"
+                                            href="{% url 'invoice_download' invoice_id=order.id %}"><i
+                                                class="bi bi-download"></i></a>
 
                                         {% if status == "en_attente" %}
                                         <a href="{% url 'change.status' orderId %}"
@@ -86,6 +93,39 @@ commandes
                                         <br>
                                         <span> Aucune commande n'a ete trouver</span> -->
                                     </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
+                                    <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
+                                    <td colspan="2"><b>{{order.montant_tva|intcomma}} FCFA</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
+                                    <td colspan="2"><b>{{order.net_payer|intcomma}} FCFA</b></td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="3" style="text-align: right;"><b
+                                            style="background-color: rgb(43, 255, 0);">ACOMPTE
+                                            30% :</b></td>
+                                    <td colspan="2"><b
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche1|intcomma}}
+                                            FCFA</b></td>
+                                </tr>
+                                <tr>
+
+                                    <td colspan="3" style="text-align: right;"><b
+                                            style="background-color: rgb(64, 219, 32);">SOLDE
+                                            70% :</b></td>
+                                    <td colspan="2"><b
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche2|intcomma}}
+                                            FCFA</b></td>
                                 </tr>
                             </tbody>
                         </table>

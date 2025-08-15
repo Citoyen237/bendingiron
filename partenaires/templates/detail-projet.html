@@ -15,12 +15,14 @@ details sur le projet
                 <h4>Remise : <b>{{projet.reduction}}%</b></h4>
                 <h4>Statut : <span class="text-success">{{projet.get_statut}}</span></h4>
                 <h4>Réalisation : {{ projet.pourcentage_realisation }} %</h4>
+
             </div>
             <div class="col-md-4">
                 <h4>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h4>
                 <h4>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h4>
                 <h4>TVA (19,25%): <b>{{projet.montant_tva|intcomma}} fcfa</b></h4>
                 <h4>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b> </h4>
+                <h4><a href="{% url 'download.projet' projet.id %}" class="btn btn-warning"><i class="fas fa-download"></i> Telecharger</a></h4>
             </div>
             <div class="col-md-4">
                 <h4>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa</b>

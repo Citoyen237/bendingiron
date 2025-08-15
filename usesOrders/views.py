@@ -2,9 +2,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from django.template.loader import get_template
+from django.template.loader import get_template, render_to_string
 from xhtml2pdf import pisa
-# from weasyprint import HTML
+import tempfile
+from weasyprint import HTML
+from django.conf import settings
+import os
+from .form import *
 
 @login_required
 def show_cart(request):
@@ -25,10 +29,18 @@ def show_cart(request):
             })
             # Calculer le prix total du panier si nécessaire
         total_prix = panier.get_prix_total
+        context={
+            'paniers': paniers_details, 
+            'total_prix': total_prix,
+            'montant_tva' :panier.montant_tva,
+            'net_payer':panier.net_payer,
+            'get_tranche1':panier.get_tranche1,
+            'get_tranche2':panier.get_tranche2
+        }
     else:
         panier = None  # ou crée un panier vide, selon besoin
 
-    return render(request, 'panier.html', {'paniers': paniers_details, 'total_prix': total_prix})
+    return render(request, 'panier.html', context)
 
 @login_required
 def supprimer_du_panier(request, item_id):
@@ -84,7 +96,6 @@ def confirmer_commande(request):
 def mes_commande(request):
     commandes = Order.objects.filter(user=request.user).order_by('-created_at')
     current_url = request.get_full_path()
-    print(current_url)
     context = {
         'commandes': commandes,
         'current_url':current_url,
@@ -116,7 +127,11 @@ def detail_commande(request, order_id):
         'produits':produits_details,
         'totals':commande.get_prix_total,
         'status':commande.get_statut_actuel,
-        'order':commande.id
+        'order':commande,
+        'montant_tva' :commande.montant_tva,
+        'net_payer':commande.net_payer,
+        'get_tranche1':commande.get_tranche1,
+        'get_tranche2':commande.get_tranche2
     }
     return render(request, 'detail-commande.html',context)
 
@@ -140,7 +155,66 @@ def send_info_user(request):
         total_prix = panier.get_prix_total
     else:
         panier = None  # ou crée un panier vide, selon besoin
-    return render(request, 'confirmer-commande.html', {'paniers': paniers_details, 'total_prix': total_prix})
+    
+    if request.method == "POST":
+
+        form=OrderUserInfoForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            # 1. Récupérer le panier
+            cart = Cart.objects.filter(user=user).first()
+            if not cart:
+                return redirect('panier')  # panier vide
+
+            # 2. Créer la commande
+            order = Order.objects.create(user=user)
+
+            # 3. Copier chaque CartItem en OrderItem
+            for item in cart.cartitem_set.all():
+                OrderItem.objects.create(
+                    order=order,
+                    produit=item.produit,
+                    details=item.details,
+                    quantite=item.quantite,
+                    prix_u=item.prix_u
+                )
+            
+            # 4. Enregistrement des infos sur le client
+            OrderUserInfo.objects.create(
+                order=order,
+                nom=form.cleaned_data['nom'],
+                telephone=form.cleaned_data['telephone'],
+                adresse=form.cleaned_data['adresse']
+            )
+
+            # 5. Créer le traitement de suivi de commande
+            Traiment.objects.create(
+                order=order,
+                user=user,
+                statut='en_attente'
+            )
+
+            # 6. Supprimer panier et items
+            cart.cartitem_set.all().delete()
+            cart.delete()
+
+            # 7. Rediriger vers la page de confirmation ou liste des commandes
+            return redirect('mes_commande')  # à adapter selon ton URL
+        else :
+            print(form.errors)
+
+    else:
+        form=OrderUserInfoForm() 
+    context={
+            'paniers': paniers_details, 
+            'total_prix': total_prix,
+            'montant_tva' :panier.montant_tva,
+            'net_payer':panier.net_payer,
+            'get_tranche1':panier.get_tranche1,
+            'get_tranche2':panier.get_tranche2,
+            'form':form
+    }
+    return render(request, 'confirmer-commande.html', context)
 
 @login_required
 def generate_invoice_pdf(request, invoice_id):
@@ -159,32 +233,94 @@ def generate_invoice_pdf(request, invoice_id):
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
             })
-
-
-    # Charger le template HTML
+    # from pathlib import Path
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # os.path.join(BASE_DIR, "medias")
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    
+    # Charger le template HTML 
     template_path = 'invoice.html'
     context = {'order': order,
                'produits':produits_details,
                 'totals':order.get_prix_total,
-                'status':order.get_statut_actuel             
+                'status':order.get_statut_actuel,
+                'image_url': image_url,
+                'background_url':background_url,
+                'cachet_url':cachet_url,
+                'footer_url':footer_url,
+                'montant_tva' :order.montant_tva,
+                'net_payer':order.net_payer,
+                'get_tranche1':order.get_tranche1,
+                'get_tranche2':order.get_tranche2
                }  # Contexte à passer au template
+    # Préparation du HTML avec image
+    html_string = render_to_string('invoice.html', context)
 
-    # Charger et rendre le template avec le contexte
-    template = get_template(template_path)
-    html = template.render(context)
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
 
-    # Créer une réponse PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="facture_DendingIron_{invoice_id}.pdf"'
+    date=order.created_at.strftime("%d%m%y")
+    filename=f'facture_{date}B-iron{order.id}_{order.infoclient.nom}_acompte'
+    
 
-    # Générer le PDF avec xhtml2pdf
-    pisa_status = pisa.CreatePDF(html, dest=response)
-
-    # Gérer les erreurs
-    if pisa_status.err:
-        return HttpResponse('Une erreur est survenue lors de la génération du PDF', status=500)
-
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
     return response
 
+@login_required
+def generate_invoice_pdf_solde(request, invoice_id):
+  # Charger les données nécessaires (exemple : une commande)
+    order = get_object_or_404(Order, id=invoice_id)
 
-    # return render(request, 'invoice.html')
+    produits = OrderItem.objects.filter(order=order)
+
+    produits_details = []
+    for item in produits:
+       produits_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+    # from pathlib import Path
+    # BASE_DIR = Path(__file__).resolve().parent.parent
+    # os.path.join(BASE_DIR, "medias")
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    
+    # Charger le template HTML 
+    template_path = 'invoice2.html'
+    context = {'order': order,
+               'produits':produits_details,
+                'totals':order.get_prix_total,
+                'status':order.get_statut_actuel,
+                'image_url': image_url,
+                'background_url':background_url,
+                'cachet_url':cachet_url,
+                'footer_url':footer_url,
+                'montant_tva' :order.montant_tva,
+                'net_payer':order.net_payer,
+                'get_tranche1':order.get_tranche1,
+                'get_tranche2':order.get_tranche2
+               }  # Contexte à passer au template
+    # Préparation du HTML avec image
+    html_string = render_to_string('invoice2.html', context)
+
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
+    pdf = html.write_pdf()
+
+    date=order.created_at.strftime("%d%m%y")
+    filename=f'facture_{date}B-iron{order.id}_{order.infoclient.nom}_solde'
+    
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+    return response
+

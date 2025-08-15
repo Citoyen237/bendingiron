@@ -23,7 +23,6 @@ def panier_count(request):
 
 def commandes_en_attente(request):
     nb_en_attente = 0
-
         # Récupérer toutes les commandes de l'utilisateur
     commandes = Order.objects.all()
 

@@ -96,6 +96,7 @@ TEMPLATES = [
                 'produits.contexte_processor.constante_global',
                 'usesOrders.context_proccessor.panier_count',
                 'usesOrders.context_proccessor.commandes_en_attente',
+                'partenaires.context_proccessor.order_en_attente',
                 'fer.context_processors.seuil_critique_count',
             ],
         },
