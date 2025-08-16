@@ -21,8 +21,9 @@ def is_admin(user):
 @login_required
 def index(request):
     current_url = request.get_full_path()
-    projets =Projet.objects.filter(user=request.user)
+    
     partenariat = Partenariats.objects.filter(user=request.user).first()
+    projets =Projet.objects.filter(partenariat=partenariat.id)
     context = {
         'projets':projets,
         'current_url':current_url,
