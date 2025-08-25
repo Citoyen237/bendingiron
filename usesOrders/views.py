@@ -8,17 +8,19 @@ import tempfile
 from weasyprint import HTML
 from django.conf import settings
 import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from .form import *
 
 @login_required
 def show_cart(request):
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
-
     paniers_details = []
     total_prix = 0
     if panier:
-        for item in panier.cartitem_set.all():
+        for item in panier.items.all():
             paniers_details.append({
                 'id':item.id,
                 'produit': item.produit,
@@ -35,10 +37,12 @@ def show_cart(request):
             'montant_tva' :panier.montant_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
-            'get_tranche2':panier.get_tranche2
+            'get_tranche2':panier.get_tranche2,
+            'prix_revient':panier.prix_revient_total
         }
     else:
-        panier = None  # ou crée un panier vide, selon besoin
+        panier = None
+        context={}  # ou crée un panier vide, selon besoin
 
     return render(request, 'panier.html', context)
 
@@ -52,7 +56,7 @@ def supprimer_du_panier(request, item_id):
         item.delete()     # supprimer l'élément
 
         # Vérifier si le panier est maintenant vide
-        if not cart.cartitem_set.exists():
+        if not cart.items.exists():
             cart.delete()  # supprimer aussi le panier s'il n'a plus d'items
     return redirect('panier')
 
@@ -68,7 +72,7 @@ def confirmer_commande(request):
     order = Order.objects.create(user=user)
 
     # 3. Copier chaque CartItem en OrderItem
-    for item in cart.cartitem_set.all():
+    for item in cart.items.all():
         OrderItem.objects.create(
             order=order,
             produit=item.produit,
@@ -85,7 +89,7 @@ def confirmer_commande(request):
     )
 
     # 5. Supprimer panier et items
-    cart.cartitem_set.all().delete()
+    cart.items.all().delete()
     cart.delete()
 
     # 5. Rediriger vers la page de confirmation ou liste des commandes
@@ -142,7 +146,7 @@ def send_info_user(request):
     paniers_details = []
     total_prix = 0
     if panier:
-        for item in panier.cartitem_set.all():
+        for item in panier.items.all():
             paniers_details.append({
                 'id':item.id,
                 'produit': item.produit,
@@ -170,7 +174,7 @@ def send_info_user(request):
             order = Order.objects.create(user=user)
 
             # 3. Copier chaque CartItem en OrderItem
-            for item in cart.cartitem_set.all():
+            for item in cart.items.all():
                 OrderItem.objects.create(
                     order=order,
                     produit=item.produit,
@@ -195,7 +199,7 @@ def send_info_user(request):
             )
 
             # 6. Supprimer panier et items
-            cart.cartitem_set.all().delete()
+            cart.items.all().delete()
             cart.delete()
 
             # 7. Rediriger vers la page de confirmation ou liste des commandes
@@ -324,3 +328,50 @@ def generate_invoice_pdf_solde(request, invoice_id):
     response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
     return response
 
+@csrf_exempt
+def appliquer_code_promo(request):
+        code_saisi = request.POST.get("code")
+        user = request.user  
+
+        # Récupérer le panier de l'utilisateur
+        panier = Cart.objects.filter(user=user).first()
+        if not panier:
+            return JsonResponse({"success": False, "message": "Panier introuvable."})
+
+        # Vérifier la quantité totale dans le panier
+        quantite_totale = sum(item.quantite for item in panier.items.all())
+        if quantite_totale < 500:
+            return JsonResponse({
+                "success": False,
+                "message": "Vous devez avoir au moins 500 produits pour appliquer un code promo."
+            })
+        
+        # Vérifier description des produits
+        for item in panier.items.all():
+            description = item.details  # JSON (dict)
+            # Vérifier que la clé "Fer" existe et que sa valeur est "bending iron"
+            if not description or description.get("fer") != "bending iron":
+                return JsonResponse({
+                    "success": False,
+                    "message": "Le fer de tous les produits doit être fourni par 'bending iron' pour appliquer ce code."
+                })
+
+        # Vérifier si le code promo existe
+        try:
+            code_promo = CodePromo.objects.get(code=code_saisi, client=user)
+        except CodePromo.DoesNotExist:
+            return JsonResponse({"success": False, "message": "Code promo invalide."})
+
+        # Vérifier expiration
+        if code_promo.is_expired:
+            return JsonResponse({"success": False, "message": "Ce code promo est expiré."})
+
+        # ✅ Appliquer la remise
+        panier.remise = code_promo.remise
+        panier.save()
+
+        return JsonResponse({
+            "success": True,
+            "message": f"Code promo appliqué ! Remise : {code_promo.remise}%",
+            "remise": float(code_promo.remise)
+        })

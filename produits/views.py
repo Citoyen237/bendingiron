@@ -8,6 +8,12 @@ from django.views.generic import ListView
 from django import forms
 from usesOrders.models import *
 
+from .boulon_ancrage_beton import *
+from .cintrages_cadres import *
+from .cintrages_extremites_redressage_decoupages import *
+from .quincallerie import *
+from .cintrages_formes import *
+from .etries_toiture_bardage import *
 
 
 def get_produit_solution(request):
@@ -167,15 +173,15 @@ def detail_produit(request, product_id):
         template="produits/Etriers_pour_badages_et_toitures/etrier-fond-circulaire.html"
         
     if(product.nom=="etrier a une seul branche a fond circulaire"):
-        form=EtrierFondRondForm(request.POST or None)
+        form=EtrierUnPiedFondRondForm(request.POST or None)
         template="produits/Etriers_pour_badages_et_toitures/etrier-une-branche-fond-circulaire.html"
         
     if(product.nom=="etrier a fond droit"):
-        form=EtrierFondRondForm(request.POST or None)
+        form=EtrierFondDroitForm(request.POST or None)
         template="produits/Etriers_pour_badages_et_toitures/etrier-fond-droit.html"
         
     if(product.nom=="etrier a une seul branche a fond droit"):
-        form=EtrierFondRondForm(request.POST or None)
+        form=EtrierFondDroitForm(request.POST or None)
         template="produits/Etriers_pour_badages_et_toitures/etrier-une-branche-fond-droit.html"
         
     if(product.nom=="etrier a fond triangulaire"):
@@ -226,23 +232,7 @@ def detail_produit(request, product_id):
        form=EcrouForm(request.POST or None)
        template="produits/Quincallerie/rondelle.html"
        
-    
-    # if(product.name=="cadre triangulaire"):
-    #     form=TriangleForm(request.POST or None)
-    #     template="triangle.html"
-    
-    # if(product.name=="cadre en pince"):
-    #     form=PinceForm(request.POST or None)
-    #     template="pince.html"
-    
-    # if(product.name=="cadre en t"):
-    #     form=TForm(request.POST or None)
-    #     template="t.html"
-    
-    # if(product.name=="cadre en u"):
-        # form = UForm(request.POST or None)
-        # template="u.html"
-    
+
      # Vérifier si le formulaire a été soumis
     if request.method == "POST" and form:
         # form = form.__class__(request.POST)  # Recharger le formulaire avec les données POST
@@ -251,7 +241,8 @@ def detail_produit(request, product_id):
             datas = form.cleaned_data
             quantite =datas.get('quantite', 1)
             prix =datas['prix']  # prix unitaire
-            details = {k: v for k, v in form.cleaned_data.items() if k not in ['quantite', 'prix']}
+            prix_revient = datas['prix_revient']
+            details = {k: v for k, v in form.cleaned_data.items() if k not in ['prix','quantite','prix_revient','prix_Total']}
             # 2. Obtenir ou créer le panier de l'utilisateur
             cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -273,7 +264,8 @@ def detail_produit(request, product_id):
                     produit=product,
                     details=details,
                     quantite=quantite,
-                    prix_u=prix
+                    prix_u=prix,
+                    prix_revient=prix_revient,
                 )
             # Rediriger l'utilisateur vers la page du panier
             return redirect('panier') 

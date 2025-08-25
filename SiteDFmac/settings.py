@@ -39,9 +39,9 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'prodistributionltd237@gmail.com'
+EMAIL_HOST_USER = 'bendingiron.info@gmail.com'
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'prodistributionltd237@gmail.com'
+DEFAULT_FROM_EMAIL = 'bendingiron.info@gmail.com'
 
 # nouvelle route de login
 LOGIN_URL = 'auth/login/'
@@ -65,6 +65,8 @@ INSTALLED_APPS = [
     'tinymce',
     'django.contrib.humanize',
     'partenaires',
+    'archives',
+    # 'forms'
 ]
 
 MIDDLEWARE = [

@@ -134,7 +134,8 @@ detail
             <div class="col-md-6 mt-2">
                 <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
                 <h6>Date : <b>{{order.created_at}}</b></h6>
-                <h6>Montant total: <b>{{order.get_prix_total|intcomma}}fcfa</b></h6>
+                <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
+                <h6>Montant total : <b>{{order.get_prix_total|intcomma}}fcfa</b></h6>
             </div>
             <div class="col-md-6 mt-2">
                 <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
@@ -181,7 +182,7 @@ detail
           <thead class='bg-warning'>
             <th>Produit</th>
             <th>Description</th>
-            <th>Quandite</th>
+            <th>Quantite</th>
             <th>Prix ​​unitaire (fcfa)</th>
             <th>Prix ​​total (fcfa)</th>
           </thead>
@@ -215,7 +216,7 @@ detail
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                   30% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b><a href="{% url 'invoice_download' order.id %}" class='btn btn-success'  name='supprimer'><i class="fas fa-download"></i></a></td>
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b> <a href="{% url 'invoice_download' order.id %}" class='btn btn-success'  name='supprimer'><i class="fas fa-download"></i></a></td>
             </tr>
              <tr>
 

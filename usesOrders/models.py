@@ -3,19 +3,29 @@ from django.db import models
 from auth_app.models import CustomUser
 from produits.models import *
 from decimal import Decimal
+from django.utils import timezone
+from datetime import timedelta
+from dateutil.relativedelta import relativedelta
 
 # # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # total_prix = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
+    remise = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
+    def prix_revient_total(self):
+        return sum(item.prix_revient for item in self.items.all())
+    
+    def montant_remise(self):
+        return (self.prix_revient_total*self.remise)/100
+
+    @property
     def get_prix_total(self):
-        #  reduction
-        # tva
-        return sum(item.prix_u * item.quantite for item in self.cartitem_set.all())
+        total =sum(item.prix_u * item.quantite for item in self.items.all())
+        return round(Decimal(total) - self.montant_remise())
 
     @property
     def montant_tva(self):
@@ -31,16 +41,16 @@ class Cart(models.Model):
     @property
     def get_tranche2(self):
         return round((self.net_payer*70)/100)
-        
-    
+     
     def __str__(self):
         return self.get_prix_total
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     details = models.JSONField()  # Détails du produit (dimensions, choix d'angle, etc.)
     quantite = models.PositiveIntegerField(default=1)
+    prix_revient=models.DecimalField(max_digits=10, decimal_places=2)
     prix_u = models.DecimalField(max_digits=10, decimal_places=2)
 
     @property
@@ -52,22 +62,25 @@ class CartItem(models.Model):
         if not self.details:
             return ""
         return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
-    
-    
-
-
+   
     def __str__(self):
         return f"{self.produit.nom} - Quantité: {self.quantite}"
 
 # # Create your models here.
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    remise = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
+    def prix_revient_total(self):
+        return sum(item.prix_revient for item in self.orderitem_set.all())
+
+    @property
     def get_prix_total(self):
-        return sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+        total=sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+        return total
     
     @property
     def montant_tva(self):
@@ -105,6 +118,7 @@ class OrderItem(models.Model):
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     details = models.JSONField()  # Détails du produit (dimensions, choix d'angle, etc.)
     quantite = models.PositiveIntegerField(default=1)
+    prix_revient=models.DecimalField(max_digits=10, decimal_places=2)
     prix_u = models.DecimalField(max_digits=10, decimal_places=2)
 
     def details_to_text(self):
@@ -136,9 +150,11 @@ class Traiment(models.Model):
         return f"{self.order}-{self.statut}"
     
 class OrderUserInfo(models.Model):
+    '''retrait en usine, livraison sur chantier'''
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     nom = models.CharField(max_length=255)
     telephone = models.CharField(max_length=255)
+    mode_livraison= models.CharField(max_length=255, default="livraison sur chantier")
     adresse = models.CharField(max_length=255)
 
     def __str__(self):
@@ -157,4 +173,20 @@ class CodePromo(models.Model):
     client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='client')
     remise = models.DecimalField(max_digits=10, decimal_places=2)
     code = models.CharField(max_length=255)
-    expiration = models.CharField(max_length=255)
+    expiration = models.PositiveIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    
+    @property
+    def expiration_date(self):
+        """Date exacte d’expiration du code promo"""
+        return self.created_at + relativedelta(months=self.expiration)
+
+    @property
+    def is_expired(self):
+        """Retourne True si le code est expiré"""
+        return timezone.now() > self.expiration_date
+
+    def is_valid_for(self, client):
+        """Vérifie que le code est pour ce client et valide"""
+        return self.client == client and not self.is_expired

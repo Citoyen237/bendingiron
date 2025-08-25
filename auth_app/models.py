@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     is_partenaire = models.BooleanField(default=0)
     groups = models.ManyToManyField(Group, related_name="customuser_set")
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_set")
+    email_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"

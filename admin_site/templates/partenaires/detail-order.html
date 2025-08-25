@@ -31,11 +31,11 @@ commandes
                 <div class="card">
                     <div class="card-body">
                         <!-- Table with stripped rows -->
-                        <table class="table table-striped">
+                        <table class="table table-responsive">
                             <thead class=''>
                                 <th>Produit</th>
                                 <th>Description</th>
-                                <th>Quandite</th>
+                                <th>Quantite</th>
                             </thead>
                             <tbody>
 
@@ -48,7 +48,9 @@ commandes
                                 {% endfor %}
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
-                                        <a class="btn btn-primary" href="{% url 'download-bon' projet_id=order.id %}"><i class="bi bi-download"></i></a>
+                                        <a class="btn btn-primary"
+                                            href="{% url 'download-bon' orderId %}"><i
+                                                class="bi bi-download"></i></a>
 
                                         {% if status == "en_attente" %}
                                         <a href="{% url 'partenariat.orders.statut' orderId %}"
@@ -60,6 +62,12 @@ commandes
                                             class="btn btn-primary text-lg">{{status}} <i
                                                 class="bi bi-arrow-right-circle"></i></a>
                                         {%endif%}
+                                        {% if status == "pret_pour_livraison" %}
+                                        <a href="{% url 'partenariat.orders.statut' orderId %}"
+                                            class="btn btn-info text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></a>
+
+                                        {%endif%}
                                         {% if status == "solde_facture" %}
                                         <a href="{% url 'partenariat.orders.statut' orderId %}"
                                             class="btn btn-secondary text-lg">{{status}} <i
@@ -69,6 +77,8 @@ commandes
                                         {%if status == "termine" %}
                                         <a class="btn btn-success text-lg">{{status}}</a>
                                         {%endif%}
+
+
                                         <!-- <img src="{% static 'nodata.png'%}" alt="" height="100px">
                                         <br>
                                         <span> Aucune commande n'a ete trouver</span> -->

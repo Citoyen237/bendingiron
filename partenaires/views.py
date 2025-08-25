@@ -49,6 +49,7 @@ def detail_projet(request, projet_id):
                 'quantite_restant':item.quantite_restant,
                 'quantite_commande':item.quantite_commande,
                 'total': item.get_prix_total,
+                'prix_revient':item.prix_revient,
             })
         
     context = {
@@ -66,7 +67,7 @@ def confirm_projet(request):
     paniers_details = []
     total_prix = 0
     if panier:
-        for item in panier.cartitem_set.all():
+        for item in panier.items.all():
             paniers_details.append({
                 'id':item.id,
                 'produit': item.produit,
@@ -92,17 +93,18 @@ def confirm_projet(request):
             )
 
             # 3. Copier chaque CartItem en OrderItem
-            for item in panier.cartitem_set.all():
+            for item in panier.items.all():
                 ProjetItem.objects.create(
                 projet=projet,
                 produit=item.produit,
                 details=item.details,
                 quantite=item.quantite,
+                prix_revient=item.prix_revient,
                 prix_u=item.prix_u
             )
             
             # 5. Supprimer panier et items
-            panier.cartitem_set.all().delete()
+            panier.items.all().delete()
             panier.delete()
             # 5. Rediriger vers la page de confirmation ou liste des commandes
             return redirect('boutique')  # à adapter selon ton UR

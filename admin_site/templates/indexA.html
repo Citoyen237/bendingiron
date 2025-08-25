@@ -6,6 +6,8 @@ statistique
 
 
 {% block 'content' %}
+{% load static %}
+{% load humanize %}
 <main id="main" class="main">
 
     <div class="pagetitle">
@@ -20,12 +22,123 @@ statistique
 
     <section class="section dashboard">
         <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenus annuel</h5>
+
+                        <!-- Bar Chart -->
+                        <canvas id="barChart" style="max-height: 400px;"></canvas>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", () => {
+                                new Chart(document.querySelector('#barChart'), {
+                                    type: 'bar',
+                                    data: {
+                                        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                                        datasets: [{
+                                            label: 'Bar Chart',
+                                            data: [65, 59, 80, 81, 56, 55, 40, 81, 56, 55, 40, 60],
+                                            backgroundColor: [
+                                                'rgba(255, 99, 130, 0.2)',
+                                                'rgba(255, 159, 64, 0.2)',
+                                                'rgba(255, 205, 86, 0.2)',
+                                                'rgba(75, 192, 192, 0.2)',
+                                                'rgba(54, 162, 235, 0.2)',
+                                                'rgba(153, 102, 255, 0.2)',
+                                                'rgba(201, 203, 207, 0.2)'
+                                            ],
+                                            borderColor: [
+                                                'rgb(255, 99, 132)',
+                                                'rgb(255, 159, 64)',
+                                                'rgb(255, 205, 86)',
+                                                'rgb(75, 192, 192)',
+                                                'rgb(54, 162, 235)',
+                                                'rgb(153, 102, 255)',
+                                                'rgb(201, 203, 207)'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true
+                                            }
+                                        }
+                                    }
+                                });
+                            });
+                        </script> adapte
+
+                        <!-- End Bar CHart -->
+
+                    </div>
+                </div>
+            </div>
+            <!-- revenue total -->
+            <div class="col-xxl-6 col-md-12">
+                <div class="row">
+                    <div class="col-xxl-6 col-md-4">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue Totals </h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>$3,264</h6>
+                                        <span class="text-success small pt-1 fw-bold">8%</span> <span
+                                            class="text-muted small pt-2 ps-1">increase</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6 col-md-4">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue de ce mois </h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>$3,264</h6>
+                                        <span class="text-success small pt-1 fw-bold">8%</span> <span
+                                            class="text-muted small pt-2 ps-1">increase</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6 col-md-4">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Revenue de cette l'annee </h5>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-currency-dollar"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>$3,264</h6>
+                                        <span class="text-success small pt-1 fw-bold">8%</span> <span
+                                            class="text-muted small pt-2 ps-1">increase</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Left side columns -->
-            <div class="col-lg-8">
+            <div class="col-lg-12">
                 <div class="row">
-
-                    <!-- Sales Card -->
+                    <!-- revenue clients/distributeur -->
                     <div class="col-xxl-4 col-md-6">
                         <div class="card info-card sales-card">
 
@@ -43,7 +156,7 @@ statistique
                             </div>
 
                             <div class="card-body">
-                                <h5 class="card-title">Ventes <span>| Today</span></h5>
+                                <h5 class="card-title">Revenus clients/distributeurs <span>| Today</span></h5>
 
                                 <div class="d-flex align-items-center">
                                     <div
@@ -60,9 +173,8 @@ statistique
                             </div>
 
                         </div>
-                    </div><!-- End Sales Card -->
-
-                    <!-- Revenue Card -->
+                    </div>
+                    <!-- revenue projet -->
                     <div class="col-xxl-4 col-md-6">
                         <div class="card info-card revenue-card">
 
@@ -80,7 +192,7 @@ statistique
                             </div>
 
                             <div class="card-body">
-                                <h5 class="card-title">Revenue <span>| This Month</span></h5>
+                                <h5 class="card-title">Revenus projets <span>| This Month</span></h5>
 
                                 <div class="d-flex align-items-center">
                                     <div
@@ -97,38 +209,22 @@ statistique
                             </div>
 
                         </div>
-                    </div><!-- End Revenue Card -->
-
-                    <!-- Customers Card -->
-                    <div class="col-xxl-4 col-xl-6">
-
+                    </div>
+                    <!-- utilisateurs -->
+                    <div class="col-xxl-4 col-xl-4">
                         <div class="card info-card customers-card">
 
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
-
                             <div class="card-body">
-                                <h5 class="card-title">Utilisateurs <span>| This Year</span></h5>
-
+                                <h5 class="card-title">Utilisateurs</h5>
                                 <div class="d-flex align-items-center">
                                     <div
                                         class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                         <i class="bi bi-people"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>1244</h6>
-                                        <span class="text-danger small pt-1 fw-bold">12%</span> <span
-                                            class="text-muted small pt-2 ps-1">decrease</span>
+                                        <h6>{{users.count}}</h6>
+                                        <span class="text-danger small pt-1 fw-bold">{{userStaff.count}}</span> <span
+                                            class="text-muted small pt-2 ps-1">adminstrateurs</span>
 
                                     </div>
                                 </div>
@@ -136,26 +232,35 @@ statistique
                             </div>
                         </div>
 
-                    </div><!-- End Customers Card -->
-                     <div class="col-xxl-4 col-xl-6">
-
+                    </div>
+                    <!-- distributeurs -->
+                    <div class="col-xxl-4 col-xl-4">
                         <div class="card info-card customers-card">
-
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
-
                             <div class="card-body">
-                                <h5 class="card-title">Partenaires <span>| This Year</span></h5>
+                                <h5 class="card-title">Distributeurs</h5>
+
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-receipt"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{distributeurs.count}}</h6>
+                                        <span class="text-danger small pt-1 fw-bold">{{valid_count}}</span> <span
+                                            class="text-muted small pt-2 ps-1">valide</span>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- partenaires -->
+                    <div class="col-xxl-4 col-xl-4">
+                        <div class="card info-card customers-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Partenaires</h5>
 
                                 <div class="d-flex align-items-center">
                                     <div
@@ -163,9 +268,9 @@ statistique
                                         <i class="bi bi-people-fill"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>1244</h6>
-                                        <span class="text-danger small pt-1 fw-bold">12%</span> <span
-                                            class="text-muted small pt-2 ps-1">Projets</span>
+                                        <h6>{{partenaires.count}}</h6>
+                                        <span class="text-danger small pt-1 fw-bold">{{valid_partenaires}}</span> <span
+                                            class="text-muted small pt-2 ps-1">en cours</span>
 
                                     </div>
                                 </div>
@@ -174,25 +279,12 @@ statistique
                         </div>
 
                     </div>
-                    <div class="col-xxl-4 col-xl-6">
-
+                    <!-- produits -->
+                    <div class="col-xxl-4 col-xl-4">
                         <div class="card info-card customers-card">
 
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
-
                             <div class="card-body">
-                                <h5 class="card-title">Produits <span>| This Year</span></h5>
+                                <h5 class="card-title">Produits</h5>
 
                                 <div class="d-flex align-items-center">
                                     <div
@@ -200,10 +292,7 @@ statistique
                                         <i class="bi bi-wrench"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>1244</h6>
-                                        <span class="text-danger small pt-1 fw-bold">12%</span> <span
-                                            class="text-muted small pt-2 ps-1">decrease</span>
-
+                                        <h6>{{produits.count}}</h6>
                                     </div>
                                 </div>
 
@@ -211,25 +300,11 @@ statistique
                         </div>
 
                     </div>
-                    <div class="col-xxl-4 col-xl-6">
-
+                    <!-- barres -->
+                    <div class="col-xxl-4 col-xl-4">
                         <div class="card info-card customers-card">
-
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
-
                             <div class="card-body">
-                                <h5 class="card-title">Stocks <span>| This Year</span></h5>
+                                <h5 class="card-title">Stocks barres</h5>
 
                                 <div class="d-flex align-items-center">
                                     <div
@@ -237,10 +312,7 @@ statistique
                                         <i class="bi bi-wrench"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>1244</h6>
-                                        <span class="text-danger small pt-1 fw-bold">12%</span> <span
-                                            class="text-muted small pt-2 ps-1">decrease</span>
-
+                                        <h6>{{fersBarre.count}}</h6>
                                     </div>
                                 </div>
 
@@ -248,254 +320,296 @@ statistique
                         </div>
 
                     </div>
-                   
-                    <!-- End Customers Card -->
-                    <!-- Reports -->
-                    <div class="col-12">
-                        <div class="card">
+                    <!-- rouleaux -->
+                    <div class="col-xxl-4 col-xl-4">
 
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
-
-                        </div>
-                    </div><!-- End Reports -->
-
-                    <!-- Recent Sales -->
-                    <div class="col-12">
-                        <div class="card recent-sales overflow-auto">
-
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
-
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
+                        <div class="card info-card customers-card">
 
                             <div class="card-body">
-                                <h5 class="card-title">Commandes recentes <span>| Today</span></h5>
+                                <h5 class="card-title">Stocks rouleaux</h5>
 
-                                <table class="table table-borderless datatable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Customer</th>
-                                            <th scope="col">Product</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2457</a></th>
-                                            <td>Brandon Jacob</td>
-                                            <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                            <td>$64</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2147</a></th>
-                                            <td>Bridie Kessler</td>
-                                            <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a>
-                                            </td>
-                                            <td>$47</td>
-                                            <td><span class="badge bg-warning">Pending</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2049</a></th>
-                                            <td>Ashleigh Langosh</td>
-                                            <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                            <td>$147</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2644</a></th>
-                                            <td>Angus Grady</td>
-                                            <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                            <td>$67</td>
-                                            <td><span class="badge bg-danger">Rejected</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2644</a></th>
-                                            <td>Raheem Lehner</td>
-                                            <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                            <td>$165</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="d-flex align-items-center">
+                                    <div
+                                        class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-wrench"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>{{fersRouleau.count}}</h6>
+                                    </div>
+                                </div>
 
                             </div>
-
                         </div>
-                    </div><!-- End Recent Sales -->
-                    <div class="col-12">
-                        <div class="card recent-sales overflow-auto">
 
-                            <div class="filter">
-                                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                    <li class="dropdown-header text-start">
-                                        <h6>Filter</h6>
-                                    </li>
+                    </div>
+                    <!-- commandes client -->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card recent-sales overflow-auto">
+                                <div class="card-body">
+                                    <h5 class="card-title">Commandes clients </h5>
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Client</th>
+                                                <th scope="col">Prix (fcfa)</th>
+                                                <th scope="col">Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in orders %}
+                                            <tr>
+                                                <td><a href="{% url 'order.detail' order.id %}"
+                                                        class="text-primary">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</a>
+                                                </td>
+                                                <td>{{order.infoclient.nom}}</td>
+                                                <td>{{order.get_prix_total|intcomma}}</td>
+                                                <th>
+                                                    {% if order.get_statut_actuel == "en_attente" %}
+                                                    <span class="badge bg-warning text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {% if order.get_statut_actuel == "en_production" %}
+                                                    <span class="badge bg-primary text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {% if order.get_statut_actuel == "pret_pour_livraison" %}
+                                                    <span class="badge bg-info text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {%if order.get_statut_actuel == "solde_facture" %}
+                                                    <span class="badge bg-secondary text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {%if order.get_statut_actuel == "termine" %}
+                                                    <span class="badge bg-success text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
 
-                                    <li><a class="dropdown-item" href="#">Today</a></li>
-                                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                                </ul>
-                            </div>
+                                                </th>
+                                            </tr>
+                                            {%empty%}
+                                            <tr>
+                                                <td colspan="4" class="text-center">
+                                                    <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                                    <br>
+                                                    <span>Acune commande n'a ete trouve</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
 
-                            <div class="card-body">
-                                <h5 class="card-title">Commandes recentes des partenaires <span>| Today</span></h5>
-
-                                <table class="table table-borderless datatable">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Customer</th>
-                                            <th scope="col">Product</th>
-                                            <th scope="col">Price</th>
-                                            <th scope="col">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2457</a></th>
-                                            <td>Brandon Jacob</td>
-                                            <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                            <td>$64</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2147</a></th>
-                                            <td>Bridie Kessler</td>
-                                            <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a>
-                                            </td>
-                                            <td>$47</td>
-                                            <td><span class="badge bg-warning">Pending</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2049</a></th>
-                                            <td>Ashleigh Langosh</td>
-                                            <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                            <td>$147</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2644</a></th>
-                                            <td>Angus Grady</td>
-                                            <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                            <td>$67</td>
-                                            <td><span class="badge bg-danger">Rejected</span></td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row"><a href="#">#2644</a></th>
-                                            <td>Raheem Lehner</td>
-                                            <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                            <td>$165</td>
-                                            <td><span class="badge bg-success">Approved</span></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                </div>
 
                             </div>
+                        </div><!-- End Recent Sales -->
+                        <div class="col-md-5">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Commandes clients</h5>
+                                    <!-- Donut Chart -->
+                                    <div id="donutChart"></div>
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            new ApexCharts(document.querySelector("#donutChart"), {
+                                                series: [44, 55, 13, 43,65],
+                                                chart: {
+                                                    height: 350,
+                                                    type: 'donut',
+                                                    toolbar: {
+                                                        show: true
+                                                    }
+                                                },
+                                                labels: ['en attente', 'en production', 'pret pour livraison','solde facture','termine'],
+                                            }).render();
+                                        });
+                                    </script>
+                                    <!-- End Donut Chart -->
 
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    <!-- commandes parrtenaires -->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card recent-sales overflow-auto">
 
+                                <div class="card-body">
+                                    <h5 class="card-title">Commandes partenaires </h5>
+
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">partanaire</th>
+                                                <th scope="col">Projet</th>
+                                                <th scope="col">Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for order in projetsOrders %}
+                                            <tr>
+                                                <td><a href="{% url 'partenariat.orders.details' order.id %}"
+                                                        class="text-primary">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</a>
+                                                </td>
+                                                <td>{{order.projet.partenariat}}</td>
+                                                <td>{{order.projet}}</td>
+                                                <th>
+                                                    {% if order.get_statut_actuel == "en_attente" %}
+                                                    <span class="badge bg-warning text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {% if order.get_statut_actuel == "en_production" %}
+                                                    <span class="badge bg-primary text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {% if order.get_statut_actuel == "pret_pour_livraison" %}
+                                                    <span class="badge bg-info text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {%if order.get_statut_actuel == "solde_facture" %}
+                                                    <span class="badge bg-secondary text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+                                                    {%if order.get_statut_actuel == "termine" %}
+                                                    <span class="badge bg-success text-dark">
+                                                        {{order.get_statut_actuel}}
+                                                    </span>
+                                                    {%endif%}
+
+                                                </th>
+                                            </tr>
+                                            {%empty%}
+                                            <tr>
+                                                <td colspan="4" class="text-center">
+                                                    <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                                    <br>
+                                                    <span>Acune commande n'a ete trouve</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Commandes partenaires</h5>
+                                    <!-- Pie Chart -->
+                                    <div id="pieChart"></div>
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            new ApexCharts(document.querySelector("#pieChart"), {
+                                                series: [44, 55, 13, 43],
+                                                chart: {
+                                                    height: 350,
+                                                    type: 'pie',
+                                                    toolbar: {
+                                                        show: true
+                                                    }
+                                                },
+                                                labels: ['en attente', 'en production', 'pret pour livraison', 'termine']
+                                            }).render();
+                                        });
+                                    </script>
+                                    <!-- End Pie Chart -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- projet -->
+                    <div class="row">
+                        <div class="col-md-7">
+                            <div class="card recent-sales overflow-auto">
+                                <div class="card-body">
+                                    <h5 class="card-title">Projets</h5>
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Projet</th>
+                                                <th scope="col">Montant</th>
+                                                <th scope="col">Remise</th>
+                                                <th scope="col">Statut</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for projet in projets %}
+                                            <tr>
+                                                <th scope="row"><a
+                                                        href="{% url 'partenariat.projet.detail' projet.id %}">{{projet.created_at|date:"dmy"}}B-iron{{projet.id}}</a>
+                                                </th>
+                                                <td>{{projet.name}}</td>
+                                                <td>{{projet.montant_total}}</td>
+                                                <td>{{projet.reduction}}%</td>
+
+                                                {% if projet.get_statut == 'en cours' %}
+                                                <td><span class="badge bg-primary">{{projet.get_statut}}</span></td>
+                                                {% else %}
+                                                <td><span class="badge bg-success">{{projet.get_statut}}</span></td>
+                                                {% endif %}
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">
+                                                    <img src="{% static 'nodata.png'%}" alt="" height="100px" />
+                                                    <br />
+                                                    <span>Acun projet trouver</span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <!-- End Website Traffic -->
+                            <div class="card">
+                                 <div class="card-body">
+                                    <h5 class="card-title">Projet</h5>
+                                    <!-- Pie Chart -->
+                                    <div id="pieChart2"></div>
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            new ApexCharts(document.querySelector("#pieChart2"), {
+                                                series: [44, 55],
+                                                chart: {
+                                                    height: 350,
+                                                    type: 'pie',
+                                                    toolbar: {
+                                                        show: true
+                                                    }
+                                                },
+                                                labels: ['en cours', 'termine']
+                                            }).render();
+                                        });
+                                    </script>
+                                    <!-- End Pie Chart -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div><!-- End Left side columns -->
-
-            <!-- Right side columns -->
-            <div class="col-lg-4">
-
-                <!-- Budget Report -->
-                <div class="card">
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="card-body pb-0">
-                        <h5 class="card-title">Nombres de commandes par status <span>| This Month</span></h5>
-                        <canvas id="polarAreaChart" style="max-height: 400px;"></canvas>
-                        <!-- <div id="polarAreaChart" style="min-height: 400px;" class="echart"></div> -->
-
-                        <script>
-                            document.addEventListener("DOMContentLoaded", () => {
-                                new Chart(document.querySelector('#polarAreaChart'), {
-                                    type: 'polarArea',
-                                    data: {
-                                        labels: [
-                                            'Red',
-                                            'Green',
-                                            'Yellow',
-                                            'Grey',
-                                            'Blue'
-                                        ],
-                                        datasets: [{
-                                            label: 'My First Dataset',
-                                            data: [11, 16, 7, 3, 14],
-                                            backgroundColor: [
-                                                'rgb(255, 99, 132)',
-                                                'rgb(75, 192, 192)',
-                                                'rgb(255, 205, 86)',
-                                                'rgb(201, 203, 207)',
-                                                'rgb(54, 162, 235)'
-                                            ]
-                                        }]
-                                    }
-                                });
-                            });
-                        </script>
-
-                    </div>
-                </div><!-- End Budget Report -->
-
-                <!-- Website Traffic -->
-                <div class="card">
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-                </div><!-- End Website Traffic -->
-
-                <!-- News & Updates Traffic -->
-                <!-- End News & Updates -->
-
-            </div><!-- End Right side columns -->
-
         </div>
     </section>
 

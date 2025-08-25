@@ -44,5 +44,7 @@ urlpatterns = [
     path('partenariats/projets/historique/<int:projet_id>', historique_projet, name='partenariat.projet.historique'),
 
 
-    path('codes-revendeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),
+    path('codes-distributeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),
+    path('codes-distributeurs/ajouter-distributeur', add_distributeur, name='code.add'),
+
 ]

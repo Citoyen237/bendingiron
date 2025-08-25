@@ -24,6 +24,7 @@ commandes
             <div class="col-md-6 mt-2">
                 <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
                 <h6>Date : <b>{{order.created_at}}</b></h6>
+                <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
                 <h6>Montant total: <b>{{order.get_prix_total|intcomma}} fcfa</b></h6>
             </div>
             <div class="col-md-6 mt-2">
@@ -39,7 +40,7 @@ commandes
                             <thead class=''>
                                 <th>Produit</th>
                                 <th>Description</th>
-                                <th>Quandite</th>
+                                <th>Quantite</th>
                                 <th>Prix ​​unitaire (fcfa)</th>
                                 <th>Prix ​​total (fcfa)</th>
                             </thead>

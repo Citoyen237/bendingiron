@@ -8,8 +8,85 @@ from django.contrib.auth.models import Group
 import string
 import random
 from .utils import *
-
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+from django.http import HttpResponse
 from .models import CustomUser as User
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
+
+
+token_generator = PasswordResetTokenGenerator()
+
+# email de verification
+def send_verification_email(request,user):
+    # user=User.objects.get(id=user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    print(uid)
+    token = token_generator.make_token(user)
+    link = f"http://{request.get_host()}/auth/verification-email/{uid}/{token}/"
+
+    send_mail(
+        subject="Vérifiez votre adresse email",
+        message=f"Cliquez sur ce lien pour confirmer votre email : {link}",
+        from_email="noreply@monsite.com",
+        recipient_list=[user.email],
+    )
+
+    template="emails/verified_email.html"
+    objet="lVérifiez votre adresse email"
+    context = {
+       'user': user,
+       'link':link
+    }
+    send_custom_email(
+            objet,
+            template,
+            context,
+            [user.email]
+    )
+
+@login_required
+def resend_verification_email(request):
+    user=request.user
+    if user.email_verified:  # si déjà vérifié
+        messages.info(request, "Votre email a déjà été vérifié")
+        return redirect("login")
+    else:
+        send_verification_email(request, request.user)
+        message="Un email de vérification vous a été envoyé. Veuillez consulter votre boîte mail"
+        return render(request, 'comfirm-register.html', {'message':message})
+
+def verify_email(request,uidb64,token):
+    try:
+        # Décoder l'ID de l'utilisateur
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(id=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    # Vérifier si l'utilisateur existe et si le token est valide
+    if user is not None and token_generator.check_token(user, token):
+        user.email_verified = True  # ton champ dans le modèle User
+        user.save()
+        context = {'user': user}
+        send_custom_email(
+                 'Bienvenue sur notre site',
+                 'emails/confirm_register.html',
+                 context,
+                 [user.email]
+        )
+        login(request, user)
+        message="Votre email a été vérifié avec succès"
+        return render(request, 'comfirm-register.html', {'message':message})
+    else:
+        message="Lien invalide ou expiré"
+        return render(request, 'comfirm-register.html', {'message':message}, status=400)
+    
 # Create your views here
 def loginPage(request):
     if request.method == "POST":
@@ -37,7 +114,6 @@ def loginPage(request):
 
 def register(request):
     if request.method == "POST":
-        print('ok')
         form = RegisterForm(request.POST)
         if form.is_valid():   
             last_name = form.cleaned_data.get('last_name')
@@ -49,18 +125,13 @@ def register(request):
             user_group = Group.objects.get(name='simple')
             user.groups.add(user_group)
             if user is not None :
-                context = {'user': user}
-                send_custom_email(
-                 'Bienvenue sur notre site',
-                 'emails/confirm_register.html',
-                 context,
-                 [email]
-                )
+                send_verification_email(user, request)
                 messages.success(request,'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter')
-                return redirect('login')
+                message="Un email de vérification vous a été envoyé. Veuillez consulter votre boîte mail"
+                return render(request, 'comfirm-register.html', {'message':message})
+
             else:
                 messages.error('erreur')
-                return redirect('register')
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form':form})
@@ -101,3 +172,5 @@ def logoutPage(request):
     logout(request)
     messages.success(request, 'Vous avez été déconnecté avec succès.')
     return redirect('login')
+
+

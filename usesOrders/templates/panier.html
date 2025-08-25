@@ -58,9 +58,13 @@ panier
                             <a href="{% url 'cgv' %}" class="text-primary">Cliquez ici</a>
                         </p>
                         {% if paniers %}
-                        <form action="">
-                            <input type="text" class="form-control" placeholder="code renvendeur">
+                        <form id="codeForm" class="d-flex">
+                            {% csrf_token %}
+                            <input type="text" id="code" class="form-control" placeholder="code distributeur">
+                            <button type="submit" class="btn btn-primary">Appliquer</button>
                         </form>
+
+                        <div id="result" class="mt-2"></div>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
@@ -93,25 +97,38 @@ panier
                             </div>
                             <a class="text-dark">{{get_tranche2|intcomma}} FCFA</a>
                         </div>
-                    </div>             
-                        <div class="input m-2">
-                            <a href="{% url 'info_user' %}" class="btn btn-primary form-control">
-                                {% if user.is_staff %}
-                                Client
-                                {% else %}
-                                Confirmer
-                                {% endif %}
-                            </a>
-                        {% if user.is_staff %}
-                        <a href="{% url 'partanaire.confirm' %}" class="btn btn-primary form-control mt-2">Partenaire</a>
-                        {% endif %}
-                          </div>
-                        
                     </div>
-                {% endif %}
+
+                    {% if user.email_verified %}
+                    <div class="input m-2">
+                        <a href="{% url 'info_user' %}" class="btn btn-primary form-control">
+                            {% if user.is_staff %}
+                            Client
+                            {% else %}
+                            Confirmer
+                            {% endif %}
+                        </a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'partanaire.confirm' %}"
+                            class="btn btn-primary form-control mt-2">Partenaire</a>
+                        {% endif %}
+
+                    </div>
+
+                    {% else %}
+                    <div class="input m-2">
+                        <a class="btn btn-danger" href="{% url 'send_email_verify' %}">Verifier votre adresse email pour
+                            confirmer
+                            votre commande</a>
+                    </div>
+                    {% endif %}
+
+
                 </div>
+                {% endif %}
             </div>
         </div>
+    </div>
     </div>
     {% else %}
     <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier
@@ -122,6 +139,31 @@ panier
 </section><!-- Content end -->
 
 <script>
+
+    document.getElementById("codeForm").addEventListener("submit", function (e) {
+
+        let code = document.getElementById("code").value;
+        let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'appliquer_code' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "code=" + encodeURIComponent(code)
+        })
+            .then(response => response.json())
+            .then(data => {
+                let result = document.getElementById("result");
+                if (data.success) {
+                    result.innerHTML = "<span class='text-primary mt-2'>" + data.message + "</span>";
+                } else {
+                    e.preventDefault();
+                    result.innerHTML = "<span class='text-danger mt-2'>" + data.message + "</span>";
+                }
+            });
+    });
     // Fonction JavaScript pour confirmer la suppression
     function confirmSuppression(event, link) {
         // Demande de confirmation

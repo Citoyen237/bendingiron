@@ -24,8 +24,6 @@ class ParteriatForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ParteriatForm, self).__init__(*args, **kwargs)
-        
-        # Filtrer les utilisateurs avec is_partenaire=True
         self.fields['user'].queryset = User.objects.filter(is_partenaire=True)
 
         # Appliquer Bootstrap à tous les autres champs sauf date_debut/date_fin déjà stylés
@@ -40,7 +38,7 @@ class ProjetForm(forms.ModelForm):
         labels = {
             'partenariat': "Choisir le partenaire",
             'name': "Nom du projet",
-            'reduction': "Reduction (%)"
+            'reduction': "Remise (%)"
         }
 
     def __init__(self, *args, **kwargs):

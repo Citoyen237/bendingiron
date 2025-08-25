@@ -38,12 +38,16 @@ class Projet(models.Model):
         return self.name
     
     @property
+    def prix_revient_total(self):
+        return sum(item.prix_revient for item in self.projetitems.all())
+    
+    @property
     def montant_total(self):
         return sum(item.prix_u * item.quantite for item in self.projetitems.all())
     
     @property
     def montant_apres_remise(self):
-        return round(self.montant_total-((self.montant_total*self.reduction)/100))
+        return round(self.montant_total-((self.prix_revient_total*self.reduction)/100))
     
     @property
     def montant_tva(self):
@@ -168,6 +172,7 @@ class ProjetItem(models.Model):
     projet = models.ForeignKey(Projet,related_name='projetitems', on_delete=models.CASCADE)
     produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
     details = models.JSONField()  # Détails du produit (dimensions, choix d'angle, etc.)
+    prix_revient=models.DecimalField(max_digits=10, decimal_places=2)
     quantite = models.PositiveIntegerField(default=1)
     prix_u = models.DecimalField(max_digits=10, decimal_places=2)
 

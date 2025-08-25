@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.generic import ListView
 import os
+from datetime import datetime
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib import messages
@@ -24,6 +25,13 @@ from partenaires.models import *
 from partenaires.form import *
 from django.urls import reverse_lazy
 from collections import defaultdict
+from auth_app.utils import *
+from usesOrders.form import *
+import random
+import string
+from django.utils import timezone
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth
 
 
 # Create your views here.
@@ -40,7 +48,34 @@ def is_admin(user):
 
 @user_passes_test(is_admin)
 def indexA(request):
-    return render(request, 'indexA.html')
+    orders = Order.objects.order_by('-created_at')[:5]
+    projets = Projet.objects.order_by('-created_at')[:5]
+    users = User.objects.all()
+    distributeurs = CodePromo.objects.all()
+    valid_count = sum(1 for code in distributeurs if not code.is_expired)  # nombre valides
+    userStaff=User.objects.filter(is_staff=1)
+    partenaires=Partenariats.objects.all()
+    valid_partenaires = sum(1 for code in partenaires if not code.is_expired)  # en cours
+    produits = Produit.objects.all()
+    fersRouleau = Fer.objects.filter(categorie="rouleau")
+    fersBarre = Fer.objects.filter(categorie="barre")
+
+    projetOrders = ProjetOrder.objects.order_by('-created_at')[:5]
+    context = {
+        'orders':orders,
+        'projets':projets,
+        'projetsOrders':projetOrders,
+        'users':users,
+        'userStaff':userStaff,
+        'distributeurs':distributeurs,
+        "valid_count": valid_count,
+        'partenaires':partenaires,
+        'valid_partenaires':valid_partenaires,
+        'produits':produits,
+        'fersRouleau':fersRouleau,
+        'fersBarre':fersBarre,
+    }
+    return render(request, 'indexA.html', context)
 
 
 # produits en stock
@@ -219,29 +254,39 @@ class ListUser(AdminOrSuperAdminRequiredMixin,ListView):
 def toggle_user_status(request, user_id):
     try:
         user = CustomUser.objects.get(id=user_id)
+        objet = ""
+        template = ""
         if user.is_active:
             # Bloquer l'utilisateur
             user.is_active = 0
-            status_message = "Votre compte chez a été bloqué."
+            # status_message = "Votre compte chez a été bloqué."
             admin_message = f"L'utilisateur {user.first_name} a été bloqué."
+            objet = "Votre compte a été temporairement bloqué."
+            template = 'users/mail_bloque.html',
         else:
             # Débloquer l'utilisateur
             user.is_active = 1
-            status_message = "Votre compte a été réactivé."
+            # status_message = "Votre compte a été réactivé."
             admin_message = f"L'utilisateur {user.first_name} a été débloqué."
+            template = 'users/mail_debloque.html',
+            objet = "Votre compte a été réactivé"
         
         # Sauvegarder le changement
         user.save()
 
         # Envoyer l'email
-        send_mail(
-            subject='Mise à jour de votre compte',
-            message=f"Bonjour {user.first_name},\n\n{status_message}\n\nCordialement, L'équipe DFMAC.",
-            from_email=settings.DEFAULT_FROM_EMAIL,  # Remplacez par votre adresse d'expéditeur
-            recipient_list=[user.email],
-            fail_silently=False,
+        context = {'user': user}
+        send_custom_email(
+            objet,
+            template,
+            context,
+            [user.email]
         )
-
+        # subject=objet,
+        #     message=f"Bonjour {user.first_name},\n\n{status_message}\n\nCordialement, L'équipe DFMAC.",
+        #     from_email=settings.DEFAULT_FROM_EMAIL,  # Remplacez par votre adresse d'expéditeur
+        #     recipient_list=[user.email],
+        #     fail_silently=False,
         # Message de confirmation pour l'admin
         messages.success(request, admin_message)
     except CustomUser.DoesNotExist:
@@ -341,7 +386,6 @@ def change_statut(request, order_id):
    order = get_object_or_404(Order, id=order_id)
    new_status=order.get_statut_actuel
   
- 
    if (order.get_statut_actuel == "en_attente" ):
       new_status = "en_production"
    elif (order.get_statut_actuel == "en_production" ):
@@ -352,13 +396,23 @@ def change_statut(request, order_id):
       new_status = "termine"
    elif (order.get_statut_actuel == "termine" ):
       new_status = "termine"
-      # Mettre à jour le statut
    Traiment.objects.create(
         order=order,
         user=user,
         statut=new_status
     )
-
+   template="mail-statut.html"
+   objet="le statut de votre commande"
+   context = {
+       'user': user,
+       'order':order
+              }
+   send_custom_email(
+            objet,
+            template,
+            context,
+            [user.email]
+    )
     #   Rediriger (par exemple, vers la page des commandes)
    return redirect('order.list')  # Modifie selon le nom de ta vue cible
 
@@ -481,22 +535,35 @@ def change_statut_order(request, order_id):
     #   Récupérer l'objet
     order = get_object_or_404(ProjetOrder, id=order_id)
     new_status=order.get_statut_actuel
-  
+    print(new_status)
  
     if (order.get_statut_actuel == "en_attente" ):
-        new_status = "en_production"
+      new_status = "en_production"
     elif (order.get_statut_actuel == "en_production" ):
-        new_status = "pret_pour_livraison"
+      new_status = "pret_pour_livraison"
     if (order.get_statut_actuel == "pret_pour_livraison" ):
-        new_status = "solde_facture"
+      new_status = "termine"
     elif (order.get_statut_actuel == "termine" ):
-        new_status = "termine"
+      new_status = "termine"
         # Mettre à jour le statut
     TraimentOrder.objects.create(
             projet_order=order,
             user=user,
             statut=new_status
         )
+    userIn = order.projet.partenariat.user
+    template="mail-statut.html"
+    objet="le statut de votre commande"
+    context = {
+       'user': userIn,
+       'order':order
+              }
+    send_custom_email(
+            objet,
+            template,
+            context,
+            [order.projet.partenariat.user.email]
+    )
     #   Rediriger (par exemple, vers la page des commandes)
     return redirect('partenariat.orders')  # Modifie selon le nom de ta vue cible 
 
@@ -526,3 +593,31 @@ class ListCodeRevendeur(ListView):
     model=CodePromo
     context_object_name = 'codes'
     template_name = "codepromo/list.html"
+
+def generate_random_code(length=6):
+    characters = string.ascii_letters + string.digits
+    return ''.join(random.choice(characters) for i in range(length))
+
+
+@user_passes_test(is_admin)
+def add_distributeur(request):
+    if request.method == "POST":
+        form=DistributeurForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            code =generate_random_code()
+            CodePromo.objects.create(
+                user=user,
+                client =form.cleaned_data.get('client'),
+                remise=form.cleaned_data.get('remise'),
+                code=code,
+                expiration =form.cleaned_data.get('expiration')
+            )
+            messages.success(request, f'le code ce distributeur est {code}!')
+            return redirect('code.revendeur')
+        else :
+            print(form.errors)
+    else :
+        form=DistributeurForm()
+
+    return render(request, "codepromo/create.html", {'form':form})

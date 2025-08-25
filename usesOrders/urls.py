@@ -9,6 +9,6 @@ urlpatterns = [
   path('detail-commande/<int:order_id>', detail_commande , name='detail_commande'),
   path('invoice/<int:invoice_id>/acompte/', generate_invoice_pdf, name='invoice_download'),
   path('invoice/<int:invoice_id>/solde/', generate_invoice_pdf_solde, name='invoice_download2'),
-
   path('infirmation-personnel/', send_info_user, name='info_user'),
+  path("appliquer-code/", appliquer_code_promo, name="appliquer_code"),
 ]

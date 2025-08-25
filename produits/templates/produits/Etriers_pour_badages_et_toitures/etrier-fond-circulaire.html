@@ -30,18 +30,38 @@ detail
                     {% csrf_token %}
 
                     <input type="hidden" id="val" value={{val}}>
+                    {{form.prix_revient}}
                     <div class="row">
                         <div class="col">
-                            <h4 class="">{{form.fer.label}}</h4>
+                            <h4 class="">Materiaux</h4>
                         </div>
                         <div class="col">
-                            {{ form.fer }}
+                         <input type='radio' checked>
+                         Acier
+                        </div>
+                    </div>
+                    </br>
+                     <div class="row">
+                        <div class="col">
+                            <h4 class="">Qui fourni le fer ?</h4>
+                        </div>
+                        <div class="col">
+                           <input class="text-primary" type='radio' checked> Bending Iron
                         </div>
                     </div>
                     </br>
                     <div class="row">
                         <div class="col">
-                            <h4 class=""><b>M. </b>{{form.Diametre_fer.label}}</h4>
+                            <h4 class="">{{form.tube_etrier.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.tube_etrier }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>M. </b>{{form.Diametre_fer.label}}</h4>
                         </div>
                         <div class="col">
                             {{ form.Diametre_fer}}
@@ -51,7 +71,7 @@ detail
 
                     <div class="row">
                         <div class="col">
-                            <h4 class=""><b>A.</b>{{form.hauteur.label}}</h4>
+                            <h4 class="text-secondary"><b>A.</b>{{form.hauteur.label}}</h4>
                         </div>
                         <div class="col">
                             {{ form.hauteur}}
@@ -61,7 +81,7 @@ detail
                     </br>
                     <div class="row">
                         <div class="col">
-                            <h4 class=""><b>B.</b>{{form.largeur.label}}</h4>
+                            <h4 class="text-secondary"><b>B.</b>{{form.largeur.label}}</h4>
                         </div>
                         <div class="col">
                             {{ form.largeur}}
@@ -71,7 +91,7 @@ detail
                     </br>
                     <div class="row">
                         <div class="col">
-                            <h4 class=""><b>C.</b>{{form.hauteur_Filetage.label}}</h4>
+                            <h4 class="text-secondary"><b>C.</b>{{form.hauteur_Filetage.label}}</h4>
                         </div>
                         <div class="col">
                             {{ form.hauteur_Filetage}}
@@ -172,119 +192,208 @@ detail
         let hauteurField = document.getElementById('hauteur');
         let hauteurError = document.getElementById('hauteur-error');  // Élément pour afficher l'erreur
         let largeurField = document.getElementById('largeur');
-        let largeurError = document.getElementById('largeur-error');
         let hauteurFiletageField = document.getElementById('hauteurFiletage');
-        let hauteurFiletageError = document.getElementById('hauteurFiletage-error');
         let longueurTotalField = document.getElementById('longueurTotal');
         let prixField = document.getElementById('prix-id');
         let prixTotalField = document.getElementById('prix-total');
         let quantiteField = document.getElementById('quantite'); // Quantité de cadre
         let val = document.getElementById('val');
 
+        //add
+        let prix_revientField =document.getElementById('prix_revient')
 
+        //tube en pouce pour etrier
+        let tube_etrierField = document.getElementById('tube_etrier');
         // Fonction pour effectuer les calculs
         const updateFields = () => {
-            //fer
-            let fer = document.querySelector('input[name="fer"]:checked')?.value
             // Récupérer les valeurs des champs
-            let diametre = parseInt(diametereField.value);
             let hauteurCote = parseFloat(hauteurField.value);
             let largeurCote = parseFloat(largeurField.value);
             let hauteurFiletageCote = parseFloat(hauteurFiletageField.value)
             //let ange = parseFloat(angeField.value || 90)
             let quantite = parseFloat(quantiteField.value || 1);
 
+            //add
+            let prix_revient = parseFloat(prix_revientField.value || 1);
+
             //calcule rayon, longueur de depart
             //rayonField.value = 5*diametre
             //longueurdptField.value = 5*diametre
-            diametereField.value = diametre
+            // diametereField.value = diametre
             //angeField.value = ange
             // Vérification de la valeur minimale pour longueurCote
-            if (hauteurCote < 30 || hauteurCote > 580) {
-                // Afficher le message d'erreur
-                hauteurError.textContent = "comprise entre 30-580";
-                hauteurError.style.display = "block"; // Afficher le message
-                // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-                hauteurField.value = hauteurCote;  // Mettre à jour le champ avec la valeur corrigée
-            } else {
-                // Cacher le message d'erreur si la valeur est valide
-                hauteurError.style.display = "none";
-            }
-            if (largeurCote < 15 || largeurCote > 512) {
-                // Afficher le message d'erreur
-                largeurError.textContent = "comprise entre 15-512";
-                largeurError.style.display = "block"; // Afficher le message
-                // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-                largeurField.value = largeurCote;  // Mettre à jour le champ avec la valeur corrigée
-            } else {
-                // Cacher le message d'erreur si la valeur est valide
-                largeurError.style.display = "none";
-            }
-            if (hauteurFiletageCote < 15 || hauteurFiletageCote > 110) {
-                // Afficher le message d'erreur
-                hauteurFiletageError.textContent = "comprise entre 15-110";
-                hauteurFiletageError.style.display = "block"; // Afficher le message
-                // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-                hauteurFiletageField.value = hauteurFiletageCote;  // Mettre à jour le champ avec la valeur corrigée
-            } else {
-                // Cacher le message d'erreur si la valeur est valide
-                hauteurFiletageError.style.display = "none";
-            }
+            // if (hauteurCote < 30 || hauteurCote > 580) {
+            //     // Afficher le message d'erreur
+            //     hauteurError.textContent = "comprise entre 30-580";
+            //     hauteurError.style.display = "block"; // Afficher le message
+            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
+            //     hauteurField.value = hauteurCote;  // Mettre à jour le champ avec la valeur corrigée
+            // } else {
+            //     // Cacher le message d'erreur si la valeur est valide
+            //     hauteurError.style.display = "none";
+            // }
+            // if (largeurCote < 15 || largeurCote > 512) {
+            //     // Afficher le message d'erreur
+            //     largeurError.textContent = "comprise entre 15-512";
+            //     largeurError.style.display = "block"; // Afficher le message
+            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
+            //     largeurField.value = largeurCote;  // Mettre à jour le champ avec la valeur corrigée
+            // } else {
+            //     // Cacher le message d'erreur si la valeur est valide
+            //     largeurError.style.display = "none";
+            // }
+            // if (hauteurFiletageCote < 15 || hauteurFiletageCote > 110) {
+            //     // Afficher le message d'erreur
+            //     hauteurFiletageError.textContent = "comprise entre 15-110";
+            //     hauteurFiletageError.style.display = "block"; // Afficher le message
+            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
+            //     hauteurFiletageField.value = hauteurFiletageCote;  // Mettre à jour le champ avec la valeur corrigée
+            // } else {
+            //     // Cacher le message d'erreur si la valeur est valide
+            //     hauteurFiletageError.style.display = "none";
+            // }
 
             // Calcul de la longueur totale du cadre
-            let longueurTotal = 0
-            if (ange = 90) {
-                longueurTotal = (2 * hauteurCote) + (largeurCote)
-            } else {
-                longueurTotal = (2 * hauteurCote) + (largeurCote)
-            }
+            longueurTotal = (2 * hauteurCote) + (largeurCote)
+           
             // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
 
             const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;
             let taux = donnees.taux;
-            let prixferCon = "m" + diametre
-            //coeficient fonction du fer
-            let prixfer = donnees[prixferCon]
-            let prix_revient = 0
-            switch (diametre) {
-                case 6:
+            //<!-- let prixferCon = "m" + diametre -->
+            //coeficient fonction du materiaux
+            //let prixfer = donnees[prixferCon]
+            prix_revient = 0
+
+            switch (tube_etrierField.value) {
+                case '1':
                     prix_revient = 80
+                    diametereField.value = "M8"
+                    hauteurField.value = 80
+                    largeurField.value = 36
+                    hauteurFiletageField.value = 46 
                     break
-                case 8:
+                case '1 1/4':
                     prix_revient = 100
+                    diametereField.value = "M8"
+                    hauteurField.value = 90
+                    largeurField.value = 45
+                    hauteurFiletageField.value = 48
                     break
-                case 10:
+                case '1 1/2':
                     prix_revient = 120
+                    diametereField.value = "M8"
+                    hauteurField.value = 100
+                    largeurField.value = 52
+                    hauteurFiletageField.value = 50 
                     break
-                case 12:
+                case '2':
                     prix_revient = 140
+                    diametereField.value = "M10"
+                    hauteurField.value = 110
+                    largeurField.value = 63
+                    hauteurFiletageField.value = 50 
                     break
-                case 14:
+                case '2 1/2':
                     prix_revient = 160
+                    diametereField.value = "M10"
+                    hauteurField.value = 120
+                    largeurField.value = 79
+                    hauteurFiletageField.value = 45
                     break
-                case 16:
-                    prix_revient = 180
-                    break
-                case 20:
+                case '3':
                     prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 130
+                    largeurField.value = 93
+                    hauteurFiletageField.value = 45
+                    break
+                case '4':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 170
+                    largeurField.value = 118
+                    hauteurFiletageField.value = 45
+                    break
+                case '5':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 195
+                    largeurField.value = 144
+                    hauteurFiletageField.value = 55 
+                    break
+                case '6':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 220
+                    largeurField.value = 173
+                    hauteurFiletageField.value = 55 
+                    break
+                case '8':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 270
+                    largeurField.value = 225
+                    hauteurFiletageField.value = 55 
+                    break
+                case '10':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 320
+                    largeurField.value = 275
+                    hauteurFiletageField.value = 60 
+                    break
+                case '12':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 380
+                    largeurField.value = 328
+                    hauteurFiletageField.value = 70 
+                    break
+                case '14':
+                    prix_revient = 220
+                    diametereField.value = "M18"
+                    hauteurField.value = 425
+                    largeurField.value = 360
+                    hauteurFiletageField.value = 90 
+                    break
+                case '16':
+                    prix_revient = 220
+                    diametereField.value = "M18"
+                    hauteurField.value = 480
+                    largeurField.value = 410
+                    hauteurFiletageField.value = 100
+                    break
+                case '18':
+                    prix_revient = 220
+                    diametereField.value = "M20"
+                    hauteurField.value = 530
+                    largeurField.value = 462
+                    hauteurFiletageField.value = 110 
+                    break
+                case '20':
+                    prix_revient = 220
+                    diametereField.value = "M20"
+                    hauteurField.value = 580
+                    largeurField.value = 512
+                    hauteurFiletageField.value = 110 
                     break
             }
 
             let prixUnitaire = 0
-
-            if (fer === 'bending iron') {
-                prixUnitaire = 4 + prix_revient + (4 + prix_revient) * taux
-            }
-            if (fer === 'le client') {
-                prixUnitaire = 8 + diametre + (8 + diametre) * taux; // Exemple de calcul
-            }
+            
+            prixUnitaire = 4 + prix_revient +300 + (4 + prix_revient+300) * taux
+        
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
 
             let prixTotal = (prixUnitaire * quantite);
             prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
+
+            //add
+            prix_revientField.value=prix_revient*quantite
         };
 
         // Mettre à jour les valeurs dès qu'un champ change
@@ -293,16 +402,14 @@ detail
             largeurField,
             hauteurFiletageField,
             quantiteField,
-            fer,
-            hauteurError,
-            largeurError,
-            hauteurFiletageError,
             //rayonField,
             //longueurdptField,
             prixField,
             prixTotalField,
-            diametereField
+            diametereField,
             //angeField
+            tube_etrierField,
+            prix_revientField
         ];
 
         fieldsToWatch.forEach(field => {
