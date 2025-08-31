@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 
-
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS').split(',')
+# bendingiron.onrender.com
+ALLOWED_HOSTS = ['bendingiron.onrender.com','192.168.203.51','127.0.0.1','192.168.1.107', 'localhost', '192.168.219.51','192.168.35.51', '192.168.109.51']
 
 
 # nouveau model de connexion
