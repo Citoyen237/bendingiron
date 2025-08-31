@@ -2,25 +2,21 @@ from django import forms
 from .models import *
 
 class AncrageJForm(forms.Form):
- choix_fer = [
-        ('bending iron','Bending Iron (Acier) '),
-        ('le client','le client'),
-    ]
-
- fer=forms.ChoiceField(
-        choices=choix_fer,
-        # widget=forms.RadioSelect,
-        label = " Qui fourni le fer ?",
-        required=True,
-         widget=forms.RadioSelect(attrs={
-            # 'readonly': 'readonly',  # Attribut readonly
-            # 'class': 'form-radio',  # Classe CSS
-            # 'value': '20',  # Valeur initiale spécifique
-            'id': 'fer' , # Attribut id
-            'initial':'bending iron',
+ 
+ prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
         })
     )
-   
+
+ fer = forms.CharField(
+        # Valeur par défaut
+        widget=forms.HiddenInput(attrs={
+            'id': 'fer',
+        })
+    )
+
+
     #choix du diametre
  CHOICES2 = [
         ('12', 'M12'),
@@ -29,7 +25,8 @@ class AncrageJForm(forms.Form):
         ('24', 'M24'),
         ('27', 'M27'),
         ('30', 'M30'),
-        ('32', 'M32')
+        ('33', 'M32'),
+        ('36', 'M36')
     ]
     
  Diametre_fer = forms.ChoiceField(
@@ -38,7 +35,7 @@ class AncrageJForm(forms.Form):
         required=True,  # Champ requis
         initial='M12',  # Valeur par défaut
         widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
+            'class':'form-select',  # Classe CSS
             'id': 'diametre',  # Attribut id
             # 'readonly': 'readonly',  # Attribut readonly (facultatif)
         })
@@ -56,15 +53,23 @@ class AncrageJForm(forms.Form):
         })
     )
     
- longeur_Ancrage = forms.FloatField(
+    #longueur d'antrage
+ CHOICES3 = [
+        (200, 200),
+        (300, 300),
+        (400, 400),
+        (500, 500),
+        (600, 600),
+    ]
+ longeur_Ancrage = forms.ChoiceField(
+        choices=CHOICES3,
         label=" Longueur Ancrage(mm)",
         required=True,  # Champ requis
+        initial=200,
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=1000,
-        widget=forms.NumberInput(attrs={
+        widget=forms.Select(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
+            'class': 'form-select',  # Classe CSS
              #'value': '300',  # Valeur initiale spécifique
             'id': 'longeurAncrage'  # Attribut id
         })
@@ -143,22 +148,16 @@ class AncrageJForm(forms.Form):
     )
 
 class AncrageCrossForm(forms.Form):
-    choix_fer = [
-        ('bending iron','Bending Iron (Acier) '),
-        ('le client','le client'),
-    ]
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
 
-    fer=forms.ChoiceField(
-        choices=choix_fer,
-        # widget=forms.RadioSelect,
-        label = " Qui fourni le fer ?",
-        required=True,
-         widget=forms.RadioSelect(attrs={
-            # 'readonly': 'readonly',  # Attribut readonly
-            # 'class': 'form-radio',  # Classe CSS
-            # 'value': '20',  # Valeur initiale spécifique
-            'id': 'fer' , # Attribut id
-            'initial':'bending iron',
+    fer = forms.CharField(
+        # required=True,  # Champ requis
+        widget=forms.HiddenInput(attrs={
+            'id': 'fer',
         })
     )
    
@@ -170,8 +169,9 @@ class AncrageCrossForm(forms.Form):
         ('24', 'M24'),
         ('27', 'M27'),
         ('30', 'M30'),
-        ('32', 'M32')
-    ]
+        ('33', 'M32'),
+        ('36', 'M36')
+        ]
     
     Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
@@ -179,7 +179,7 @@ class AncrageCrossForm(forms.Form):
         required=True,  # Champ requis
         initial='M12',  # Valeur par défaut
         widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
+            'class':'form-select',  # Classe CSS
             'id': 'diametre',  # Attribut id
             # 'readonly': 'readonly',  # Attribut readonly (facultatif)
         })
@@ -198,19 +198,28 @@ class AncrageCrossForm(forms.Form):
         })
     )
     
-    longeur_Ancrage = forms.FloatField(
+       #longueur d'antrage
+    CHOICES3 = [
+        (200, 200),
+        (300, 300),
+        (400, 400),
+        (500, 500),
+        (600, 600),
+    ]
+    longeur_Ancrage = forms.ChoiceField(
+        choices=CHOICES3,
         label=" Longueur Ancrage(mm)",
         required=True,  # Champ requis
+        initial=200,
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=1000,
-        widget=forms.NumberInput(attrs={
+        widget=forms.Select(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
+            'class': 'form-select',  # Classe CSS
              #'value': '300',  # Valeur initiale spécifique
             'id': 'longeurAncrage'  # Attribut id
         })
     )
+    
     
     #rayon de courbure
     diametre_Cintrage = forms.FloatField(

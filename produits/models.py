@@ -10,8 +10,7 @@ class Categorie(models.Model):
     image = models.ImageField(upload_to='produits/images',null=True,blank=True)
     
     def __str__(self):
-        return f'{self.libelle}'
-    
+        return f'{self.libelle}'   
 # produit    
 class Produit(models.Model):
     SOUS_CATEGORIE = [

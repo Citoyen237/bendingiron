@@ -26,7 +26,6 @@ token_generator = PasswordResetTokenGenerator()
 def send_verification_email(request,user):
     # user=User.objects.get(id=user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    print(uid)
     token = token_generator.make_token(user)
     link = f"http://{request.get_host()}/auth/verification-email/{uid}/{token}/"
 
@@ -125,7 +124,7 @@ def register(request):
             user_group = Group.objects.get(name='simple')
             user.groups.add(user_group)
             if user is not None :
-                send_verification_email(user, request)
+                send_verification_email(request,user)
                 messages.success(request,'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter')
                 message="Un email de vérification vous a été envoyé. Veuillez consulter votre boîte mail"
                 return render(request, 'comfirm-register.html', {'message':message})

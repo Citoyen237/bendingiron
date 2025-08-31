@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  web:
+    restart: always
+    build: .
+    command: "sh run.sh"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/bendingiron
+    env_file:
+      - ".env"
+    depends_on:
+      - db
+    networks:
+      - default
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "myuser", "-pmydatabase"]
+      interval: 10s
+      retries: 5
+    networks:
+      - default
+      
+networks:
+  default:

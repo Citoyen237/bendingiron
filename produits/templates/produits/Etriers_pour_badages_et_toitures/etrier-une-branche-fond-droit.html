@@ -31,6 +31,7 @@ detail
 
                     <input type="hidden" id="val" value={{val}}>
                      {{form.prix_revient}}
+                     {{form.fer}}
                     <div class="row">
                         <div class="col">
                             <h4 class="">Materiaux</h4>
@@ -99,7 +100,17 @@ detail
                         </div>
                     </div>
                     </br>
-
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>E.</b>{{form.demi_branche.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.demi_branche}}
+                            <div id="hauteurFiletage-error" class="error-message" style="color: red; display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    </br>
                     <div class="row">
                         <div class="col">
                             <h4 class="text-secondary">{{form.longueur_Total.label}}</h4>
@@ -161,6 +172,10 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
+                <a class="btn btn-link" href="{% static 'front/images/abaques/etrierafonddroitunebranche.jpg'  %}">
+                    consulter
+                    l'ABAQUE
+                </a>
                 {% if user.is_authenticated %}
                 <button class="btn btn-warning ">
                     Ajouter au panier
@@ -188,6 +203,7 @@ detail
         let largeurField = document.getElementById('largeur');
         let largeurError = document.getElementById('largeur-error');
         let hauteurFiletageField = document.getElementById('hauteurFiletage');
+        let DemiBrancheFiletageField = document.getElementById('demi_branche');
         let hauteurFiletageError = document.getElementById('hauteurFiletage-error');
         let longueurTotalField = document.getElementById('longueurTotal');
         let prixField = document.getElementById('prix-id');
@@ -197,6 +213,7 @@ detail
 
         //add
         let prix_revientField = document.getElementById('prix_revient')
+        let ferField = document.getElementById('fer')
 
         //tube en pouce pour etrier
         let tube_etrierField = document.getElementById('tube_etrier');
@@ -238,47 +255,77 @@ detail
             let prixfer = donnees[prixferCon]
             prix_revient = 0
             switch (tube_etrierField.value) {
-                case '40*40':
+                case '40X40':
                     prix_revient = 80
                     diametereField.value = "M8"
                     hauteurField.value = 80
                     largeurField.value = 45
                     hauteurFiletageField.value = 45
+                    DemiBrancheFiletageField.value = 33
                     break
-                case '45*45':
+                case '45X45':
                     prix_revient = 100
                     diametereField.value = "M8"
                     hauteurField.value = 90
                     largeurField.value = 50
                     hauteurFiletageField.value = 50
+                    DemiBrancheFiletageField.value = 35
                     break
-                case '50*50':
+                case '50X50':
                     prix_revient = 120
                     diametereField.value = "M8"
                     hauteurField.value = 100
                     largeurField.value = 55
                     hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value = 38
                     break
-                case '60*60':
+                case '60X60':
                     prix_revient = 140
                     diametereField.value = "M10"
                     hauteurField.value = 110
                     largeurField.value = 65
                     hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value = 48
                     break
-                case '70*70':
+                case '70X70':
                     prix_revient = 160
                     diametereField.value = "M10"
                     hauteurField.value = 120
                     largeurField.value = 75
                     hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value = 53
                     break
-                case '80*80':
+                case '80X80':
                     prix_revient = 220
                     diametereField.value = "M10"
                     hauteurField.value = 130
                     largeurField.value = 85
                     hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value =  58
+                    break
+                case '100X100':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 150
+                    largeurField.value = 105
+                    hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value = 73
+                    break
+                case '120X120':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 170
+                    largeurField.value = 125
+                    hauteurFiletageField.value = 60
+                    DemiBrancheFiletageField.value = 83
+                    break
+                case '135X135':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 195
+                    largeurField.value = 140
+                    hauteurFiletageField.value = 70
+                    DemiBrancheFiletageField.value = 90
                     break
             }
 
@@ -295,6 +342,8 @@ detail
 
             //add
             prix_revientField.value = prix_revient * quantite
+            ferField.value='bending iron'
+
         };
 
         // Mettre à jour les valeurs dès qu'un champ change
@@ -310,7 +359,9 @@ detail
             diametereField,
             //angeField
             tube_etrierField,
-            prix_revientField
+            prix_revientField,
+            ferField,
+            DemiBrancheFiletageField
         ];
 
         fieldsToWatch.forEach(field => {

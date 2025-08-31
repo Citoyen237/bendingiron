@@ -31,6 +31,7 @@ detail
 
                     <input type="hidden" id="val" value={{val}}>
                     {{form.prix_revient}}
+                    {{form.fer}}
                     <div class="row">
                         <div class="col">
                             <h4 class="">Materiaux</h4>
@@ -161,7 +162,7 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
-                <a class="btn btn-link" href="{% static 'front/images/expertise/bac4.jpg'  %}">
+                <a class="btn btn-link" href="{% static 'front/images/abaques/etrierafondcirculaire.jpg'  %}">
                     consulter
                     l'ABAQUE
                 </a>
@@ -201,6 +202,7 @@ detail
 
         //add
         let prix_revientField =document.getElementById('prix_revient')
+        let ferField = document.getElementById('fer')
 
         //tube en pouce pour etrier
         let tube_etrierField = document.getElementById('tube_etrier');
@@ -215,43 +217,6 @@ detail
 
             //add
             let prix_revient = parseFloat(prix_revientField.value || 1);
-
-            //calcule rayon, longueur de depart
-            //rayonField.value = 5*diametre
-            //longueurdptField.value = 5*diametre
-            // diametereField.value = diametre
-            //angeField.value = ange
-            // Vérification de la valeur minimale pour longueurCote
-            // if (hauteurCote < 30 || hauteurCote > 580) {
-            //     // Afficher le message d'erreur
-            //     hauteurError.textContent = "comprise entre 30-580";
-            //     hauteurError.style.display = "block"; // Afficher le message
-            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-            //     hauteurField.value = hauteurCote;  // Mettre à jour le champ avec la valeur corrigée
-            // } else {
-            //     // Cacher le message d'erreur si la valeur est valide
-            //     hauteurError.style.display = "none";
-            // }
-            // if (largeurCote < 15 || largeurCote > 512) {
-            //     // Afficher le message d'erreur
-            //     largeurError.textContent = "comprise entre 15-512";
-            //     largeurError.style.display = "block"; // Afficher le message
-            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-            //     largeurField.value = largeurCote;  // Mettre à jour le champ avec la valeur corrigée
-            // } else {
-            //     // Cacher le message d'erreur si la valeur est valide
-            //     largeurError.style.display = "none";
-            // }
-            // if (hauteurFiletageCote < 15 || hauteurFiletageCote > 110) {
-            //     // Afficher le message d'erreur
-            //     hauteurFiletageError.textContent = "comprise entre 15-110";
-            //     hauteurFiletageError.style.display = "block"; // Afficher le message
-            //     // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-            //     hauteurFiletageField.value = hauteurFiletageCote;  // Mettre à jour le champ avec la valeur corrigée
-            // } else {
-            //     // Cacher le message d'erreur si la valeur est valide
-            //     hauteurFiletageError.style.display = "none";
-            // }
 
             // Calcul de la longueur totale du cadre
             longueurTotal = (2 * hauteurCote) + (largeurCote)
@@ -394,7 +359,8 @@ detail
 
             //add
             prix_revientField.value=prix_revient*quantite
-        };
+            ferField.value='bending iron'
+            };
 
         // Mettre à jour les valeurs dès qu'un champ change
         const fieldsToWatch = [
@@ -409,7 +375,8 @@ detail
             diametereField,
             //angeField
             tube_etrierField,
-            prix_revientField
+            prix_revientField,
+            ferField,
         ];
 
         fieldsToWatch.forEach(field => {

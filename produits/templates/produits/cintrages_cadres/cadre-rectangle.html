@@ -30,6 +30,7 @@ detail
              <form action="" method="post">
                     {% csrf_token %}
                     <input type="hidden" id="val" value={{val}}>
+                    {{form.prix_revient}}
                     <div class="row">
                         <div class="col">
                             <h4 class="">{{form.fer.label}}</h4>
@@ -188,6 +189,8 @@ detail
         let quantiteField = document.getElementById('quantite'); // Quantité de cadre
         let val = document.getElementById('val');
        
+        //add
+        let prix_revientField =document.getElementById('prix_revient')
 
         // Fonction pour effectuer les calculs
         const updateFields = () => {
@@ -199,6 +202,9 @@ detail
             let diametre = parseInt(diametereField.value)
             let ange = parseFloat(angeField.value || 90)
             let quantite = parseFloat(quantiteField.value || 1);
+
+            //add
+            let prix_revient = parseFloat(prix_revientField.value || 1);
 
            //calcule rayon, longueur de depart
             rayonField.value = 5*diametre
@@ -244,7 +250,7 @@ detail
             let prixferCon = "m" + diametre
             //coeficient fonction du fer
             let prixfer = donnees[prixferCon]
-            let prix_revient=0;
+            prix_revient=0;
 
             switch (diametre) {
                 case 6:
@@ -276,6 +282,9 @@ detail
 
             let prixTotal = (prixUnitaire*quantite);
             prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
+        
+            //add
+            prix_revientField.value=prix_revient*quantite
         };
         // Mettre à jour les valeurs dès qu'un champ change
         const fieldsToWatch = [
@@ -289,6 +298,7 @@ detail
             angeField,
             prixField,
             prixTotalField,
+            prix_revientField
         ];
 
         fieldsToWatch.forEach(field => {

@@ -1,1 +1,0 @@
-historique = commande et paiement

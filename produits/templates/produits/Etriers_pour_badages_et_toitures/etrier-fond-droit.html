@@ -31,6 +31,7 @@ detail
 
                     <input type="hidden" id="val" value={{val}}>
                     {{form.prix_revient}}
+                    {{form.fer}}
                     <div class="row">
                         <div class="col">
                             <h4 class="">Materiaux</h4>
@@ -160,7 +161,7 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
-                <a class="btn btn-link" href="{% static 'front/images/expertise/bac5.jpg'  %}">
+                <a class="btn btn-link" href="{% static 'front/images/abaques/etrierafonddroit.jpg'  %}">
                     consulter
                     l'ABAQUE
                 </a>
@@ -200,6 +201,7 @@ detail
 
          //add
         let prix_revientField =document.getElementById('prix_revient')
+        let ferField = document.getElementById('fer')
 
         //tube en pouce pour etrier
         let tube_etrierField = document.getElementById('tube_etrier');
@@ -241,48 +243,112 @@ detail
             let prixfer = donnees[prixferCon]
             prix_revient=0
             switch (tube_etrierField.value) {
-                case '40*40':
+                case '40X40':
                     prix_revient = 80
                     diametereField.value = "M8"
                     hauteurField.value = 80
                     largeurField.value = 45
                     hauteurFiletageField.value = 45 
                     break
-                case '45*45':
+                case '45X45':
                     prix_revient = 100
                     diametereField.value = "M8"
                     hauteurField.value = 90
                     largeurField.value = 50
                     hauteurFiletageField.value = 50
                     break
-                case '50*50':
+                case '50X50':
                     prix_revient = 120
                     diametereField.value = "M8"
                     hauteurField.value = 100
                     largeurField.value = 55
                     hauteurFiletageField.value = 60 
                     break
-                case '60*60':
+                case '60X60':
                     prix_revient = 140
                     diametereField.value = "M10"
                     hauteurField.value = 110
                     largeurField.value = 65
                     hauteurFiletageField.value = 60 
                     break
-                case '70*70':
+                case '70X70':
                     prix_revient = 160
                     diametereField.value = "M10"
                     hauteurField.value = 120
                     largeurField.value = 75
                     hauteurFiletageField.value = 60
                     break
-                case '80*80':
+                case '80X80':
                     prix_revient = 220
                     diametereField.value = "M10"
                     hauteurField.value = 130
                     largeurField.value = 85
                     hauteurFiletageField.value = 60
                     break
+                case '100X100':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 150
+                    largeurField.value = 105
+                    hauteurFiletageField.value = 60
+                    break
+                case '120X120':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 170
+                    largeurField.value = 125
+                    hauteurFiletageField.value = 60
+                    break
+                case '135X135':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 195
+                    largeurField.value = 140
+                    hauteurFiletageField.value = 70
+                    break
+                case '150X150':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 210
+                    largeurField.value = 155
+                    hauteurFiletageField.value = 70
+                    break
+                case '160X160':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 220
+                    largeurField.value = 165
+                    hauteurFiletageField.value = 70
+                    break
+                case '180X180':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 240
+                    largeurField.value = 185
+                    hauteurFiletageField.value = 70
+                    break
+                case '200X200':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 270
+                    largeurField.value = 205
+                    hauteurFiletageField.value = 80
+                    break
+                case '220X220':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 290
+                    largeurField.value = 225
+                    hauteurFiletageField.value = 80
+                    break
+                case '250X250':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 320
+                    largeurField.value = 255
+                    hauteurFiletageField.value = 80
+                    break
+
             }
 
 
@@ -298,6 +364,7 @@ detail
             
             //add
             prix_revientField.value=prix_revient*quantite
+            ferField.value='bending iron'
         };
 
         // Mettre à jour les valeurs dès qu'un champ change
@@ -313,7 +380,8 @@ detail
             diametereField,
             //angeField
             tube_etrierField,
-            prix_revientField
+            prix_revientField,
+            ferField
         ];
 
         fieldsToWatch.forEach(field => {

@@ -181,11 +181,11 @@ def detail_produit(request, product_id):
         template="produits/Etriers_pour_badages_et_toitures/etrier-fond-droit.html"
         
     if(product.nom=="etrier a une seul branche a fond droit"):
-        form=EtrierFondDroitForm(request.POST or None)
+        form=EtrierFondDroitUneBrancheForm(request.POST or None)
         template="produits/Etriers_pour_badages_et_toitures/etrier-une-branche-fond-droit.html"
         
     if(product.nom=="etrier a fond triangulaire"):
-        form=EtrierFondRondForm(request.POST or None)
+        form=EtrierFondDroitForm(request.POST or None)
         template="produits/Etriers_pour_badages_et_toitures/etrier-fond-triangulaire.html"
         
     if(product.nom=="Ancrage forme J"):

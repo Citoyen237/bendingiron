@@ -31,15 +31,27 @@ detail
                     {% csrf_token %}
 
                     <input type="hidden" id="val" value={{val}}>
+                    {{form.prix_revient}}
+                    {{form.fer}}
                     <div class="row">
                         <div class="col">
-                            <h4 class="">{{form.fer.label}}</h4>
+                            <h4 class="">Materiaux</h4>
                         </div>
                         <div class="col">
-                            {{ form.fer }}
+                         <input type='radio' checked>
+                         Acier
                         </div>
                     </div>
-
+                    </br>
+                     <div class="row">
+                        <div class="col">
+                            <h4 class="">Qui fourni le fer ?</h4>
+                        </div>
+                        <div class="col">
+                           <input class="text-primary" type='radio' checked> Bending Iron
+                        </div>
+                    </div>
+                    </br>
                     <div class="row">
                         <div class="col">
                             <h4 class=""><b>M.</b>{{form.Diametre_fer.label}}</h4>
@@ -151,6 +163,10 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
+                <a class="btn btn-link" href="{% static 'front/images/abaques/ancrageenformedel.jpg'%}">
+                    consulter
+                    l'ABAQUE
+                </a>
                 {% if user.is_authenticated %}
                 <button class="btn btn-warning ">
                     Ajouter au panier
@@ -184,15 +200,21 @@ detail
         let prixTotalField = document.getElementById('prix-total');
         let quantiteField = document.getElementById('quantite'); // Quantité de cadre
         let val = document.getElementById('val');
+
+        //add
+        let prix_revientField =document.getElementById('prix_revient')
+        let ferField = document.getElementById('fer')
+
        
         // Fonction pour effectuer les calculs
         const updateFields = () => {
-            //fer
-            let fer =document.querySelector('input[name="fer"]:checked')?.value
             // Récupérer les valeurs des champs
             let diametre = parseInt(diametereField.value);
             let longeurAncrageCote = parseFloat(longeurAncrageField.value || 0);
             let quantite = parseFloat(quantiteField.value || 1);
+
+            //add
+            let prix_revient = parseFloat(prix_revientField.value || 1);
 
            //calcule rayon, longueur de depart
             rayonField.value = 2*diametre;
@@ -203,22 +225,10 @@ detail
             
 
             hauteurcintrage=parseFloat(hauteurcintrageField.value)
-            console.log("hello"+hauteurcintrage)
             diametreCin = parseFloat(rayonField.value || 0)
 
             //angeField.value = ange
             // Vérification de la valeur minimale pour longueurCote
-
-            if (longeurAncrageCote < 300 || longeurAncrageCote > 1000) {
-                // Afficher le message d'erreur
-                longueurAncrageError.textContent = "comprise entre 300-1000";
-                longueurAncrageError.style.display = "block"; // Afficher le message
-                // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-                longeurAncrageField.value = longeurAncrageCote;  // Mettre à jour le champ avec la valeur corrigée
-            } else {
-                // Cacher le message d'erreur si la valeur est valide
-                longueurAncrageError.style.display = "none";
-            }
             
              // Calcul de la longueur totale du cadre
             let longueurTotal = 0
@@ -232,7 +242,7 @@ detail
             let prixferCon = "m" + diametre
             //coeficient fonction du fer
             let prixfer = donnees[prixferCon]
-            let prix_revient=0
+            prix_revient=0
              switch (diametre) {
                 case 12:
                     prix_revient=400
@@ -255,21 +265,24 @@ detail
                 case 32:
                     prix_revient=1100
                     break
+                case 36:
+                    prix_revient=1100
+                    break
             }
 
             let prixUnitaire = 0
-            
-            if (fer === 'bending iron') {
-                prixUnitaire = 20+prix_revient+(20+prix_revient)*taux 
-            } 
-            if (fer === 'le client') {
-                prixUnitaire =25+diametre+(25+diametre)*taux ; // Exemple de calcul
-            }
+                       
+            prixUnitaire = 20+prix_revient+(20+prix_revient)*taux 
+
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
 
             let prixTotal = (prixUnitaire*quantite);
             prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
+       
+            //add
+            prix_revientField.value=prix_revient*quantite
+            ferField.value='bending iron'
         };
 
 
@@ -281,10 +294,11 @@ detail
             longeurAncrageField,
             quantiteField,
             diametereField,
-            fer,
             longueurTotalField,
             prixField,
-            prixTotalField
+            prixTotalField,
+            prix_revientField,
+            ferField
 
         ];
 
