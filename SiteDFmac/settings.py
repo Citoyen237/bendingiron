@@ -24,10 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
-ALLOWED_HOSTS = ['bendingiron.onrender.com','192.168.203.51','127.0.0.1','192.168.1.107', 'localhost', '192.168.219.51','192.168.35.51', '192.168.109.51']
+
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS').split(',')
 
 
 # nouveau model de connexion
@@ -121,12 +120,7 @@ WSGI_APPLICATION = 'SiteDFmac.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
 
 # DATABASES = {
 #     'default': dj_database_url.parse(config('DATABASE_URL'))
