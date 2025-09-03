@@ -1,5 +1,4 @@
 from django.db import models
-# from auth_app.models import *
 from auth_app.models import CustomUser
 from produits.models import *
 from decimal import Decimal
@@ -7,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 
-# # Create your models here.
+# Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # total_prix = models.DecimalField(max_digits=10, decimal_places=2)
@@ -65,7 +64,6 @@ class CartItem(models.Model):
    
     def __str__(self):
         return f"{self.produit.nom} - Quantité: {self.quantite}"
-
 # # Create your models here.
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

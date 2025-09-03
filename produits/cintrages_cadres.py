@@ -3,7 +3,6 @@ from .models import *
 
 class CarreForm(forms.Form):
     # form
-    # addd
     prix_revient = forms.FloatField(
         widget=forms.HiddenInput(attrs={
             'id': 'prix_revient'  # Attribut id
@@ -27,7 +26,7 @@ class CarreForm(forms.Form):
             'initial':'bending iron',
         })
     )
-
+    
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),
@@ -177,7 +176,6 @@ class RectangleForm(forms.Form):
             'id': 'prix_revient'  # Attribut id
         })
     )
-
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),
@@ -484,6 +482,11 @@ class TriangleForm(forms.Form):
     )
      
 class HexagonaleForm(forms.Form):
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),

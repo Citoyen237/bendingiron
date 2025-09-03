@@ -2,161 +2,13 @@ from django import forms
 from .models import *
 
 # '''front'''   
-
-
-
-class CrochetForm(forms.Form):
-    choix_fer = [
-        ('bending iron','Bending Iron'),
-        ('le client','le client'),
-    ]
-
-    fer=forms.ChoiceField(
-        choices=choix_fer,
-        # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
-        required=True,
-         widget=forms.RadioSelect(attrs={
-            # 'readonly': 'readonly',  # Attribut readonly
-            # 'class': 'form-radio',  # Classe CSS
-            # 'value': '20',  # Valeur initiale spécifique
-            'id': 'fer' , # Attribut id
-            'initial':'bending iron',
-        })
-    )
-   
-   #choix du diametre
-    CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
-    ]
-    
-    Diametre_fer = forms.ChoiceField(
-        choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
-        required=True,  # Champ requis
-        initial='M6',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'diametre',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-        })
-    )
-    
-    # choix angle de cintrage
-    CHOICES = [
-        ('135', '135°'),
-        ('180', '180°')
-    ]
-    
-    Angle_pliage = forms.ChoiceField(
-        choices=CHOICES,
-        label=" Choix de l’angle de cintrage(degre) ",
-        required=True,  # Champ requis
-        initial='135°',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'angle',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
-        })
-    )   
-    
-    #rayon de courbure
-    rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure (mm)",
-        #required=True,  # Champ requis
-        # initial,  # Valeur par défaut
-        #min_value=8, 
-        #max_value=50,
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
-            #'value': '30',  # Valeur initiale spécifique
-            'id': 'rayonCourbure'  # Attribut id
-        })
-    )
-    
-    #longueur depart et fin
-    longueur_Depart_et_Fin = forms.FloatField(
-        label=" Longueur de départ & fin",
-        # required=True,  # Champ requis
-        #initial=6.5,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            #'value':'30',
-            'id': 'longueurDepart'  # Attribut id
-        })
-    )
-    
-    #longueur depart et fin
-    longueur_Total = forms.FloatField(
-        label=" Longueur totale du cadre (mm)",
-        # required=True,  # Champ requis
-        # initial=0.6,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'readonly': 'readonly',
-            'class': 'form-control',  # Classe CSS
-            'id': 'longueurTotal'  # Attribut id
-        })
-    )
-    
-    longueur_Cote = forms.FloatField(
-        label=" Longueur du cote(mm)",
-        required=True,  # Champ requis
-        # initial,  # Valeur par défaut
-        min_value=1, 
-        max_value=1000,
-        widget=forms.NumberInput(attrs={
-            # 'readonly': 'readonly',  # Attribut readonly
-            'class': 'form-control',  # Classe CSS
-            # 'value': '20',  # Valeur initiale spécifique
-            'id': 'longueurCote'  # Attribut id
-        })
-    )
-    
-      
-    
-    prix = forms.FloatField(
-        label="Prix unitaire",
-        # required=True,  # Champ requis
-        # initial=0,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',  # Classe CSS
-            'readonly': 'readonly',  # Attribut readonly
-            'value': '0',  # Valeur initiale
-            'id': 'prix-id'  # Attribut id
-        })
-    )
-    prix_Total = forms.FloatField(
-        label="Prix Total",
-        # required=True,  # Champ requis
-        # initial=0,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',  # Classe CSS
-            'readonly': 'readonly',  # Attribut readonly
-            'value': '0',  # Valeur initiale
-            'id': 'prix-total'  # Attribut id
-        })
-    )
-    quantite = forms.FloatField(
-        label="Quantite de barre(u)",
-        required=True,  # Champ requis
-        min_value=1,
-        max_value=10000,
-        # initial=1,  # Valeur par défaut
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',  # Classe CSS
-            # 'readonly': 'readonly',  # Attribut readonly
-            # 'value': '0',  # Valeur initiale
-            'id': 'quantite'  # Attribut id
-        })
-    )     
-
-
 class BarreDroiteForm(forms.Form):
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
+
     choix_fer = [
         ('bending iron','Bending Iron (Fe400)'),
         ('le client','le client'),
@@ -264,6 +116,12 @@ class BarreDroiteForm(forms.Form):
     )
    
 class BarreCouUneExForm(forms.Form):
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
+
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),
@@ -407,6 +265,12 @@ class BarreCouUneExForm(forms.Form):
     )
 
 class BarreCouDeuxExForm(forms.Form):
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
+
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),

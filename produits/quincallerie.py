@@ -2,6 +2,17 @@ from django import forms
 from .models import *
 
 class EcrouForm(forms.Form):
+    fer = forms.CharField(
+        # Valeur par défaut
+        widget=forms.HiddenInput(attrs={
+            'id': 'fer',
+        })
+    )
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )
 
     prix = forms.FloatField(
         label="Prix unitaire",
@@ -66,6 +77,17 @@ class EcrouForm(forms.Form):
     )
     
 class FerABetonForm(forms.Form):
+    fer = forms.CharField(
+        # Valeur par défaut
+        widget=forms.HiddenInput(attrs={
+            'id': 'fer',
+        })
+    )
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )    
 
     prix = forms.FloatField(
         label="Prix unitaire",
@@ -161,7 +183,17 @@ class FerABetonForm(forms.Form):
     )
     
 class FilForm(forms.Form):
-
+    fer = forms.CharField(
+        # Valeur par défaut
+        widget=forms.HiddenInput(attrs={
+            'id': 'fer',
+        })
+    )
+    prix_revient = forms.FloatField(
+        widget=forms.HiddenInput(attrs={
+            'id': 'prix_revient'  # Attribut id
+        })
+    )  
 
     longueur_Total = forms.FloatField(
         label="Longueur totale d'un anneau (mm)",

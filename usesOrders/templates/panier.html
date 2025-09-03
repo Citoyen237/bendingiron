@@ -141,7 +141,7 @@ panier
 <script>
 
     document.getElementById("codeForm").addEventListener("submit", function (e) {
-
+        e.preventDefault();
         let code = document.getElementById("code").value;
         let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -159,7 +159,6 @@ panier
                 if (data.success) {
                     result.innerHTML = "<span class='text-primary mt-2'>" + data.message + "</span>";
                 } else {
-                    e.preventDefault();
                     result.innerHTML = "<span class='text-danger mt-2'>" + data.message + "</span>";
                 }
             });

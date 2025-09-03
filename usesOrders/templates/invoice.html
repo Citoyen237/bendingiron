@@ -7,12 +7,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facture</title>
-    <!-- <link href="{% static 'front/plugins/bootstrap/bootstrap.min.css' %}" rel="stylesheet"> -->
     <style>
-        @page{
+        @page {
             size: A4;
             margin: 20mm;
         }
+
         body {
             font-family: Adobe Arabic;
             background-image: url('{{background_url}}');
@@ -96,7 +96,7 @@
             margin-top: 4%;
         }
 
-        .pied{
+        .pied {
             position: fixed;
             bottom: 0;
             left: 0;
@@ -123,7 +123,6 @@
                 <span style="font-size: 18px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
             </div>
         </div>
-
         <!-- Company Info -->
         <div class="company-info">
             <p><b style="color: rgb(8, 115, 129);"><u>bendingiron.info@gmail.com</u></b><br>
@@ -132,7 +131,6 @@
                 (+237) 681 951 410
             </p>
         </div>
-
         <!-- Client Info -->
         <div class="client-info">
             <strong style="font-size:26px">{{order.infoclient.nom}}</strong>
@@ -141,10 +139,8 @@
             <span style="font-size:18px">{{order.infoclient.adresse}}</span><br>
             <span style="font-size:18px">Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></span>
         </div>
-
         <!-- Table -->
         <table>
-
             <tr>
                 <th>Produit</th>
                 <th>Description</th>
@@ -178,19 +174,13 @@
                 <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
             </tr>
             <tr>
-
                 <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                         30%</b></td>
                 <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
             </tr>
+            <!-- Ajouter d'autres lignes ici si nécessaire -->
+        </table>
     </div>
-    <!-- Ajouter d'autres lignes ici si nécessaire -->
-
-    <!-- <tr>
-                    <td colspan="4" class="total"><strong>Total TTC</strong></td>
-                    <td>__ €</td>
-                </tr> -->
-    </table>
 
     <div class="footer">
         <!-- Additional Information -->
@@ -204,16 +194,10 @@
             jusqu’au paiement intégral.
         </div>
         <!-- Signature -->
-
         <div class="signature">
             <img src="{{cachet_url}}" alt="Logo" style="width:270px;">
         </div>
     </div>
-
-    <!-- Footer -->
-    <!-- <div class="footer">
-            <p>Mon entreprise — Société au capital de __ euros</p>
-        </div> -->
 
     </div>
     <div class="pied">
