@@ -38,7 +38,7 @@ echo "** Version ${VERSION}"
 echo "** Starting gunicorn on multiple ports..."
 
 # Starting Gunicorn 
-gunicorn django_invoice.wsgi:application -b 0:8000 -w "${GUNICORN_WORKERS}" --log-level DEBUG --reload --threads=10 --timeout=3600 &
+gunicorn SiteDFmac.wsgi:application -b 0:8000 -w "${GUNICORN_WORKERS}" --log-level DEBUG --reload --threads=10 --timeout=3600 &
 
 # Wait for all background jobs to finish
 wait
