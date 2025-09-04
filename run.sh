@@ -28,14 +28,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Running SQL insertions from file..."
-mysql -u "bendingiron" -p"bendingiron" "db_bendingiron" < db_bendingiron.sql
-
-if [ $? -ne 0 ]; then
-  echo "❌ Failed to execute SQL file."
-  exit 1
-fi
-
 echo "Collection statics?yes/or pass"
 echo 'yes' | python manage.py collectstatic --noinput
 
