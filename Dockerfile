@@ -1,5 +1,5 @@
 # version de python
-FROM python=3.10.6
+FROM python:3.10.6
 
 # S'assurer que le système est à jour
 RUN apt-get update -y && apt-get upgrade -y
