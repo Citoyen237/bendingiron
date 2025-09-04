@@ -21,6 +21,7 @@ services:
     volumes:
       - ./data/db:/var/lib/mysql
     environment:
+      MYSQL_ROOT_PASSWORD: MySuperStrongPassword123!
       MYSQL_DATABASE: bendingiron_db
       MYSQL_USER: bendingiron
       MYSQL_PASSWORD: bendingiron
