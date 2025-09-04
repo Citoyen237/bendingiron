@@ -29,7 +29,7 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running SQL insertions from file..."
-mysql -u "$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" < db_bendingiron.sql
+mysql -u "bendingiron" -p"bendingiron" "db_bendingiron" < db_bendingiron.sql
 
 if [ $? -ne 0 ]; then
   echo "❌ Failed to execute SQL file."
