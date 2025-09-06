@@ -43,6 +43,32 @@ EMAIL_HOST_USER = 'bendingiron.info@gmail.com'
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'bendingiron.info@gmail.com'
 
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT')
+    }
+}
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+# addresse acepter en production
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.bending-iron.com',  
+    'http://www.bending-iron.com',
+    'http://localhost',
+    'http://127.0.0.1',
+
+]
+
+CSRF_COOKIE_DOMAIN = '.bending-iron.com'
+
 # nouvelle route de login
 LOGIN_URL = 'auth/login/'
 
