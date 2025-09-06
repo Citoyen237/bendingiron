@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  sam. 30 août 2025 à 14:07
+-- Généré le :  sam. 06 sep. 2025 à 13:05
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `auth_app_customuser` (
 --
 
 INSERT IGNORE INTO `auth_app_customuser` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `phone_number`, `is_partenaire`, `email_verified`) VALUES
-(1, 'pbkdf2_sha256$720000$PaFnpXVyl8RSWv82YZSDdN$zBrjJvCOuaVPHgQc4491jsPTVBnxPHi0ypwaVakNUEU=', '2025-08-22 09:59:14.298075', 1, 'citoyen', 'ROMEO', 'NANA NANGMO', 'nanaromeo237@gmail.com', 1, 1, '2025-06-12 09:56:36.000000', '655927237', 1, 1),
+(1, 'pbkdf2_sha256$720000$PaFnpXVyl8RSWv82YZSDdN$zBrjJvCOuaVPHgQc4491jsPTVBnxPHi0ypwaVakNUEU=', '2025-08-31 13:04:18.751139', 1, 'citoyen', 'ROMEO', 'NANA NANGMO', 'nanaromeo237@gmail.com', 1, 1, '2025-06-12 09:56:36.000000', '655927237', 1, 1),
 (2, 'pbkdf2_sha256$720000$jMrcVYBCIiRbtsfMpArsWl$yOr+6RpJ8xGiqtGmw3kFpGLLwbAarQnx/82N2z0TjZ4=', '2025-07-12 13:56:36.298025', 1, 'YMELE', 'YMELE', 'Parfait', 'ymeleparfait@gmail.com', 1, 1, '2025-07-12 13:54:59.221970', '677951855', 1, 1),
 (6, 'pbkdf2_sha256$720000$HvXRMErJeYC36i9C3AwGEL$/dljxHC4wyT/GEfCZfHpW3rGVq0E0DU7Ztp8CHHdndA=', '2025-08-22 09:48:40.077620', 0, 'MacKenzie', 'MacKenzie', 'Dunlap', 'bendingiron.info@gmail.com', 0, 1, '2025-08-21 11:38:27.378430', '+1 (957) 972-2836', 0, 1),
 (7, 'pbkdf2_sha256$720000$O6KHkPo0GZw3rNIJiT9hAR$gAVj0iAj8GiP3gsOlfv5nTWIf/4Ojzbk3e5Ts4ocZKU=', NULL, 0, 'Rahim', 'Rahim', 'Graves', 'kawe@mailinator.com', 0, 1, '2025-08-21 12:39:31.534570', '+1 (183) 178-9553', 0, 0);
@@ -402,7 +402,7 @@ CREATE TABLE IF NOT EXISTS `django_admin_log` (
   PRIMARY KEY (`id`),
   KEY `django_admin_log_content_type_id_c4bce8eb` (`content_type_id`),
   KEY `django_admin_log_user_id_c564eba6` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=177 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=179 DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `django_admin_log`
@@ -584,7 +584,9 @@ INSERT IGNORE INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object
 (173, '2025-08-19 11:57:15.951787', '16', 'Repellendus Quia officiis voluptas et', 3, '', 31, 1),
 (174, '2025-08-21 11:12:10.640610', '3', 'Howard, Tyler', 3, '', 7, 1),
 (175, '2025-08-21 11:34:29.542500', '4', 'Britt, Daryl', 3, '', 7, 1),
-(176, '2025-08-21 11:37:57.845852', '5', 'Downs, Aretha', 3, '', 7, 1);
+(176, '2025-08-21 11:37:57.845852', '5', 'Downs, Aretha', 3, '', 7, 1),
+(177, '2025-08-31 13:05:20.242248', '20', 'etrier a une seul branche a fond droit', 2, '[{\"changed\": {\"fields\": [\"Imageshop2d\"]}}]', 8, 1),
+(178, '2025-08-31 13:06:13.554046', '18', 'etrier a une seul branche a fond circulaire', 2, '[{\"changed\": {\"fields\": [\"Imageshop2d\"]}}]', 8, 1);
 
 -- --------------------------------------------------------
 
@@ -738,6 +740,13 @@ CREATE TABLE IF NOT EXISTS `django_session` (
   PRIMARY KEY (`session_key`),
   KEY `django_session_expire_date_a5c62663` (`expire_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `django_session`
+--
+
+INSERT IGNORE INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('hidyni3k2os49y9shj6ev8ny5k4mb280', '.eJxVjL0OwjAQg98lM4pyIX9lZOcZortcSgoolZp2Qrw7jdQBBg_2Z_stIm5riVvLS5xYXASI029GmJ65dsAPrPdZprmuy0SyV-RBm7zNnF_Xo_t3ULCVfe0DjIrJ-cCkvNUJh5AcZbAqaDBn9jjoEVK2uzNoXHBAqkuTzoDi8wXPSzcn:1ushjG:cV5gopSGOaHcOfLPGQxNz4pYV8KD0QrmQN1MLIyCBmU', '2025-09-14 13:04:18.800422');
 
 -- --------------------------------------------------------
 
@@ -1087,18 +1096,18 @@ INSERT IGNORE INTO `produits_ferprice` (`id`, `diametre`, `prix`, `prixRevient`)
 DROP TABLE IF EXISTS `produits_produit`;
 CREATE TABLE IF NOT EXISTS `produits_produit` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) NOT NULL,
-  `sous_categorie` varchar(255) DEFAULT NULL,
-  `imageshop3d` varchar(100) NOT NULL,
-  `imageshop2d` varchar(100) NOT NULL,
-  `image_sous_categorie` varchar(100) DEFAULT NULL,
-  `name_page` varchar(255) NOT NULL,
-  `Description` longtext DEFAULT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sous_categorie` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `imageshop3d` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imageshop2d` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image_sous_categorie` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name_page` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Description` longtext COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `categorie_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_sous_categorie_nom` (`sous_categorie`,`nom`),
+  UNIQUE KEY `unique_sous_categorie_nom` (`sous_categorie`,`nom`) USING HASH,
   KEY `produits_produit_categorie_id_857419d4` (`categorie_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Déchargement des données de la table `produits_produit`
@@ -1121,18 +1130,18 @@ INSERT IGNORE INTO `produits_produit` (`id`, `nom`, `sous_categorie`, `imageshop
 (14, 'barre droite', 'redressage et decoupage', 'produits/images/ARMATURE_BARRE_DROITE_9iZFd1x.jpg', 'produits/images/IMG-0.jpg', 'produits/images/REDRESSAGE_ET_DECOUPAGE.jpg', 'barre-droite', 'Disponible sous plusieurs tailles et diamètres', 1),
 (15, 'barre coude a une extremite', 'cintrage d\'extremite', 'produits/images/ARMATURE_COUDEE_A_LEXTREMITEE_HDaR9KH.jpg', 'produits/images/IMG-0_01.jpg', 'produits/images/CINTRAGE_DEXTREMITEE.jpg', 'barre-coude-a-une-extremite', 'Disponible sous plusieurs tailles et diamètres', 1),
 (16, 'barre coude aux deux extremites', 'cintrage d\'extremite', 'produits/images/ARMATURE_COUDEE_AUX_LEXTREMITEES_FZ8GAtd.jpg', 'produits/images/IMG-0_02_OEm1saP.jpg', 'produits/images/CINTRAGE_DEXTREMITEE_hxo4Zkn.jpg', 'barre-coude-aux-deux-extremite', 'Disponible sous plusieurs tailles et diamètres', 1),
-(17, 'etrier a fond circulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_circulaire.jpg', 'produits/images/IMG-0_17.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE.jpg', 'etrier-fond-circulaire', 'Disponible en acier lisse  de M6/\r\n\r\nM8/M10/M12/M14/M16/M20 mm', 2),
-(18, 'etrier a une seul branche a fond circulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_une_seul_branche_a_fond_circulaire.jpg', 'produits/images/IMG-0_18_nnqGJPx.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_vcvuyrR.jpg', 'etrier-une-branche-fond-circulaire', 'Disponible en acier lisse  de M6/\r\n\r\nM8/M10/M12/M14/M16/M20 mm', 2),
-(19, 'etrier a fond droit', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_droit.jpg', 'produits/images/IMG-0_15_gtTrBmH.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_gRbgvMh.jpg', 'etrier-fond-droit', 'Disponible en acier lisse  de M6/\r\n\r\nM8/M10/M12/M14/M16/M20 mm', 2),
-(20, 'etrier a une seul branche a fond droit', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_une_seul_branche_a_fond_droit.jpg', 'produits/images/IMG-0_16_dMVzl4E.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_sqtyjoh.jpg', 'etrier-une-branche-fond-droit', 'Disponible en acier lisse  de M6/\r\n\r\nM8/M10/M12/M14/M16/M20 mm', 2),
-(21, 'etrier a fond triangulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_triangulaire.jpg', 'produits/images/IMG-0_19_LU4sHQe.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_6UJaHrU.jpg', 'etrier-fond-triangulaire', 'Disponible en acier lisse  de M6/\r\n\r\nM8/M10/M12/M14/M16/M20 mm', 2),
-(22, 'Ancrage forme J', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_J.jpg', 'produits/images/IMG-0_21_cAGyo4e.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON.jpg', 'ancrage-forme-J', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(23, 'Ancrage forme L', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_L.jpg', 'produits/images/IMG-0_20_RAzxKYs.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_JsSumAr.jpg', 'ancrage-forme-L', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(24, 'Ancrage simple', 'boulon d\'ancrage a beton', 'produits/images/ancrage_simple.jpg', 'produits/images/IMG-0_25.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_HCm0tYo.jpg', 'ancrage-simple', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(25, 'Ancrage en forme de crosse', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crosse.jpg', 'produits/images/IMG-0_22_j6DkqM5.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_chRuwop.jpg', 'ancrage-forme-crosse', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(26, 'Ancrage en forme de crochet', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crochet.jpg', 'produits/images/IMG-0_23_8z089Xl.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_OldUv9E.jpg', 'ancrage-forme-crochet', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(27, 'Ancrage en forme de crochet à double cambrure', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crochet_a_double_cambrure.jpg', 'produits/images/IMG-0_24_d6xp3vA.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_nM5EiF1.jpg', 'ancrage-crochet-double-cambrure', 'Disponible sous plusieurs tailles en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/\r\n\r\nM32 mm', 2),
-(28, 'fer a beton de 12m', 'Quincaillerie', 'produits/images/fer_quincaillerie.jpg', 'produits/images/fer_quincaillerie_PcSNbZR.jpg', '', 'quincaillerie', 'Disponible sous plusieurs diamètres M6/M8/M10/M12/M14/M16/M20\r\n\r\n/M25/M32 mm', 3),
+(17, 'etrier a fond circulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_circulaire.jpg', 'produits/images/IMG-0_17.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE.jpg', 'etrier-fond-circulaire', 'Disponible en acier lisse  de M6/M8/M10/M12/M14/M16/M20 mm', 2),
+(18, 'etrier a une seul branche a fond circulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_une_seul_branche_a_fond_circulaire.jpg', 'produits/images/IMG-0_18_nnqGJPx.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_vcvuyrR.jpg', 'etrier-une-branche-fond-circulaire', 'Disponible en acier lisse  de M6/M8/M10/M12/M14/M16/M20 mm', 2),
+(19, 'etrier a fond droit', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_droit.jpg', 'produits/images/IMG-0_15_gtTrBmH.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_gRbgvMh.jpg', 'etrier-fond-droit', 'Disponible en acier lisse  de M6/M8/M10/M12/M14/M16/M20 mm', 2),
+(20, 'etrier a une seul branche a fond droit', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_une_seul_branche_a_fond_droit.jpg', 'produits/images/IMG-0_16_dMVzl4E.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_sqtyjoh.jpg', 'etrier-une-branche-fond-droit', 'Disponible en acier lisse  de M6/M8/M10/M12/M14/M16/M20 mm', 2),
+(21, 'etrier a fond triangulaire', 'Etrier pour bardage et toiture', 'produits/images/Etrier_a_fond_triangulaire.jpg', 'produits/images/IMG-0_19_LU4sHQe.jpg', 'produits/images/ETRIER_POUR_TOITURE_ET_BARDAGE_6UJaHrU.jpg', 'etrier-fond-triangulaire', 'Disponible en acier lisse  de M6/M8/M10/M12/M14/M16/M20 mm', 2),
+(22, 'Ancrage forme J', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_J.jpg', 'produits/images/IMG-0_21_cAGyo4e.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON.jpg', 'ancrage-forme-J', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(23, 'Ancrage forme L', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_L.jpg', 'produits/images/IMG-0_20_RAzxKYs.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_JsSumAr.jpg', 'ancrage-forme-L', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(24, 'Ancrage simple', 'boulon d\'ancrage a beton', 'produits/images/ancrage_simple.jpg', 'produits/images/IMG-0_25.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_HCm0tYo.jpg', 'ancrage-simple', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(25, 'Ancrage en forme de crosse', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crosse.jpg', 'produits/images/IMG-0_22_j6DkqM5.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_chRuwop.jpg', 'ancrage-forme-crosse', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(26, 'Ancrage en forme de crochet', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crochet.jpg', 'produits/images/IMG-0_23_8z089Xl.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_OldUv9E.jpg', 'ancrage-forme-crochet', 'Disponible en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(27, 'Ancrage en forme de crochet à double cambrure', 'boulon d\'ancrage a beton', 'produits/images/ancrage_en_forme_de_crochet_a_double_cambrure.jpg', 'produits/images/IMG-0_24_d6xp3vA.jpg', 'produits/images/BOULONS_DANCRAGE_A_BETON_nM5EiF1.jpg', 'ancrage-crochet-double-cambrure', 'Disponible sous plusieurs tailles en acier lisse ou crénelé de M12/M16/M20/M24/M27/M30/M32 mm', 2),
+(28, 'fer a beton de 12m', 'Quincaillerie', 'produits/images/fer_quincaillerie.jpg', 'produits/images/fer_quincaillerie_PcSNbZR.jpg', '', 'quincaillerie', 'Disponible sous plusieurs diamètres M6/M8/M10/M12/M14/M16/M20/M25/M32 mm', 3),
 (29, 'Ecrou hexagonale', 'Quincaillerie', 'produits/images/1000117798_1.jpg', 'produits/images/1000117798_1_mGJtktm.jpg', '', 'ecrou', 'Disponible sous plusieurs tailles et diamètres', 3),
 (30, 'rondelle plate', 'Quincaillerie', 'produits/images/rondelle.jpg', 'produits/images/rondelle_XcrGoWN.jpg', '', 'rondelle', 'Disponible sous plusieurs tailles et diamètres', 3);
 
