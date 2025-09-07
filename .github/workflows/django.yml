@@ -53,12 +53,11 @@ jobs:
         env:
           SSH_PASS: ${{ secrets.VPS_SSH_PASS }}  # Mot de passe SSH depuis les secrets
         run: |
-          echo "$SSH_PASS"
-          sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -r ./* root@${{ secrets.VPS_IP }}:/var/www/bendingiron/
+          sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -o PreferredAuthentications=password -o PubkeyAuthentication=no -r ./* root@168.231.89.192:/var/www/bendingiron/
 
       - name: Run deployment script on VPS  # Exécute le script de déploiement sur le VPS
         env:
           SSH_PASS: ${{ secrets.VPS_SSH_PASS }}  # Mot de passe SSH depuis les secrets
         run: |
-          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no root@${{ secrets.VPS_IP }} 'bash -s' < ./deploy.sh
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no root@168.231.89.192 'bash -s' < ./deploy.sh
 

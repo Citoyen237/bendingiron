@@ -411,7 +411,7 @@ def change_statut(request, order_id):
             objet,
             template,
             context,
-            [user.email]
+            [order.user.email]
     )
     #   Rediriger (par exemple, vers la page des commandes)
    return redirect('order.list')  # Modifie selon le nom de ta vue cible
