@@ -60,11 +60,10 @@ DEBUG = True
 
 # addresse acepter en production
 CSRF_TRUSTED_ORIGINS = [
-    'https://www.bending-iron.com',  
-    'http://www.bending-iron.com',
-    'http://localhost',
-    'http://127.0.0.1',
-
+    "https://bending-iron.com",
+    "https://www.bending-iron.com",
+    "http://localhost",
+    "http://127.0.0.1",
 ]
 
 CSRF_COOKIE_DOMAIN = '.bending-iron.com'
