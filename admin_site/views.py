@@ -261,8 +261,8 @@ def toggle_user_status(request, user_id):
             user.is_active = 0
             # status_message = "Votre compte chez a été bloqué."
             admin_message = f"L'utilisateur {user.first_name} a été bloqué."
-            objet = "Votre compte a été temporairement bloqué."
             template = 'users/mail_bloque.html',
+            objet = "Votre compte a été temporairement bloqué."
         else:
             # Débloquer l'utilisateur
             user.is_active = 1

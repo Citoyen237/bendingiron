@@ -78,7 +78,8 @@ def confirmer_commande(request):
             produit=item.produit,
             details=item.details,
             quantite=item.quantite,
-            prix_u=item.prix_u
+            prix_u=item.prix_u,
+            prix_revient=item.prix_revient
         )
 
     # 4. Créer le traitement de suivi de commande
@@ -180,7 +181,8 @@ def send_info_user(request):
                     produit=item.produit,
                     details=item.details,
                     quantite=item.quantite,
-                    prix_u=item.prix_u
+                    prix_u=item.prix_u,
+                    prix_revient=item.prix_revient
                 )
             
             # 4. Enregistrement des infos sur le client
@@ -242,7 +244,7 @@ def generate_invoice_pdf(request, invoice_id):
     # os.path.join(BASE_DIR, "medias")
     image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
     background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.jpg')
     footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
     
     # Charger le template HTML 

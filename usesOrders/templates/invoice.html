@@ -14,7 +14,7 @@
         }
 
         body {
-            font-family: Adobe Arabic;
+            font-family: Verdana;
             background-image: url('{{background_url}}');
             background-repeat: no-repeat;
             background-size: 600px 600px;
@@ -40,7 +40,8 @@
         .company-info {
             font-size: 14px;
             margin-top: -4%;
-            font-family: Aptos (Corps);
+            font-family: Verdana sans-serif;
+
         }
 
         .client-info {
@@ -61,7 +62,7 @@
         }
 
         table th {
-            font-size: 18px;
+            font-size: 12px;
             background-color: #ffa310;
             color: black;
         }
@@ -82,17 +83,17 @@
         .company-info p {
             list-style: none;
             text-align: left;
-            font-size: 18px;
+            font-size: 11px;
         }
 
         td {
-            font-size: 16px;
+            font-size: 12px;
         }
 
         .footer {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
+            font-size: 12px;
             margin-top: 4%;
         }
 
@@ -107,6 +108,10 @@
             justify-items: center;
             margin-right: -10%;
         }
+
+        .hide td{
+            border: none;
+        }
     </style>
 </head>
 
@@ -118,26 +123,32 @@
                 <img src="{{image_url}}" alt="Logo" style="width:170px;">
             </div>
             <div class="invoice-number">
-                <span style="font-size:26px"><b>FACTURE N°</b></span><strong
-                    style="color:#ffa310; font-size:26px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
-                <span style="font-size: 18px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+                <span style="font-size:16px"><b>FACTURE N°</b></span><strong
+                    style="color:#ffa310; font-size:16px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
             </div>
         </div>
         <!-- Company Info -->
         <div class="company-info">
-            <p><b style="color: rgb(8, 115, 129);"><u>bendingiron.info@gmail.com</u></b><br>
-                Douala, Cameroun <br>
-                (+237) 686 088 869 <br>
-                (+237) 681 951 410
+            <p>
+                 <b style="color: rgb(8, 115, 129);">
+               <u><span>bendingiron.info@gmail.com</span></u></b><br>
+                <span>Douala, Cameroun</span> <br>
+                <span>(+237) 686 088 869</span> <br>
+                <span>(+237) 681 951 410</span>
             </p>
         </div>
         <!-- Client Info -->
         <div class="client-info">
-            <strong style="font-size:26px">{{order.infoclient.nom}}</strong>
-            <br>
-            <span style="font-size:18px">{{order.infoclient.telephone}}</span><br>
-            <span style="font-size:18px">{{order.infoclient.adresse}}</span><br>
-            <span style="font-size:18px">Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></span>
+            <strong style="font-size:16px">{{order.infoclient.nom}}</strong><br>
+            <span style="font-size:10px"><b>O.L : </b>{{order.infoclient.mode_livraison}}</span><br>
+            <span style="font-size:10px"><b>A.L : </b>{{order.infoclient.adresse}}</span><br>
+            <span style="font-size:10px"><b>Tel : </b>{{order.infoclient.telephone}}</span><br><br>
+            {% if order.remise > 0 %}
+            <span style="font-size:10px; color:#ffa310">
+                <i>Code distributeur utilisé</i>
+            </span>
+            {% endif %}
         </div>
         <!-- Table -->
         <table>
@@ -158,25 +169,22 @@
                 <td>{{item.total|intcomma}}</td>
             </tr>
             {% endfor %}
-            <tr>
-                <td colspan="5"></td>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>Montant HT</b> :</td>
+                <td colspan="1"><b>{{totals|intcomma}}FCFA</b></td>
             </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>Montant HT</b></td>
-                <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>TVA 19,25%</b> :</td>
+                <td colspan="1"><b>{{montant_tva|intcomma}} FCFA</b></td>
             </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-                <td colspan="2"><b>{{montant_tva|intcomma}} FCFA</b></td>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>Montant TTC</b> :</td>
+                <td colspan="1"><b>{{net_payer|intcomma}} FCFA</b></td>
             </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b>Montant TTC</b></td>
-                <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
-            </tr>
-            <tr>
-                <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
-                        30%</b></td>
-                <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
+                        30%</b> :</td>
+                <td colspan="1"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
             </tr>
             <!-- Ajouter d'autres lignes ici si nécessaire -->
         </table>
@@ -189,13 +197,13 @@
             Pour garantir votre satisfaction, un acompte <br>
             de 30% est règle en ligne à la commande,<br> le
             solde de 70% <b>à la livraison sous 48h.</b>
-            <br>
+            <br><br>
             Les produits restent notre propriété<br>
             jusqu’au paiement intégral.
         </div>
         <!-- Signature -->
         <div class="signature">
-            <img src="{{cachet_url}}" alt="Logo" style="width:270px;">
+            <img src="{{cachet_url}}" alt="Logo" style="width:200px;">
         </div>
     </div>
 
