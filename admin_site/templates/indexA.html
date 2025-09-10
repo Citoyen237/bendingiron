@@ -421,13 +421,13 @@ statistique
                                             new ApexCharts(document.querySelector("#donutChart"), {
                                                 series: [44, 55, 13, 43,65],
                                                 chart: {
-                                                    height: 350,
+                                                    height: 500,
                                                     type: 'donut',
                                                     toolbar: {
                                                         show: true
                                                     }
                                                 },
-                                                labels: ['en attente', 'en production', 'pret pour livraison','solde facture','termine'],
+                                                labels: ['en production', 'termine', 'en attente','solde facture','pret pour livraison'],
                                             }).render();
                                         });
                                     </script>
@@ -522,7 +522,7 @@ statistique
                                                         show: true
                                                     }
                                                 },
-                                                labels: ['en attente', 'en production', 'pret pour livraison', 'termine']
+                                                labels: ['en production', 'termine', 'en attente','pret pour livraison']
                                             }).render();
                                         });
                                     </script>
