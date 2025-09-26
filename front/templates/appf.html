@@ -41,7 +41,7 @@
     <!-- Template styles-->
     <link href="{% static 'front/css/styles.css' %}" rel="stylesheet">
     <style>
-        .whatsapp_btn{
+        .whatsapp_btn {
             position: fixed;
             right: 13px;
             bottom: 90px;
@@ -50,10 +50,12 @@
             text-align: right;
             /* border:1px solid #173d7c */
         }
-        .whatsapp_btn:focus{
+
+        .whatsapp_btn:focus {
             box-shadow: none;
         }
-        .whatsapp_btn > img{
+
+        .whatsapp_btn>img {
             height: 50px;
         }
     </style>
@@ -62,9 +64,14 @@
 
 <body>
     <div class="body-inner">
+
+        {% if request.path == '/' %}
         {% include 'include/top-bar.html' %}
         {% include 'include/header.html' with current_url=current_url %}
-
+        {% else %}
+        {% include 'include/top-bar2.html' %}
+        {% include 'include/header2.html' with current_url=current_url %}
+        {% endif %}
 
 
         {% block 'content' %}
@@ -72,7 +79,9 @@
         {% endblock %}
 
         {% include 'include/footer.html' %}
-        <a class="btn btn-lg whatsapp_btn" href="https://api.whatsapp.com/send?phone=+237686088869&text=Plus d'informations"><img src="{% static 'front/whatsapp.png' %}" alt="whatsapp"></a>
+        <a class="btn btn-lg whatsapp_btn"
+            href="https://api.whatsapp.com/send?phone=+237686088869&text=Plus d'informations"><img
+                src="{% static 'front/whatsapp.png' %}" alt="whatsapp"></a>
 
 
         <!-- Javascript Files

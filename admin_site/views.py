@@ -46,8 +46,40 @@ class AdminOrSuperAdminRequiredMixin(LoginRequiredMixin):
 def is_admin(user):
    return user.groups.filter(name='admin').exists() or user.groups.filter(name='superadmin').exists()
 
+from decimal import Decimal
+from django.db.models import OuterRef, Subquery
+
+def montant_total_ventes_terminees():
+    # Dernier statut par commande
+    dernier_statut = Traiment.objects.filter(
+    order=OuterRef("pk")
+     ).order_by("-created_at").values("statut")[:1]
+
+     # Filtrer seulement les orders terminés
+    orders_terminees = Order.objects.annotate(
+    dernier_statut=Subquery(dernier_statut)
+    ).filter(dernier_statut="termine")
+     # Calcul du montant total
+    return sum(order.net_payer for order in orders_terminees)
+
+def montant_total_revenue():
+    # Dernier statut par commande
+    dernier_statut = Traiment.objects.filter(
+    order=OuterRef("pk")
+     ).order_by("-created_at").values("statut")[:1]
+     # Filtrer seulement les orders terminés
+    orders_terminees = Order.objects.annotate(
+    dernier_statut=Subquery(dernier_statut)
+    ).filter(dernier_statut="termine")
+     # Calcul du montant total
+    return sum(order.prix_revient_total for order in orders_terminees)
 @user_passes_test(is_admin)
 def indexA(request):
+    total_vente_client = montant_total_ventes_terminees()
+    montant_total_revenue_client = montant_total_revenue() 
+    total_projet = Projet.montant_total_projets_solde()
+    # benefice_total=Projet.benefice()
+
     orders = Order.objects.order_by('-created_at')[:5]
     projets = Projet.objects.order_by('-created_at')[:5]
     users = User.objects.all()
@@ -74,6 +106,10 @@ def indexA(request):
         'produits':produits,
         'fersRouleau':fersRouleau,
         'fersBarre':fersBarre,
+        'total_vente_client':total_vente_client,
+        'montant_total_revenue_client':montant_total_revenue_client,
+        'total_projet':total_projet,
+        # 'benefice_total':benefice_total
     }
     return render(request, 'indexA.html', context)
 
@@ -598,7 +634,6 @@ def generate_random_code(length=6):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for i in range(length))
 
-
 @user_passes_test(is_admin)
 def add_distributeur(request):
     if request.method == "POST":
@@ -621,3 +656,30 @@ def add_distributeur(request):
         form=DistributeurForm()
 
     return render(request, "codepromo/create.html", {'form':form})
+
+
+@user_passes_test(is_admin)
+def get_portefeuille_client(request):
+    users=CustomUser.objects.all()
+    context = {
+        'users':users
+    }
+    return render(request, 'order/porte-feuille-client.html', context)
+
+@user_passes_test(is_admin)
+def get_order_user(request, id_user):
+    orders=Order.objects.filter(user=id_user).all()
+    user=get_object_or_404(CustomUser, id=id_user)
+    context = {
+     'orders':orders,
+     'user':user
+    }
+    return render(request, 'order/order-client.html', context)
+
+@user_passes_test(is_admin)
+def get_portefeuille_partenaire(request):
+    partenariats = Partenariats.objects.all()
+    context = {
+       'partenariats':partenariats,
+    }
+    return render(request, 'partenaires/portefeuille.html', context)

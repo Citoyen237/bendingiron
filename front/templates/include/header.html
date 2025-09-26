@@ -5,7 +5,7 @@
       <div class="logo-area" style="padding: 0%;">
         <div class="row align-items-center">
           <div class="logo col-lg-3 text-center text-lg-left mb-3 mb-md-5 mb-lg-0">
-            <a class="d-block" href="index.html">
+            <a class="d-block" href="#">
               <img loading="lazy" style="height: 200px; width:200px" src="{% static 'front/images/logoiron.png' %}"
                 alt="bending iron">
             </a>
@@ -25,21 +25,14 @@
                 <div class="info-box">
                   <div class="info-box-content">
                     <p class="info-box-title">Email</p>
-                    <p class="info-box-subtitle">bendingiron.info@gmail.com</p>
+                    <p class="info-box-subtitle">contact@bending-iron.com</p>
                   </div>
                 </div>
               </li>
-              <!-- <li class="last">
-                    <div class="info-box last">
-                      <div class="info-box-content">
-                          <p class="info-box-title">Global Certificate</p>
-                          <p class="info-box-subtitle">ISO 9001:2017</p>
-                      </div>
-                    </div>
-                  </li> -->
               {% if user.is_authenticated %}
               <li class="header-get-a-quote">
-                <a class="btn btn-primary" href="{% url 'logout' %}">Se deconnecter</a>
+                <a class="btn btn-primary" href="{% url 'logout' %}">Se deconnecter</a><br>
+                <span style="font-size: smaller;" class="text-success">{{user.last_name}} connecte !</span>
               </li>
               {% else %}
               <li class="header-get-a-quote">
@@ -100,13 +93,6 @@
                     <!-- <li><a href="pricing.html">Pricing</a></li> -->
                   </ul>
                 </li>
-                <!-- <li class="nav-item dropdown
-                         {% if current_url == '/nos-machines/' %}
-                            active
-                         {% endif %}  
-                         ">
-                  <a href="" class="nav-link dropdown-toggle">DOMAINE D’EXPERTISE</a>
-                </li> -->
                 {% if user.is_authenticated %}
                 <li class="nav-item dropdown
                        {% if current_url == '/mes-commandes/' %}

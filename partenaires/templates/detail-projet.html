@@ -22,7 +22,15 @@ details sur le projet
                 <h4>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h4>
                 <h4>TVA (19,25%): <b>{{projet.montant_tva|intcomma}} fcfa</b></h4>
                 <h4>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b> </h4>
-                <h4><a href="{% url 'download.projet' projet.id %}" class="btn btn-warning"><i class="fas fa-download"></i> Telecharger</a></h4>
+                <h4>
+                    <button id="downloadBtn" class="btn btn-warning download_btn"
+                        data-url="{% url 'download.projet' projet.id  %}">
+                        <i class="fas fa-download"></i>Telecharger
+                        <span id="btnText" class="btn_text"></span>
+                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                            aria-hidden="true"></span>
+                    </button>
+                    <!-- <a href="{% url 'download.projet' projet.id %}" class="btn btn-warning"><i class="fas fa-download"></i> Telecharger</a></h4> -->
             </div>
             <div class="col-md-4">
                 <h4>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa</b>
@@ -49,7 +57,7 @@ details sur le projet
             </div>
         </div>
 
-        <div class="col-md-12">    
+        <div class="col-md-12">
             <div class="alert alert-info text-center text-dark" role="alert">
                 {{projet.message_etape_suivante}}
             </div>
@@ -182,7 +190,8 @@ details sur le projet
             alert("Votre panier est vide !");
             return;
         }
-        const projet_id = {{ projet.id }}
+        const projet_id = {{ projet.id }
+    }
     // Assure-toi que ce ID est dans le template
 
     fetch("{% url 'valider_commande_partenaire' %}", {
@@ -239,6 +248,56 @@ details sur le projet
         }
         return cookieValue;
     }
+
+    document.querySelectorAll(".download_btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            //let btn = this;
+            //let spinner = document.getElementById("spinner");
+            let spinner = btn.querySelector(".spinner-border");
+            //let btnText = document.querySelector(".btn_text");
+            let url = btn.dataset.url;
+
+            // Affiche le spinner
+            spinner.classList.remove("d-none");
+            //btnText.textContent = "Téléchargement...";
+            btn.disabled = true;
+
+            // Téléchargement via fetch
+            fetch(url)  // 👈 ta vue Django
+                .then(response => {
+                    // Récupérer le header Content-Disposition pour le nom
+                    let disposition = response.headers.get("Content-Disposition");
+                    let filename = "download.pdf"; // nom par défaut
+
+                    if (disposition && disposition.indexOf("filename=") !== -1) {
+                        filename = disposition.split("filename=")[1].replace(/"/g, "");
+                    }
+                    return response.blob().then(blob => ({ blob, filename }));
+                })
+                .then(({ blob, filename }) => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    // Reset bouton
+                    spinner.classList.add("d-none");
+                    //btnText.textContent = "Telechargé";
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error("Erreur téléchargement :", error);
+                    spinner.classList.add("d-none");
+                    btnText.textContent = "Réessayer";
+                    btn.disabled = false;
+                });
+        });
+    });
 </script>
+
+
 
 {% endblock %}t

@@ -19,7 +19,7 @@ detail
     <div class="container border shadow py-2 my-2">
         <div class="row">
             <div class="col-lg-12 "><br>
-                <h3 class="column-title bg-warning p-3 text-center">Parametre  de ferraillage du {{product.nom}}</h3>
+                <h3 class="column-title bg-warning p-3 text-center">Parametre {{product.nom}}</h3>
             </div><!-- Col end -->
         
         <!-- insersion des info -->
@@ -137,7 +137,7 @@ detail
         <div class="row mb-3">
             <div class="col-lg-6 text-center "><br>
                 <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
-                    Precedent
+                    reinitialiser
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
@@ -201,10 +201,12 @@ detail
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
             //if(ange=90){
-               longueurTotal = longueurCote + largeurCote + diametre + 249
+               //longueurTotal = (longueurCote + largeurCote + diametre + 249) / 10
+               longueurTotal = 50
               // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
-            
+            longueur2 = longueurTotalField.value * 10
+
             const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;
             let taux = donnees.taux;
@@ -222,7 +224,7 @@ detail
 
             }
             let prixUnitaire = 0
-            let cal2=prix_revient+(prixfer*longueurTotal)
+            let cal2=prix_revient+(prixfer*longueur2)
             let  cal3=prixfer*10
             if (fer === 'bending iron') {
                 cal4=cal2+cal3

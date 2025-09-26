@@ -21,18 +21,20 @@ detail
       display: table-cell;
       width: 20%;
       float: left;
-      font-size: 16px;
+      /* police du texte en dessus */
+      font-size: 12px;
       position: relative;
       text-align: center;
 
       &:before {
-        width: 50px;
-        height: 50px;
+        width: 25px;
+        height: 25px;
         color: #212121;
         content: counter(step);
         counter-increment: step;
-        line-height: 50px;
-        font-size: 18px;
+        line-height: 25px;
+        /* police de nombre*/
+        font-size: 12px;
         border: 1px solid grey;
         display: block;
         text-align: center;
@@ -43,11 +45,12 @@ detail
 
       &:after {
         width: 100%;
-        height: 10px;
+        height: 7px;
         content: "";
         position: absolute;
         background-color: black;
-        top: 25px;
+        /* marge de la barre */
+        top: 10px;
         left: -50%;
         z-index: -1;
       }
@@ -131,23 +134,22 @@ detail
 <section class="content project-area">
   <div class="container border shadow">
     <div class="row">
-            <div class="col-md-6 mt-2">
-                <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
-                <h6>Date : <b>{{order.created_at}}</b></h6>
-                <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
-                <h6>Montant total : <b>{{order.get_prix_total|intcomma}}fcfa</b></h6>
-            </div>
-            <div class="col-md-6 mt-2">
-                <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
-                <h6>Telephone : <b>{{order.infoclient.telephone}}</b></h6>
-                <h6>Adresse : <b>{{order.infoclient.adresse}} </b></h6>
-            </div>
-        </div>
+      <div class="col-md-6 mt-2">
+        <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
+        <h6>Date : <b>{{order.created_at}}</b></h6>
+        <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
+        <h6>Montant total : <b>{{order.get_prix_total|intcomma}}fcfa</b></h6>
+      </div>
+      <div class="col-md-6 mt-2">
+        <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
+        <h6>Telephone : <b>{{order.infoclient.telephone}}</b></h6>
+        <h6>Adresse : <b>{{order.infoclient.adresse}} </b></h6>
+      </div>
+    </div>
     <div class="row">
-
       {% if status == "pret_pour_livraison" %}
       <div class="col-md-4">
-        <div class="card bg-light m-2">
+        <div class="card bg-light">
           <div class="card-body">
             <h4 class="card-title">Solder ma facture</h4>
             <hr>
@@ -176,9 +178,8 @@ detail
           </form>
         </div>
       </div>
-      {% endif %}
-      <div class='col-md-{{ order.statut|yesno:"7,Confirmé" }}'>
-        <table class="table table-responsive mt-2 table-striped">
+      <div class='col-md-7'>
+        <table class="table table-responsive table-striped">
           <thead class='bg-warning'>
             <th>Produit</th>
             <th>Description</th>
@@ -216,20 +217,144 @@ detail
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                   30% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b> <a href="{% url 'invoice_download' order.id %}" class='btn btn-success'  name='supprimer'><i class="fas fa-download"></i></a></td>
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b> <a
+                  href="{% url 'invoice_download' order.id %}" class='btn btn-success' name='supprimer'><i
+                    class="fas fa-download"></i></a></td>
             </tr>
-             <tr>
+            <tr>
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(64, 219, 32);">SOLDE
                   70% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2|intcomma}} FCFA</b> <a href="{% url 'invoice_download2' order.id %}" class='btn btn-success'  name='supprimer'><i class="fas fa-download"></i></a>
-</td>
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2|intcomma}} FCFA</b> <a
+                  href="{% url 'invoice_download2' order.id %}" class='btn btn-success' name='supprimer'><i
+                    class="fas fa-download"></i></a>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+      {% else %}
+      <div class='col-md-12'>
+        <table class="table table-responsive table-striped">
+          <thead class='bg-warning'>
+            <th>Produit</th>
+            <th>Description</th>
+            <th>Quantite</th>
+            <th>Prix ​​unitaire (fcfa)</th>
+            <th>Prix ​​total (fcfa)</th>
+          </thead>
+          <tbody>
+
+            {% for item in produits %}
+            <tr>
+              <td>{{item.produit}}</td>
+              <td>{{item.details}}
+              <td>{{item.quantite}}</td>
+              <td>{{item.prix|intcomma}}</td>
+              <td>{{item.total|intcomma}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+              <td colspan="5"></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
+              <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
+              <td colspan="2"><b>{{montant_tva|intcomma}} FCFA</b></td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
+              <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
+            </tr>
+            <tr>
+
+              <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
+                  30% :</b></td>
+              <td colspan="2">
+                <b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b>
+                <button id="downloadBtn" class="btn btn-success download_btn"
+                  data-url="{% url 'invoice_download' order.id %}">
+                  <i class="fas fa-download"></i>
+                  <span id="btnText" class="btn_text"></span>
+                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+
+              <td colspan="3" style="text-align: right;"><b style="background-color: rgb(64, 219, 32);">SOLDE
+                  70% :</b></td>
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2|intcomma}} FCFA</b>
+                <button id="downloadBtn" class="btn btn-success download_btn"
+                  data-url="{% url 'invoice_download2' order.id %}">
+                  <i class="fas fa-download"></i>
+                  <span id="btnText" class="btn_text"></span>
+                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
     </div>
   </div>
   <!--/ Container end -->
 </section><!-- Content end -->
+
+<script>
+  document.querySelectorAll(".download_btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      //let btn = this;
+      //let spinner = document.getElementById("spinner");
+      let spinner = btn.querySelector(".spinner-border");
+      //let btnText = document.querySelector(".btn_text");
+      let url = btn.dataset.url;
+
+      // Affiche le spinner
+      spinner.classList.remove("d-none");
+      //btnText.textContent = "Téléchargement...";
+      btn.disabled = true;
+
+      // Téléchargement via fetch
+      fetch(url)  // 👈 ta vue Django
+        .then(response => {
+          // Récupérer le header Content-Disposition pour le nom
+          let disposition = response.headers.get("Content-Disposition");
+          let filename = "download.pdf"; // nom par défaut
+
+          if (disposition && disposition.indexOf("filename=") !== -1) {
+            filename = disposition.split("filename=")[1].replace(/"/g, "");
+          }
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          // Reset bouton
+          spinner.classList.add("d-none");
+          //btnText.textContent = "Telechargé";
+          btn.disabled = false;
+        })
+        .catch(error => {
+          console.error("Erreur téléchargement :", error);
+          spinner.classList.add("d-none");
+          btnText.textContent = "Réessayer";
+          btn.disabled = false;
+        });
+    });
+  });
+</script>
+
 {% endblock %}

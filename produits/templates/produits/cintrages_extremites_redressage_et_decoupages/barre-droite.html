@@ -118,7 +118,7 @@ detail
         <div class="row mb-3">
             <div class="col-lg-6 text-center "><br>
                 <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
-                    Precedent
+                    reinitialiser
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
@@ -174,9 +174,9 @@ detail
             //angeField.value = ange
 
             // Vérification de la valeur minimale pour longueurCote
-            if (longueurBarreCote < 300 || longueurBarreCote > 6000) {
+            if (longueurBarreCote < 30 || longueurBarreCote > 600) {
                 // Afficher le message d'erreur
-                longueurBarreError.textContent = "comprise entre 300-6000";
+                longueurBarreError.textContent = "comprise entre 30-600";
                 longueurBarreError.style.display = "block"; // Afficher le message
                 // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
                 longueurBarreField.value = longueurBarreCote;  // Mettre à jour le champ avec la valeur corrigée

@@ -155,9 +155,14 @@ detail
                         </tr>
                         {% endfor %}
                         <tr>
-                            <td colspan="3"><b><a href="{% url 'download-bon' order.id %}" class='btn btn-success'
-                                        name='supprimer'><i class="fas fa-download"></i></a>
-                            </td>
+                            <td colspan="3"><b>
+                                    <button id="downloadBtn" class="btn btn-warning download_btn"
+                                        data-url="{% url 'download-bon' order.id %}">
+                                        <i class="fas fa-download"></i>
+                                        <span id="btnText" class="btn_text"></span>
+                                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                                            aria-hidden="true"></span>
+                                    </button> </td>
 
                         </tr>
                     </tbody>
@@ -167,4 +172,55 @@ detail
     </div>
     <!--/ Container end -->
 </section><!-- Content end -->
+
+<script>
+    document.querySelectorAll(".download_btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            //let btn = this;
+            //let spinner = document.getElementById("spinner");
+            let spinner = btn.querySelector(".spinner-border");
+            //let btnText = document.querySelector(".btn_text");
+            let url = btn.dataset.url;
+
+            // Affiche le spinner
+            spinner.classList.remove("d-none");
+            //btnText.textContent = "Téléchargement...";
+            btn.disabled = true;
+
+            // Téléchargement via fetch
+            fetch(url)  // 👈 ta vue Django
+                .then(response => {
+                    // Récupérer le header Content-Disposition pour le nom
+                    let disposition = response.headers.get("Content-Disposition");
+                    let filename = "download.pdf"; // nom par défaut
+
+                    if (disposition && disposition.indexOf("filename=") !== -1) {
+                        filename = disposition.split("filename=")[1].replace(/"/g, "");
+                    }
+                    return response.blob().then(blob => ({ blob, filename }));
+                })
+                .then(({ blob, filename }) => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    // Reset bouton
+                    spinner.classList.add("d-none");
+                    //btnText.textContent = "Telechargé";
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error("Erreur téléchargement :", error);
+                    spinner.classList.add("d-none");
+                    btnText.textContent = "Réessayer";
+                    btn.disabled = false;
+                });
+        });
+    });
+</script>
+
 {% endblock %}

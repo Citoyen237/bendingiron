@@ -1,2 +1,0 @@
--- sudo certbot --apache -d ton-domaine.com -d www.ton-domaine.com
--- sudo certbot --nginx -d https://bendingiron.onrender.com/.com -d www.https://bendingiron.onrender.com/

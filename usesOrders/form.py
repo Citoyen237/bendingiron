@@ -18,7 +18,7 @@ class OrderUserInfoForm(forms.ModelForm):
      
     mode_livraison = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Mode de livraison",
+        label="Option de livraison",
         required=True,  # Champ requis
             #initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={

@@ -109,7 +109,7 @@ def detail_produit(request, product_id):
         form=CarreForm(request.POST or None)
         template="produits/cintrages_cadres/cadre-carre.html"
     
-    if(product.nom=="cadre rectangle"):
+    if(product.nom=="cadre rectangulaire"):
         form=RectangleForm(request.POST or None)
         template="produits/cintrages_cadres/cadre-rectangle.html"
         
@@ -121,35 +121,35 @@ def detail_produit(request, product_id):
         form=TriangleForm(request.POST or None)
         template="produits/cintrages_cadres/cadre-triangulaire.html"
         
-    if(product.nom=="cintrage de l'etrier"):
+    if(product.nom=="forme etrier"):
         form=EtrierForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-etrier.html"
         
-    if(product.nom=="cintrage en T"):
+    if(product.nom=="forme en T"):
         form=TForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-T.html"
         
-    if(product.nom=="cintrage en T economique"):
+    if(product.nom=="forme en T economique"):
         form=TeconoForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-T-economique.html"
         
-    if(product.nom=="cintrage en U"):
+    if(product.nom=="forme en U"):
         form=UForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-U.html"
         
-    if(product.nom=="cintrage en U ouvert"):
+    if(product.nom=="forme en U ouvert"):
         form=UouvertForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-U-ouvert.html"
         
-    if(product.nom=="cintrage en U ferme"):
+    if(product.nom=="forme en U ferme"):
         form=UfermeForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-U-ferme.html"
         
-    if(product.nom=="cintrage de la pince"):
+    if(product.nom=="forme pince"):
         form=PinceForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-pince.html"
         
-    if(product.nom=="cintrage du crochet"):
+    if(product.nom=="forme crochet"):
         form=CrochetForm(request.POST or None)
         template="produits/cintrages_formes/cintrage-crochet.html"
         

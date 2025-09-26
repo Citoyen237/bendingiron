@@ -30,22 +30,22 @@ class BarreDroiteForm(forms.Form):
    
     #choix du diametre
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
-        ('14', 'M14'),
-        ('16', 'M16'),
-        ('20', 'M20'),
-        ('25', 'M25'),
-        ('32', 'M32')
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
+        ('14', 'Fer 14'),
+        ('16', 'Fer 16'),
+        ('20', 'Fer 20'),
+        ('25', 'Fer 25'),
+        ('32', 'Fer 32')
     ]
     
     diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
+        label=" Choix du fer",
         required=True,  # Champ requis
-        initial='M6',  # Valeur par défaut
+        initial='Fer 6',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'diametre',  # Attribut id
@@ -54,11 +54,11 @@ class BarreDroiteForm(forms.Form):
     )
     
     longueur_Barre = forms.FloatField(
-        label=" Longueur de la barre(mm)",
+        label=" Longueur de la barre (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=8000,
+        min_value=30, 
+        max_value=600,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -68,7 +68,7 @@ class BarreDroiteForm(forms.Form):
     )
     
     longueur_Total = forms.FloatField(
-        label="Longueur totale du cadre(mm)",
+        label="Longueur totale du cadre (cm)",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         #min_value=1,
@@ -102,7 +102,7 @@ class BarreDroiteForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
         required=True,  # Champ requis
         min_value=1,
         max_value=10000,
@@ -130,7 +130,7 @@ class BarreCouUneExForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -143,22 +143,22 @@ class BarreCouUneExForm(forms.Form):
    
     #choix du diametre
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
-        ('14', 'M14'),
-        ('16', 'M16'),
-        ('20', 'M20'),
-        ('25', 'M25'),
-        ('32', 'M32')
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
+        ('14', 'Fer 14'),
+        ('16', 'Fer 16'),
+        ('20', 'Fer 20'),
+        ('25', 'Fer 25'),
+        ('32', 'Fer 32')
     ]
     
     diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
+        label=" Choix du fer ",
         required=True,  # Champ requis
-        initial='M6',  # Valeur par défaut
+        initial='Fer 6',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'diametre',  # Attribut id
@@ -168,16 +168,17 @@ class BarreCouUneExForm(forms.Form):
     
     # choix angle de cintrage
     CHOICES = [
-        ('90', '90°'),
-        ('135', '135°'),
-        ('180', '180°')
+        ('90', '90'),
+        ('135', '135'),
+        ('-135', '-135'),
+        ('180', '180')
     ]
     
     angle_cintrage = forms.ChoiceField(
         choices=CHOICES,
-        label=" Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle (degre) ",
         required=True,  # Champ requis
-        initial='90°',  # Valeur par défaut
+        initial='135',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -187,7 +188,7 @@ class BarreCouUneExForm(forms.Form):
     
     #rayon de courbure
     rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure (mm)",
+        label=" Rayon de courbure (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=300, 
@@ -202,11 +203,11 @@ class BarreCouUneExForm(forms.Form):
     
 
     longueur_Barre = forms.FloatField(
-        label=" Longueur de la barre(mm)",
+        label=" Longueur de la barre(cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=300, 
-        max_value=8000,
+        min_value=30, 
+        max_value=600,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -217,7 +218,7 @@ class BarreCouUneExForm(forms.Form):
     
     
     longueur_Total = forms.FloatField(
-        label=" Longueur totale du cadre",
+        label=" Longueur totale du cadre (cm)",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         #min_value=1,
@@ -251,7 +252,7 @@ class BarreCouUneExForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label=" Quantite de barre(u)",
+        label=" Quantite ",
         required=True,  # Champ requis
         min_value=1,
         max_value=10000,
@@ -279,7 +280,7 @@ class BarreCouDeuxExForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -292,20 +293,20 @@ class BarreCouDeuxExForm(forms.Form):
    
     #choix du diametre
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
-        ('14', 'M14'),
-        ('16', 'M16'),
-        ('20', 'M20'),
-        ('25', 'M25'),
-        ('32', 'M32')
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
+        ('14', 'Fer 14'),
+        ('16', 'Fer 16'),
+        ('20', 'Fer 20'),
+        ('25', 'Fer 25'),
+        ('32', 'Fer 32')
     ]
     
     diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du Diametre du fer en (mm)",
+        label="Choix du fer",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -317,16 +318,17 @@ class BarreCouDeuxExForm(forms.Form):
     
     # choix angle de cintrage
     CHOICES = [
-        ('90', '90°'),
-        ('135', '135°'),
-        ('180', '180°')
+        ('90', '90'),
+        ('135', '135'),
+        ('-135', '-135'),
+        ('180', '180')
     ]
     
     angle_cintrage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle de cintrage(degre) ",
+        label="Choix de l’angle (degre) ",
         required=True,  # Champ requis
-        initial='90°',  # Valeur par défaut
+        initial='135',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -336,7 +338,7 @@ class BarreCouDeuxExForm(forms.Form):
     
     #rayon de courbure
     rayon_Courbure = forms.FloatField(
-        label="Rayon de courbure (mm)",
+        label="Rayon de courbure (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=300, 
@@ -350,7 +352,7 @@ class BarreCouDeuxExForm(forms.Form):
     )
     
     longueur_Barre = forms.FloatField(
-        label="Longueur de la barre(mm)",
+        label="Longueur de la barre (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=30, 
@@ -364,7 +366,7 @@ class BarreCouDeuxExForm(forms.Form):
     )
        
     longueur_Total = forms.FloatField(
-        label="Longueur totale du cadre (mm)",
+        label="Longueur totale du cadre (cm)",
         required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         #min_value=1,
@@ -398,7 +400,7 @@ class BarreCouDeuxExForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
         required=True,  # Champ requis
         min_value=1,
         max_value=10000,

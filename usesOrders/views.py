@@ -127,6 +127,8 @@ def detail_commande(request, order_id):
                 'total': item.get_prix_total,
             })
     current_url = '/mes-commandes/'
+    date=commande.created_at.strftime("%d%m%y")
+    filename=f'facture_{date}B-iron{commande.id}_{commande.infoclient.nom}_solde'
     context = {
         'current_url':current_url,
         'produits':produits_details,
@@ -136,7 +138,8 @@ def detail_commande(request, order_id):
         'montant_tva' :commande.montant_tva,
         'net_payer':commande.net_payer,
         'get_tranche1':commande.get_tranche1,
-        'get_tranche2':commande.get_tranche2
+        'get_tranche2':commande.get_tranche2,
+        'filename':filename
     }
     return render(request, 'detail-commande.html',context)
 

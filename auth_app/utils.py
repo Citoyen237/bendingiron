@@ -21,7 +21,7 @@ def send_custom_email(subject, template_name, context, recipient_list):
     """
     html_message = render_to_string(template_name, context)
     plain_message = strip_tags(html_message)
-    from_email = ' bendingiron.info@gmail.com'
+    from_email = ' contact@bending-iron.com'
     send_mail(
         subject,
         plain_message,

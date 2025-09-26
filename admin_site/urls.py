@@ -47,4 +47,9 @@ urlpatterns = [
     path('codes-distributeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),
     path('codes-distributeurs/ajouter-distributeur', add_distributeur, name='code.add'),
 
+    path('portefeuille-client/', get_portefeuille_client, name='portefeuille-client'),
+    path('partenariats/portefeuille', get_portefeuille_partenaire, name='portefeuille-partenaire'),
+    
+    path('commandes-client/<int:id_user>', get_order_user, name='order.users'),
+
 ]

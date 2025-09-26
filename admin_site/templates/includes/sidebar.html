@@ -11,6 +11,13 @@
     </li><!-- End Dashboard Nav -->
 
     <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'portefeuille-client' %}">
+        <i class="bi bi-cash-coin"></i>
+        <span>Portefeuille client</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'order.list' %}">
         <i class="bi bi-cart"></i>
         <span>Commandes lients</span>
@@ -45,7 +52,12 @@
       </a>
       <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="{% url 'partenariat.orders' %}">
+          <a href="{% url 'portefeuille-partenaire' %}">
+            <i class="bi bi-circle"></i><span>Portefeuille partenaire</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'portefeuille-partenaire' %}">
             <i class="bi bi-circle"></i><span>Commandes</span>
           </a>
         </li>

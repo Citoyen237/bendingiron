@@ -3,6 +3,7 @@ from auth_app.models import CustomUser as User
 from django.utils import timezone
 from produits.models import *
 from django.db.models import Sum
+from decimal import Decimal
 # Create your models here.
 class Partenariats(models.Model):
     # interimaire
@@ -14,12 +15,22 @@ class Partenariats(models.Model):
     date_debut = models.DateTimeField()
     date_fin = models.DateTimeField()
 
-    def __str__(self):
-        return self.name
-
     @property
     def is_expired(self):
         return timezone.now()>self.date_fin
+    
+    
+    @property
+    def nb_projet(self):
+        return self.projet_set.count()
+    
+    @property
+    def montant(self):
+        total =sum(item.net_payer for item in self.projet_set.all())
+        return round(total)
+
+    def __str__(self):
+        return self.name
 
 class Projet(models.Model):
     partenariat=models.ForeignKey(Partenariats, on_delete=models.CASCADE)
@@ -161,12 +172,38 @@ class Projet(models.Model):
         return "Conditions non remplies."
     
     @property
+    def toutes_commandes_terminees(self):
+        orders = self.projetorder_set.all()
+        if not orders.exists():
+            return False  # pas de commandes → pas terminé
+        return all(order.get_statut_actuel == "termine" for order in orders)
+    
+    @property
     def get_statut(self):
-        statut ="en cours"
+        statut = "en cours"
         if self.is_solde and self.pourcentage_realisation == 100:
-            statut = "termine"
+            if self.toutes_commandes_terminees:
+                statut = "termine"
         return statut
-
+    
+    @classmethod
+    def montant_total_projets_solde(cls):
+        total = Decimal(0)
+        for projet in cls.objects.all():
+            if projet.is_solde:
+                total += projet.net_payer
+        return total
+    
+    @property
+    def benefice(self):
+        return (self.prix_revient_total*self.reduction)/100
+    
+    @classmethod
+    def benefice_total(cls):
+        total = Decimal(0)
+        for projet in cls.objects.all():
+            total += projet.benefice
+        return total
 
 class ProjetItem(models.Model):
     projet = models.ForeignKey(Projet,related_name='projetitems', on_delete=models.CASCADE)

@@ -73,12 +73,15 @@ class Order(models.Model):
     @property
     def prix_revient_total(self):
         return sum(item.prix_revient for item in self.orderitem_set.all())
+    
+    def montant_remise(self):
+        return (self.prix_revient_total*self.remise)/100
 
     @property
     def get_prix_total(self):
-        total=sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
-        return total
-    
+        total =sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+        return round(Decimal(total) - self.montant_remise())
+
     @property
     def montant_tva(self):
         return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
@@ -86,6 +89,19 @@ class Order(models.Model):
     @property
     def net_payer(self):
         return round(self.montant_tva + self.get_prix_total)
+
+    # @property
+    # def get_prix_total(self):
+    #     total=sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+    #     return total
+    
+    # @property
+    # def montant_tva(self):
+    #     return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    
+    # @property
+    # def net_payer(self):
+    #     return round(self.montant_tva + self.get_prix_total)
     
     @property
     def get_tranche1(self):
@@ -171,9 +187,9 @@ class CodePromo(models.Model):
     remise = models.DecimalField(max_digits=10, decimal_places=2)
     code = models.CharField(max_length=255)
     expiration = models.PositiveIntegerField()
+    # nb_utilidation = models.PositiveBigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    
     @property
     def expiration_date(self):
         """Date exacte d’expiration du code promo"""

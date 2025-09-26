@@ -16,7 +16,7 @@ class CarreForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -35,7 +35,7 @@ class CarreForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -47,11 +47,11 @@ class CarreForm(forms.Form):
     )
 
     longueur_Cote = forms.FloatField(
-        label=" Longueur du cote",
+        label=" Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=80, 
-        max_value=1000,
+        min_value=8, 
+        max_value=100,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -62,7 +62,7 @@ class CarreForm(forms.Form):
   
      #longueur depart et fin
     longueur_Depart_et_Fin = forms.FloatField(
-        label=" Longueur de départ & fin",
+        label=" Longueur de départ & fin (cm)",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -75,7 +75,7 @@ class CarreForm(forms.Form):
     
     #rayon de courbure
     rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure (mm)",
+        label=" Rayon de courbure (cm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -89,7 +89,7 @@ class CarreForm(forms.Form):
     )
 
     longueur_Total = forms.FloatField(
-        label=" Longueur totale du cadre(mm)",
+        label=" Longueur totale du cadre (cm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -122,11 +122,11 @@ class CarreForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
          required=True,  # Champ requis
         # initial=1,  # Valeur par défaut
          min_value=1, 
-         max_value=1000,
+         max_value=10000,
         widget=forms.NumberInput(attrs={
             'class': 'form-control',  # Classe CSS
             # 'readonly': 'readonly',  # Attribut readonly
@@ -135,15 +135,15 @@ class CarreForm(forms.Form):
         })
     )
     CHOICES = [
-        ('90', '90°'),
-        ('135', '135°'),
+        ('90', '90'),
+        ('135', '135'),
     ]
 
     Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle",
+        label="Choix de l’angle (degre)",
         required=True,  # Champ requis
-        initial='90°',  # Valeur par défaut
+        initial='135',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -152,15 +152,15 @@ class CarreForm(forms.Form):
     )
     
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
     ]
     
     Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label="Choix du diametre du fer (mm)",
+        label="Choix du fer",
         required=True,  # Champ requis
         initial='M6',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -184,7 +184,7 @@ class RectangleForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -195,7 +195,7 @@ class RectangleForm(forms.Form):
         })
     )
     rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure",
+        label=" Rayon de courbure (cm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -209,7 +209,7 @@ class RectangleForm(forms.Form):
     )
     
     longueur_Depart_et_Fin = forms.FloatField(
-        label=" longueur Depart & Fin",
+        label=" longueur Depart & Fin (cm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -224,7 +224,7 @@ class RectangleForm(forms.Form):
     
     
     longueur_Total = forms.FloatField(
-        label="Longueur totale du cadre(mm)",
+        label="Longueur totale du cadre (cm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -256,11 +256,11 @@ class RectangleForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
          required=True,  # Champ requis
         # initial=1,  # Valeur par défaut
          min_value=1, 
-         max_value=1000,
+         max_value=10000,
         widget=forms.NumberInput(attrs={
             'class': 'form-control',  # Classe CSS
             # 'readonly': 'readonly',  # Attribut readonly
@@ -269,15 +269,15 @@ class RectangleForm(forms.Form):
         })
     )
     CHOICES = [
-        ('90', '90°'),
-        ('135', '135°'),
+        ('90', '90'),
+        ('135', '135'),
     ]
 
     Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label=" Choix de l’angle",
+        label=" Choix de l’angle (degre)",
         required=True,  # Champ requis
-        initial='90°',  # Valeur par défaut
+        initial='135',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -286,15 +286,15 @@ class RectangleForm(forms.Form):
     )
     
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
     ] 
      
     Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
+        label=" Choix du fer ",
         required=True,  # Champ requis
         #initial='90°',  # Valeur par défaut
         widget=forms.Select(attrs={
@@ -304,7 +304,7 @@ class RectangleForm(forms.Form):
         })
     )
     largeur_Cote = forms.FloatField(
-        label=" Largeur du cote(mm)",
+        label=" Largeur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -318,7 +318,7 @@ class RectangleForm(forms.Form):
     )
     
     longueur_Cote = forms.FloatField(
-        label="Longueur du cote(mm)",
+        label="Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -345,7 +345,7 @@ class TriangleForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -358,17 +358,17 @@ class TriangleForm(forms.Form):
    
     #choix du diametre
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
     ]
     
     Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
+        label=" Choix du fer",
         required=True,  # Champ requis
-        initial='M6°',  # Valeur par défaut
+        initial='F6',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'diametre',  # Attribut id
@@ -378,15 +378,15 @@ class TriangleForm(forms.Form):
     
     # choix angle de cintrage
     CHOICES = [
-        ('120', '120°'),
-        ('135', '135°'),
+        ('120', '120'),
+        ('135', '135'),
     ]
     
     Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label=" Choix de l’angle ",
+        label=" Choix de l’angle (degre)",
         required=True,  # Champ requis
-        initial='90°',  # Valeur par défaut
+        initial='135',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -396,7 +396,7 @@ class TriangleForm(forms.Form):
     
     #rayon de courbure
     rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure (mm)",
+        label=" Rayon de courbure (cm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -411,7 +411,7 @@ class TriangleForm(forms.Form):
     
     #longueur depart et fin
     longueur_Depart_et_Fin = forms.FloatField(
-        label=" Longueur de départ & fin",
+        label=" Longueur de départ & fin (cm)",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -423,7 +423,7 @@ class TriangleForm(forms.Form):
     )
     
     longueur_Cote = forms.FloatField(
-        label=" Longueur du cote",
+        label=" Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -438,7 +438,7 @@ class TriangleForm(forms.Form):
     
     
     longueur_Total = forms.FloatField(
-        label="Longueur totale du cadre",
+        label="Longueur totale du cadre (cm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -470,7 +470,7 @@ class TriangleForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
         # required=True,  # Champ requis
         # initial=1,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -495,7 +495,7 @@ class HexagonaleForm(forms.Form):
     fer=forms.ChoiceField(
         choices=choix_fer,
         # widget=forms.RadioSelect,
-        label = "Qui fourni le fer ?",
+        label = "Qui fournit le fer ?",
         required=True,
          widget=forms.RadioSelect(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
@@ -508,17 +508,17 @@ class HexagonaleForm(forms.Form):
    
     #choix du diametre
     CHOICES2 = [
-        ('6', 'M6'),
-        ('8', 'M8'),
-        ('10', 'M10'),
-        ('12', 'M12'),
+        ('6', 'Fer 6'),
+        ('8', 'Fer 8'),
+        ('10', 'Fer 10'),
+        ('12', 'Fer 12'),
     ]
     
     Diametre_fer = forms.ChoiceField(
         choices=CHOICES2,
-        label=" Choix du Diametre du fer en (mm)",
+        label=" Choix du fer",
         required=True,  # Champ requis
-        initial='M6',  # Valeur par défaut
+        initial='Fer 6',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'diametre',  # Attribut id
@@ -528,15 +528,15 @@ class HexagonaleForm(forms.Form):
     
     # choix angle de cintrage
     CHOICES = [
-        ('60', '60°'),
-        ('120', '120°'),
+        ('60', '60'),
+        ('120', '120'),
     ]
     
     Angle_pliage = forms.ChoiceField(
         choices=CHOICES,
-        label=" Choix de l’angle de cintrage(degre) ",
+        label=" Choix de l’angle (degre)",
         required=True,  # Champ requis
-        initial='60°',  # Valeur par défaut
+        initial='120',  # Valeur par défaut
         widget=forms.Select(attrs={
             'class':{ 'form-select','mt-4'},  # Classe CSS
             'id': 'angle',  # Attribut id
@@ -546,7 +546,7 @@ class HexagonaleForm(forms.Form):
     
     #rayon de courbure
     rayon_Courbure = forms.FloatField(
-        label=" Rayon de courbure (mm)",
+        label=" Rayon de courbure (cm)",
         #required=True,  # Champ requis
         # initial,  # Valeur par défaut
         #min_value=8, 
@@ -561,7 +561,7 @@ class HexagonaleForm(forms.Form):
     
     #longueur depart et fin
     longueur_Depart_et_Fin = forms.FloatField(
-        label=" Longueur de départ & fin",
+        label=" Longueur de départ & fin (cm)",
         # required=True,  # Champ requis
         #initial=6.5,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -573,7 +573,7 @@ class HexagonaleForm(forms.Form):
     )
     
     diametre = forms.FloatField(
-        label=" Diametre de cintrage(mm)",
+        label=" Diametre de cintrage (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=1, 
@@ -587,7 +587,7 @@ class HexagonaleForm(forms.Form):
     )
         
     longueur_Total = forms.FloatField(
-        label=" Longueur totale du cadre",
+        label=" Longueur totale du cadre (cm)",
         # required=True,  # Champ requis
         # initial=0.6,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
@@ -619,7 +619,7 @@ class HexagonaleForm(forms.Form):
         })
     )
     quantite = forms.FloatField(
-        label="Quantite de barre(u)",
+        label="Quantite",
         # required=True,  # Champ requis
         # initial=1,  # Valeur par défaut
         widget=forms.NumberInput(attrs={

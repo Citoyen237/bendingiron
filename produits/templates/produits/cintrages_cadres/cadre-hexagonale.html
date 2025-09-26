@@ -146,7 +146,7 @@ detail
         <div class="row mb-3">
             <div class="col-lg-6 text-center "><br>
                 <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
-                    Precedent
+                    reinitialiser
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
@@ -198,15 +198,15 @@ detail
 
 
            //calcule rayon, longueur de depart
-            rayonField.value = 5*diametre
-            longueurdptField.value = 5*diametre
+            rayonField.value = (5*diametre)/10
+            longueurdptField.value = (5*diametre)/10
             diametereField.value = diametre
             angeField.value = ange
            
             // Vérification de la valeur minimale pour longueurCote
-            if (cintrageCote < 1 || cintrageCote > 1000) {
+            if (cintrageCote < 8 || cintrageCote > 50) {
                 // Afficher le message d'erreur
-                cintrageError.textContent = "comprise entre 1-1000";
+                cintrageError.textContent = "comprise entre 8-50";
                 cintrageError.style.display = "block"; // Afficher le message
                 // diametre cintrage = 1;  // Fixer la valeur à 8 si elle est inférieure
                 cintrageField.value = cintrageCote;  // Mettre à jour le champ avec la valeur corrigée

@@ -123,8 +123,8 @@
                 <img src="{{image_url}}" alt="Logo" style="width:170px;">
             </div>
             <div class="invoice-number">
-                <span style="font-size:16px"><b>FACTURE N°</b></span><strong
-                    style="color:#ffa310; font-size:16px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
+                <span style="font-size:18px"><b>FACTURE N°</b></span><strong
+                    style="color:#ffa310; font-size:18px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
                 <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
             </div>
         </div>
@@ -132,7 +132,7 @@
         <div class="company-info">
             <p>
                  <b style="color: rgb(8, 115, 129);">
-               <u><span>bendingiron.info@gmail.com</span></u></b><br>
+               <u><span>contact@bending-iron.com</span></u></b><br>
                 <span>Douala, Cameroun</span> <br>
                 <span>(+237) 686 088 869</span> <br>
                 <span>(+237) 681 951 410</span>
@@ -144,11 +144,13 @@
             <span style="font-size:10px"><b>O.L : </b>{{order.infoclient.mode_livraison}}</span><br>
             <span style="font-size:10px"><b>A.L : </b>{{order.infoclient.adresse}}</span><br>
             <span style="font-size:10px"><b>Tel : </b>{{order.infoclient.telephone}}</span><br><br>
-            {% if order.remise > 0 %}
+            
             <span style="font-size:10px; color:#ffa310">
-                <i>Code distributeur utilisé</i>
-            </span>
-            {% endif %}
+                <b>C.D :</b> {% if order.remise > 0 %}
+                <i>utilisé</i>
+                {% else %}
+                <i>non utilisé</i>
+                {% endif %}
         </div>
         <!-- Table -->
         <table>

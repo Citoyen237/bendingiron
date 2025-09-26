@@ -17,7 +17,7 @@ detail
     <div class="container border shadow py-2 my-2">
         <div class="row">
             <div class="col-lg-12"><br>
-                <h3 class="column-title bg-warning p-3 text-center">Parametre de cintrage {{product.nom}}
+                <h3 class="column-title bg-warning p-3 text-center">Parametre du {{product.nom}}
                 </h3>
             </div><!-- Col end -->
         </div>
@@ -87,7 +87,7 @@ detail
                     <br>
                     <div class="row">
                         <div class="col">
-                            <h4 class="text-secondary">{{form.longueur_Total.label}} (cm)</h4>
+                            <h4 class="text-secondary">{{form.longueur_Total.label}}</h4>
                         </div>
                         <div class="col">
                             {{ form.longueur_Total }}
@@ -134,7 +134,7 @@ detail
         <div class="row mb-3">
             <div class="col-lg-6 text-center "><br>
                 <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
-                    Precedent
+                    reinitialiser
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
@@ -182,28 +182,31 @@ detail
             let prix_revient = parseFloat(prix_revientField.value || 1);
 
            //calcule rayon, longueur de depart
-            rayonField.value = 5*diametre
-            longueurdptField.value = 5*diametre
+            rayonField.value = (5*diametre)/10
+            longueurdptField.value = (5*diametre)/10
             diametereField.value = diametre
             angeField.value = ange
            
             // Vérification de la valeur minimale pour longueurCote
-            if (longueurCote < 80 || longueurCote > 1000) {
+            if (longueurCote < 8 || longueurCote > 100) {
                 // Afficher le message d'erreur
-                longueurCoteError.textContent = "comprise entre 80-1000";
+                longueurCoteError.textContent = "comprise entre 8-100";
                 longueurCoteError.style.display = "block"; // Afficher le message
                 // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
                 longueurCoteField.value = longueurCote;  // Mettre à jour le champ avec la valeur corrigée
+                
             } else {
                 // Cacher le message d'erreur si la valeur est valide
                 longueurCoteError.style.display = "none";
             }
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
+            longueurCote = longueurCote*10
+            console.log(longueurCote)
             longueurTotal = (4*longueurCote) + (20.5*diametre)
             
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = longueurTotal.toFixed(2)/10; // Afficher la longueur totale dans le champ --> -->
             
             const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;
