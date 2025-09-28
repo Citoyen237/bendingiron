@@ -29,12 +29,12 @@ def send_verification_email(request,user):
     token = token_generator.make_token(user)
     link = f"http://{request.get_host()}/auth/verification-email/{uid}/{token}/"
 
-    send_mail(
-        subject="Vérifiez votre adresse email",
-        message=f"Cliquez sur ce lien pour confirmer votre email : {link}",
-        from_email="noreply@monsite.com",
-        recipient_list=[user.email],
-    )
+    # send_mail(
+    #     subject="Vérifiez votre adresse email",
+    #     message=f"Cliquez sur ce lien pour confirmer votre email : {link}",
+    #     from_email="contact@bending-iron.com",
+    #     recipient_list=[user.email],
+    # )
 
     template="emails/verified_email.html"
     objet="lVérifiez votre adresse email"

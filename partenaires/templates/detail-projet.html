@@ -190,10 +190,8 @@ details sur le projet
             alert("Votre panier est vide !");
             return;
         }
-        const projet_id = {{ projet.id }
-    }
+        const projet_id = {{ projet.id }}
     // Assure-toi que ce ID est dans le template
-
     fetch("{% url 'valider_commande_partenaire' %}", {
         method: "POST",
         headers: {
@@ -231,6 +229,7 @@ details sur le projet
             alert("Une erreur s'est produite.");
         });
     }
+
     // Affichage initial
     afficherPanier();
 
