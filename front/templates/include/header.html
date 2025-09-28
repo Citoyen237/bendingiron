@@ -32,7 +32,7 @@
               {% if user.is_authenticated %}
               <li class="header-get-a-quote">
                 <a class="btn btn-primary" href="{% url 'logout' %}">Se deconnecter</a><br>
-                <span style="font-size: smaller;" class="text-success">{{user.last_name}} connecte !</span>
+                <span style="font-size: smaller;" class="text-success">{{user.last_name}} connecté !</span>
               </li>
               {% else %}
               <li class="header-get-a-quote">

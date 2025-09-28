@@ -7,88 +7,91 @@ detail
 {% load static %}
 {% load humanize %}
 <style>
-    #progress-bar {
-        display: table;
+  #progress-bar {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 15px 15px 0;
+    table-layout: fixed;
+    width: 100%;
+    counter-reset: step;
+
+    li {
+      list-style-type: none;
+      display: table-cell;
+      width: 20%;
+      float: left;
+      /* police du texte en dessus */
+      font-size: 12px;
+      position: relative;
+      text-align: center;
+
+      &:before {
+        width: 25px;
+        height: 25px;
+        color: #212121;
+        content: counter(step);
+        counter-increment: step;
+        line-height: 25px;
+        /* police de nombre*/
+        font-size: 12px;
+        border: 1px solid grey;
+        display: block;
+        text-align: center;
+        margin: 0 auto 10px auto;
+        border-radius: 50%;
+        background-color: #fff;
+      }
+
+      &:after {
         width: 100%;
-        margin: 0;
-        padding: 15px 15px 0;
-        table-layout: fixed;
-        width: 100%;
-        counter-reset: step;
+        height: 7px;
+        content: "";
+        position: absolute;
+        background-color: black;
+        /* marge de la barre */
+        top: 10px;
+        left: -50%;
+        z-index: -1;
+      }
 
-        li {
-            list-style-type: none;
-            display: table-cell;
-            width: 20%;
-            float: left;
-            font-size: 16px;
-            position: relative;
-            text-align: center;
+      &:first-child:after {
+        content: none;
+      }
 
-            &:before {
-                width: 50px;
-                height: 50px;
-                color: #212121;
-                content: counter(step);
-                counter-increment: step;
-                line-height: 50px;
-                font-size: 18px;
-                border: 1px solid grey;
-                display: block;
-                text-align: center;
-                margin: 0 auto 10px auto;
-                border-radius: 50%;
-                background-color: #fff;
-            }
+      &.step-done {
+        color: #ffb600;
 
-            &:after {
-                width: 100%;
-                height: 10px;
-                content: "";
-                position: absolute;
-                background-color: black;
-                top: 25px;
-                left: -50%;
-                z-index: -1;
-            }
-
-            &:first-child:after {
-                content: none;
-            }
-
-            &.step-done {
-                color: #ffb600;
-
-                &:before {
-                    border-color: #ffb600;
-                    background-color: #ffb600;
-                    color: #fff;
-                    font-family: "FontAwesome";
-                }
-
-                &+li:after {
-                    /* ici */
-                    background-color: #ffb600;
-                }
-            }
-
-            &.step-active {
-                color: #ffb600;
-
-                &:before {
-                    border-color: #ffb600;
-                    background-color: #ffb600;
-                    color: #fff;
-                    font-weight: 700;
-                }
-
-                &+li:after {
-                    /* ici */
-                    background-color: #ffb600;
-                }
-            }
+        &:before {
+          border-color: #ffb600;
+          background-color: #ffb600;
+          color: #fff;
+          font-family: "FontAwesome";
         }
+
+        &+li:after {
+          /* ici */
+          background-color: #ffb600;
+        }
+      }
+
+      &.step-active {
+        color: #ffb600;
+
+        &:before {
+          border-color: #ffb600;
+          background-color: #ffb600;
+          color: #fff;
+          font-weight: 700;
+        }
+
+        &+li:after {
+          /* ici */
+          background-color: #ffb600;
+        }
+      }
     }
+  }
 </style>
 
 <div class="row div">

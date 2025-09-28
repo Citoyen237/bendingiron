@@ -55,13 +55,6 @@ projets
 
                             </th>
                             <td class='text-center'>
-                                <button id="downloadBtn" class="btn btn-warning download_btn"
-                                    data-url="{% url 'download-bon' order.id %}">
-                                    <i class="fas fa-download"></i>
-                                    <span id="btnText" class="btn_text"></span>
-                                    <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
-                                        aria-hidden="true"></span>
-                                </button>
                                 <!-- <a href="{% url 'download-bon' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a> -->
                                 <a href="{% url 'front.orders.details' order.id %}" class='btn btn-info'
                                     name='supprimer'><i class='fas fa-file'></i></a>
