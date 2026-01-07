@@ -1,0 +1,99 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+creer un partenariat
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Partenariats</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Partenariat</li>
+                <li class="breadcrumb-item active">{{partenariat.name}}</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mt-2">
+                        <h6>Nom entreprise : <b>{{partenariat.name}}</b></h6>
+                        <h6>Email : <b>{{partenariat.email}}</b></h6>
+                        <h6>Adresse: <b>{{partenariat.adresse}}</b></h6>
+                        <h6>Telephone : <b>{{partenariat.telephone}}</b> </h6>
+                        <h6>Nombre de projets : <b>{{projets.count}}</b></h6>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <h6>Nom interimaire : <b>{{partenariat.user}}</b></h6>
+                        <h6>Telephone interimaire : <b>{{partenariat.user.phone_number}}</b></h6>
+                        <h6>Date de debut : <b> {{partenariat.date_debut}} </b></h6>
+                        <h6>Date de fin : <b> {{partenariat.date_fin}} </b></h6>
+                        <h6>Statut: <b> {% if partenariat.is_expired %}
+                                <span class="text-success">termine</span>
+                                {% else %}
+                                <span class="text-warning">en cour</span>
+                                {% endif %}
+                            </b></h6>
+                    </div>
+                    <h4>Liste des projets</h4>
+                    <div class="col-md-12">
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Utilisateur</th>
+                                    <th>Nom du projet</th>
+                                    <th>Montant total</th>
+                                    <th>Statut</th>
+                                    <th>Solde</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for projet in projets %}
+                                <tr>
+                                    <td>{{projet.created_at}}</td>
+                                    <td>{{projet.user}}</td>
+                                    <td>{{projet.name}}</td>
+                                    <td>{{projet.montant_total}}</td>
+                                    <td>{{projet.get_statut}}</td>
+                                    <td class="">
+                                        {% if projet.is_solde %}
+                                        <span class="text-success">oui</span>
+                                        {% else %}
+                                        <span class="text-warning">non</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'partenariat.projet.detail' projet.id%}"
+                                            class="btn btn-primary">
+                                            detail</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        <img src="{% static 'nodata.png'%}" alt="" height="100px" />
+                                        <br />
+                                        <span>Acun projet trouver</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

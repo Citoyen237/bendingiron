@@ -1,0 +1,61 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+commandes
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Commandes</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Suivis de la commande</a></li>
+                <li class="breadcrumb-item active">#BIron{{order.id}}</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-md-4">
+                <b>Nom client</b> : {{order.user}}
+                <b>Date </b>: {{order.created_at}} <br>
+                <b>Prix total: </b> {{order.get_prix_total}} FCFA
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Table with stripped rows -->
+                        <table class="table table-striped">
+                            <thead class=''>
+                                <th>Date</th>
+                                <th>Responsable</th>
+                                <th>Statut</th>
+                            </thead>
+                            <tbody>
+
+                                {% for item in traitements %}
+                                <tr>
+                                    <td>{{item.created_at}}</td>
+                                    <td>{{item.user}}
+                                    <td>{{item.statut}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Basic Modal -->
+
+
+</main>
+{%endblock%}

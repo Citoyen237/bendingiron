@@ -1,0 +1,89 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+register
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<section id="main-container" class="main-container">
+    <div class="container px-lg-0">
+        <div class="row g-0 mx-lg-0">
+            <div class="col-lg-6 pe-lg-0 wow fadeIn" data-wow-delay="0.5s" style="min-height: 400px;">
+                <div class="position-relative h-100">
+                    <img class="position-absolute img-fluid w-100 h-100" src="{% static 'front/images/services/register1.png'%}"
+                        style="object-fit: cover;" alt="">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mb-2">
+                    <div class="card-body">
+                        <h1 class="text-center">Creer un compte</h1>
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ message }}!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                        {% if form.errors %}
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ error }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                        {% endfor %}
+                        {% endif %}
+                        {% if password_error %}
+                        <p>{{ password_error }}</p>
+                        {% endif %}
+    
+                        {% if email_error %}
+                        <p>{{ email_error }}</p>
+                        {% endif %}
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="input mb-3">
+                                <h6 for="nom">NOM : </h6>
+                                {{form.last_name}}
+                            </div>
+                            <div class="input mb-3">
+                                <h6 for="prenom">PRENOM :</h6>
+                                {{form.first_name}}
+                            </div>
+                            <div class="input mb-3">
+                                <h6 for="email">EMAIL :</h6>
+                                {{form.email}}
+                            </div>
+                            <div class="input mb-3">
+                                <h6 for="email">NUMERO DE TELEPHONE :</h6>
+                                {{form.phone}}
+                            </div>
+                            <div class="input mb-3">
+                                <h6 for="email">MOT DE PASSE :</h6>
+                                {{form.password}}
+                            </div>
+                            <div class="input mb-3">
+                                <h6 for="email">CONFIRMER LE MOT DE PASSE :</h6>
+                                {{form.pwd_confirm}}
+                            </div>
+                            <div class="input mb-3">
+                                <button class="btn btn-primary form-control">Enregistrer</button>
+                            </div>
+                            <br>
+                            <div class="input mb-3">
+                                <p class="mt-2 text-center">Vous déjà un compte? <a
+                                        href="{% url 'login' %}" class="text-warning"> <b>Connectez-vous</b></a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </section><!-- Main container end -->
+{% load static %}
+{%endblock%}

@@ -1,0 +1,139 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+confirmer la commande
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<section class="content project-area">
+    {% if user.is_authenticated %}
+    <div class="container-fluid border shadow">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table table-responsive mt-2">
+                    <thead class='bg-warning'>
+                        <th>Produits</th>
+                        <th>Description</th>
+                        <th>Quantite</th>
+                        <th>Prix(FCFA) </th>
+                        <th>Prix totale (FCFA) </th>
+                        <th>Retirer</th>
+                    </thead>
+                    <tbody>
+
+                        {% for item in paniers %}
+
+                        <tr>
+                            <td>{{item.produit}}</td>
+                            <td>{{item.details}}
+                            <td>{{item.quantite}}</td>
+                            <td>{{item.prix|intcomma}}</td>
+                            <td>{{item.total|intcomma}}</td>
+                            <td><a href="{% url 'supprimer_du_panier' item_id=item.id %}" class="btn btn-danger"
+                                    onclick="return confirmSuppression(event, this);"><i class='fas fa-trash'></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                <br>
+                                <span> Votre panier est vide</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light m-2">
+                    <div class="card-body">
+                        {% if paniers %}
+                        <h4 class="card-title">Informations de facturation</h4>
+                        <hr>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {{form.as_p}}
+                            <br>
+                            <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
+                            <br>
+                           <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
+                        
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Checkbox -->
+                            <div class="form-check mb-0">
+                                <h6>Montant HT</h6>
+                            </div>
+                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>TVA 19,25% </h6>
+                            </div>
+                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Montant TTC</h6>
+                            </div>
+                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6><u>Net a payer (30%)</u></h6>
+                            </div>
+                            <u><a class="text-dark">{{get_tranche1|intcomma}} FCFA</a></u>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Reste a payer (70%)</h6>
+                            </div>
+                            <a class="text-dark">{{get_tranche1|intcomma}} FCFA</a>
+                        </div>
+                    </div>
+                    <div class="input m-2">
+                        <button type="submit" class="btn btn-primary form-control">
+                            Payer
+                        </button>
+                    </div>
+                    </form>
+                    {% endif %}
+                    
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    {% else %}
+    <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier
+    </h3>
+    {%endif%}
+
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+    // Fonction JavaScript pour confirmer la suppression
+    function confirmSuppression(event, link) {
+        // Demande de confirmation
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce produit de votre panier ?");
+
+        // Si l'utilisateur confirme, la suppression est effectuée
+        if (confirmation) {
+            return true;  // Lien est suivi et la suppression a lieu
+        } else {
+            event.preventDefault();  // Empêche la suppression si l'utilisateur annule
+            return false;
+        }
+    }
+</script>
+{% load static %}
+{%endblock%}

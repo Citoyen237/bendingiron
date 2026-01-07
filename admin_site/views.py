@@ -125,7 +125,6 @@ class ListFer(ListView):
     context_object_name = 'fers'
     template_name = "fer/list.html"
 
-
 class CreateFer(CreateView):
    model = Fer
    form_class = FerForm
@@ -174,7 +173,6 @@ class ListMessage(AdminOrSuperAdminRequiredMixin,ListView):
     def get_queryset(self):
         # Trier par date de création croissante (plus ancien au plus récent)
       return Contact.objects.order_by('-created_at')
-
 
 # contact
 @user_passes_test(is_admin)
@@ -646,6 +644,7 @@ def add_distributeur(request):
                 client =form.cleaned_data.get('client'),
                 remise=form.cleaned_data.get('remise'),
                 code=code,
+                nb_utilidation=form.cleaned_data.get('nb_utilidation'),
                 expiration =form.cleaned_data.get('expiration')
             )
             messages.success(request, f'le code ce distributeur est {code}!')

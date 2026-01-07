@@ -367,9 +367,21 @@ def appliquer_code_promo(request):
         except CodePromo.DoesNotExist:
             return JsonResponse({"success": False, "message": "Code promo invalide."})
 
+        
+        # verifier si le nombre d'utilisation a ete atteint
+        if code_promo.nb_utilidation > 0 : 
+            # verifier le nombre de fois utiliser
+            if code_promo.nb_uses_atteint : 
+                return JsonResponse({"success": False, "message": "Le nombre d'utilisation de code a ette atteint."})
+            else:
+                CodePromoUse.objects.create(
+                    promo_code=code_promo
+                )
+               
         # Vérifier expiration
-        if code_promo.is_expired:
-            return JsonResponse({"success": False, "message": "Ce code promo est expiré."})
+        if code_promo.expiration > 0 :
+            if code_promo.is_expired:
+                return JsonResponse({"success": False, "message": "Ce code promo est expiré."})
 
         # ✅ Appliquer la remise
         panier.remise = code_promo.remise

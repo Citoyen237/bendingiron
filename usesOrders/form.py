@@ -36,11 +36,12 @@ class OrderUserInfoForm(forms.ModelForm):
 class DistributeurForm(forms.ModelForm):
     class Meta:
         model = CodePromo
-        fields = ['client', 'remise','expiration']
+        fields = ['client', 'remise','expiration', 'nb_utilidation']
         labels = {
             'client': "Nom complet du client :",
             'remise': "Remise :",
-            'expiration': "Expiration (en Mois) :"
+            'expiration': "Expiration (en Mois) :",
+            'nb_utilidation':"Nombre d'utilisation",
         }
     
     def __init__(self, *args, **kwargs):

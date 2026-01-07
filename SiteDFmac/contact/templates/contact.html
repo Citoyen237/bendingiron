@@ -1,0 +1,113 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+contact
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<!--/ Header end -->
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/contact1.jpg'%}">
+  <div class="banner-text">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="col-lg-5" style=" background: rgba(0, 0, 0, 0.3);">
+            <div class="banner-heading" style="text-align: left;">
+              <h1 class="text-light">NOUS <b class="text-warning">CONTACTER</b>
+              </h1>
+              <p>
+                Vous avez besoin d'un renseignement, d'un conseil technique, d'un devis ?
+                <br>Faite nous part de cette demande ici
+              </p>
+            </div>
+          </div>
+        </div><!-- Col end -->
+      </div><!-- Row end -->
+    </div><!-- Container end -->
+  </div><!-- Banner text end -->
+</div><!-- Banner area end -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="row justify-content-center item-center text-center">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li class="alert alert-success">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+    <div class="row mt-5">
+      <div class="col-lg-4">
+        <div class="info">
+          <div class="address">
+            <i class="fas fa-map-marker-alt"></i>
+            <h4>Location:</h4>
+            <p>Douala, Cameroun</p>
+          </div>
+
+          <div class="email">
+            <i class="bi bi-envelope"></i>
+            <h4>Email:</h4>
+            <p>dfmacinfo@gmail.com</p>
+          </div>
+
+          <div class="phone">
+            <i class="bi bi-phone"></i>
+            <h4>Contactez-nous:</h4>
+            <p>(+237) 686 088 869</p>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="col-lg-8 mt-5 mt-lg-0">
+        <form action="" method="post" role="form" class="php-email-form" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <h6 for="email">NOM :</h6>
+              {{form.nom}}
+            </div>
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <h6 for="email">EMAIL :</h6>
+              {{form.email}}
+            </div>
+            <div class="col-md-4 form-group mt-3 mt-md-0">
+              <h6 for="telephone">TELEPHONE :</h6>
+              {{form.telephone}}
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <h6 for="telephone">TYPE DE MESSAGE :</h6>
+              {{form.type}}
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <h6 for="email">IMPORTER UN DEVIS :</h6>
+                {{form.file}}
+                <p class="text-warning">1 fichier pdf n’excédant pas 3MB</p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group mt-3">
+                <h6 for="email">VOTRE MESSAGE :</h6>
+                {{form.message}}
+              </div>
+            </div>
+          </div>
+          <div class="text-center"><button type="submit" class="btn btn-primary">Envoyer</button></div>
+        </form>
+
+      </div>
+    </div>
+
+</section><!-- End Contact Section -->
+{%endblock%}

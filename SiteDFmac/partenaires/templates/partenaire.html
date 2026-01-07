@@ -1,0 +1,57 @@
+{% extends 'appf.html' %}
+{% block 'title' %}
+projets
+{% endblock %}
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <h6>Nom entreprise : <b>{{partenariat.name}}</b></h6>
+                <h6>Email : <b>{{partenariat.email}}</b></h6>
+                <h6>Adresse: <b>{{partenariat.adresse}}</b></h6>
+                <h6>Telephone : <b>{{partenariat.telephone}}</b> </h6>
+                <h6>Nombre de projets : <b>{{projets.count}}</b>
+            </div>
+            <div class="col-md-6 mb-2">
+                <h6>Nom interimaire : <b>{{partenariat.user}}</b></h6>
+                <h6>Telephone interimaire : <b>{{partenariat.user.phone_number}}</b></h6>
+                <h6>Date de debut : <b> {{partenariat.date_debut}} </b></h6>
+                <h6>Date de fin : <b> {{partenariat.date_fin}} </b></h6>
+                <h6>Statut: <b> {% if partenariat.is_expired %}
+                        <span class="text-success">termine </span>
+                        {% else %}
+                        <span class="text-warning">en cour</span>
+                        {% endif %}
+                    </b></h6>
+            </div>
+            <h4>Liste des projets</h4>
+        </div>
+        <div class="row">
+            {% for projet in projets %}
+            <div class="col-lg-3 col-md-6 mb-2 border shadow">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <a href="{% url 'partenaire.detail' projet.id%}">
+                            <img loading="lazy" class="w-100" src="{% static 'front/images/folder1.jpg'%}">
+                        </a>
+                    </div>
+                    <h4 class="card-title text-warning text-center"><a
+                            href="{% url 'partenaire.detail' projet.id %}">{{projet.name}}</a> <span
+                            class="badge badge-success">{{projet.get_statut}}</span></h4>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            {% empty %}
+            <img src="{% static 'nodata.png'%}" alt="" height="100px">
+            <br>
+            <span>Acun projet n'a ete trouve</span>
+            {% endfor %}
+        </div>
+    </div>
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock %}t

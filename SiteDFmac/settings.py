@@ -76,6 +76,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CSRF_COOKIE_DOMAIN = '.bending-iron.com'
+SITE_ID = 1
 
 # nouvelle route de login
 LOGIN_URL = 'auth/login/'
@@ -83,6 +84,8 @@ LOGIN_URL = 'auth/login/'
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

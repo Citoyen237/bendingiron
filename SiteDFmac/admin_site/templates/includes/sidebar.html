@@ -1,0 +1,132 @@
+<!-- ======= Sidebar ======= -->
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'admin.index' %}">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'portefeuille-client' %}">
+        <i class="bi bi-cash-coin"></i>
+        <span>Portefeuille client</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'order.list' %}">
+        <i class="bi bi-cart"></i>
+        <span>Commandes lients</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+   <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'admin.stock.list' %}">
+        <i class="bi bi-journal-text"></i>
+        <span>Produits vendus</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Stocks</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'admin.fer.list' %}">
+            <i class="bi bi-circle"></i><span>Produits</span>
+          </a>
+          <a href="{% url 'admin.mouvement' %}">
+            <i class="bi bi-circle"></i><span>Entrees</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-people-fill"></i><span>Partenariats</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'portefeuille-partenaire' %}">
+            <i class="bi bi-circle"></i><span>Portefeuille partenaire</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'portefeuille-partenaire' %}">
+            <i class="bi bi-circle"></i><span>Commandes</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'partenariat.projet' %}">
+            <i class="bi bi-circle"></i><span>Projets</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'partenariat.list' %}">
+            <i class="bi bi-circle"></i><span>Partenaires</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-menu-button-wide"></i><span>Archives</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'archive.list' type='documents' %}">
+            <i class="bi bi-circle"></i><span>Documents</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'archive.list' type='images' %}">
+            <i class="bi bi-circle"></i><span>Images</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'archive.list' type='videos' %}">
+            <i class="bi bi-circle"></i><span>videos</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Components Nav -->
+    <!-- End Tables Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'code.revendeur' %}">
+        <i class="bi bi-receipt"></i>
+        <span>Codes distributeurs</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'contact.list' %}">
+        <i class="bi bi-envelope"></i>
+        <span>Contact</span>
+      </a>
+    </li>
+    {% if user.is_superuser %}
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'user.list' %}">
+        <i class="bi bi-people"></i>
+        <span>Utilisateurs</span>
+      </a>
+    </li>
+    {%endif%}
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'font.index' %}">
+        <i class="bi bi-house-door"></i>
+        <span>Accueil</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed text-danger" href="{% url 'logout' %}">
+        <i class="bi bi-box-arrow-in-right"></i>
+        <span>Deconnection</span>
+      </a>
+    </li><!-- End Login Page Nav -->
+  </ul>
+</aside><!-- End Sidebar-->

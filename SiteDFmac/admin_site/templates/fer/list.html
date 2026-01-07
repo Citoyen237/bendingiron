@@ -1,0 +1,90 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+stock
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Stock</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active">Produits en stock</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title  mb-3"><a href="{% url 'admin.fer.create' %}" class="btn btn-primary">Ajouter</a>
+              <br>
+              {% if messages %}
+              {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+              </div>
+              {% endfor %}
+              {% endif %}
+              <!-- Table with stripped rows -->
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>Categorie-Diametre</th>
+                    <th>Longueur critique (m)</th>
+                    <th>Quantite total</th>
+                    <th>Longueur total (m)</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  {% for fer in fers %}
+                  <tr>
+                    <td>
+                       {% if fer.sueil_atteint %}
+                      <div class="spinner-grow text-danger" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      {% endif %}
+                      {{fer.categorie}}-{{fer.diametre}}
+                    </td>
+                    <td>{{fer.longueur_critique}}</td>
+                    <td>{{fer.quantite_totale}}</td>
+                    <td>{{fer.longueur_totale}}</td>
+                    <td>{{fer.created_at}}</td>
+                    <td class="text-center">
+                      <a href="" class='btn btn-primary'><i class='bi bi-pencil-square'></i></a>
+                      <a href="{% url 'admin.suivis.produit' fer_id=fer.id %}" class='btn btn-info'>Suivis</a>
+                      <!-- <a href=" " class='btn btn-danger' name='supprimer'><i class='bi bi-trash-fill'></i></a> -->
+                    </td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="4" class="text-center">
+                      <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                      <br>
+                      <span>Acun produit n'a ete trouver</span>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              <!-- End Table with stripped rows -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+{%endblock%}

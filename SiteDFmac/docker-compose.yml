@@ -1,0 +1,51 @@
+services:
+  web:
+    restart: always
+    build: .
+    command: "sh run.sh"
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/bendingiron
+    env_file:
+      - ".env"
+    depends_on:
+      - db
+    networks:
+      - default
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: MySuperStrongPassword123!
+      MYSQL_DATABASE: bendingiron_db
+      MYSQL_USER: bendingiron
+      MYSQL_PASSWORD: b6ndIngiroN
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u", "bendingiron", "-pbendingiron"]
+      interval: 10s
+      retries: 5
+    networks:
+      - default
+  
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+    networks:
+      - default
+  
+networks:
+  default:

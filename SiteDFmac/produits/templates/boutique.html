@@ -1,0 +1,120 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+boutique
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<section id="ts-features" class="ts-features pb-2">
+  <div class="container">
+    <div class="row">
+      <div class="container mt-4">
+        <h2 class="text-warning">Redressage Et Decoupage</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in redressages %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h2 class="text-warning">Cintrage D'Extremite</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in extremites %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{ produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+       
+        <h2 class="text-warning">Cintrage De Cadre</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in cadres %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{ produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h2 class="text-warning">Cintrage De Forme</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in formes %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{  produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+       
+        <h2 class="text-warning">Etrier Pour Bardage Et Toiture</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in etries %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{ produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      
+        <h2 class="text-warning">Boulon D'Ancrage A Beton</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in boulons %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{  produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <h2 class="text-warning">Quincaillerie</h2>
+        <!-- <hr> -->
+        <div class="d-flex overflow-auto gap-3 py-3">
+          {% for produit in quincailleries %}
+          <div class="card" style="min-width: 300px;">
+            <a href="{% url 'produit.detail' product_id=produit.id %}"><img src="{{ produit.imageshop3d.url }}"
+                class="card-img-top" alt="{{ produit.nom }}"></a>
+            <div class="card-body">
+              <h4 class="card-title text-warning"><a href="{% url 'produit.detail' product_id=produit.id %}">{{ produit.nom }}</a></h4>
+              <p class="card-text">{{ produit.Description|default:"Aucune description" }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+    
+      </div>
+</section>
+{% endblock %}

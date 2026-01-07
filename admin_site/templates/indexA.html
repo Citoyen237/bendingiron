@@ -151,8 +151,9 @@ statistique
                                     </div>
                                     <div class="ps-3">
                                         <h6>{{total_vente_client|intcomma}} fcfa</h6>
-                                        <span class="text-success small pt-1 fw-bold">{{montant_total_revenue_client|intcomma}} fcfa</span> <span
-                                            class="text-muted small pt-2 ps-1">Benefice</span>
+                                        <span
+                                            class="text-success small pt-1 fw-bold">{{montant_total_revenue_client|intcomma}}
+                                            fcfa</span> <span class="text-muted small pt-2 ps-1">Benefice</span>
 
                                     </div>
                                 </div>
@@ -173,8 +174,8 @@ statistique
                                     </div>
                                     <div class="ps-3">
                                         <h6>{{total_projet|intcomma}} fcfa</h6>
-                                        <span class="text-success small pt-1 fw-bold">{{benefice_total|intcomma}} fcfa</span> <span
-                                            class="text-muted small pt-2 ps-1">benefice</span>
+                                        <span class="text-success small pt-1 fw-bold">{{benefice_total|intcomma}}
+                                            fcfa</span> <span class="text-muted small pt-2 ps-1">benefice</span>
 
                                     </div>
                                 </div>
@@ -391,7 +392,7 @@ statistique
                                     <script>
                                         document.addEventListener("DOMContentLoaded", () => {
                                             new ApexCharts(document.querySelector("#donutChart"), {
-                                                series: [44, 55, 13, 43,65],
+                                                series: [44, 55, 13, 43, 65],
                                                 chart: {
                                                     height: 500,
                                                     type: 'donut',
@@ -399,7 +400,7 @@ statistique
                                                         show: true
                                                     }
                                                 },
-                                                labels: ['en production', 'termine', 'en attente','solde facture','pret pour livraison'],
+                                                labels: ['en production', 'termine', 'en attente', 'solde facture', 'pret pour livraison'],
                                             }).render();
                                         });
                                     </script>
@@ -494,7 +495,7 @@ statistique
                                                         show: true
                                                     }
                                                 },
-                                                labels: ['en production', 'termine', 'en attente','pret pour livraison']
+                                                labels: ['en production', 'termine', 'en attente', 'pret pour livraison']
                                             }).render();
                                         });
                                     </script>
@@ -555,7 +556,7 @@ statistique
                         <div class="col-md-5">
                             <!-- End Website Traffic -->
                             <div class="card">
-                                 <div class="card-body">
+                                <div class="card-body">
                                     <h5 class="card-title">Projet</h5>
                                     <!-- Pie Chart -->
                                     <div id="pieChart2"></div>

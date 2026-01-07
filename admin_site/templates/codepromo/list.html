@@ -43,6 +43,7 @@ distributeur
                                         <th>Remise</th>
                                         <th>Duree</th>
                                         <th>Date d'expiration</th>
+                                        <th>Nombre d'utilisation</th>
                                         <th>Statut</th>
                                         
                                     </tr>
@@ -56,14 +57,16 @@ distributeur
                                         <td>{{code.code}}</td>
                                         <td>{{code.remise}}%</td>
                                         <td>{{code.expiration}} mois</td>
-                                        <td>{{code.expiration_date}}</td>
+                                        <td>{{code.nb_utilidation}}</td>
+                                        <td>{{code.nb_utilidation}}</td>
                                         <td>
-                                            {% if partenariat.is_expired %}
+                                            {% if code.statut %}
                                             <span class="text-success">termine</span>
                                             {% else %}
                                             <span class="text-warning">en cour</span>
                                             {% endif %}
                                         </td>
+                                        
                                     </tr>
                                     {% empty %}
                                     <tr>

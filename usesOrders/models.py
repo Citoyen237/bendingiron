@@ -186,8 +186,8 @@ class CodePromo(models.Model):
     client = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='client')
     remise = models.DecimalField(max_digits=10, decimal_places=2)
     code = models.CharField(max_length=255)
-    expiration = models.PositiveIntegerField()
-    # nb_utilidation = models.PositiveBigIntegerField()
+    expiration = models.PositiveIntegerField(default=0)
+    nb_utilidation = models.PositiveBigIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -203,3 +203,39 @@ class CodePromo(models.Model):
     def is_valid_for(self, client):
         """Vérifie que le code est pour ce client et valide"""
         return self.client == client and not self.is_expired
+    
+    # Nombre total d'utilisations (grâce au 2ème modèle)
+    @property
+    def total_uses(self):
+        return self.codesuses.count()
+    
+    # controle si le nombre d'utilisation est atteint
+    @property 
+    def nb_uses_atteint(self):
+        if self.total_uses >= self.nb_utilidation :
+            # il ne peut plus utiliser le code
+            return True
+        else : 
+            # il peut utiliser le code 
+            return False
+    
+    @property
+    def statut(self):
+        if self.expiration == 0 :
+            return self.nb_uses_atteint
+        if self.nb_utilidation == 0 :
+            return self.is_expired
+
+
+    # # Nombre d'utilisations par un utilisateur précis
+    # def user_uses(self, user):
+    #     return self.codesuses.filter(user=user).count()
+
+
+
+class CodePromoUse(models.Model):
+    promo_code = models.ForeignKey(CodePromo, on_delete=models.CASCADE, related_name="codesuses")
+    used_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.promo_code.code}"

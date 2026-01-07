@@ -1,0 +1,218 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: Verdana;
+            background-image: url('{{background_url}}');
+            background-repeat: no-repeat;
+            background-size: 600px 600px;
+            background-position: center;
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            justify-items: center;
+        }
+
+        .header .invoice-number {
+            text-align: right;
+        }
+
+        .logo {
+            margin-top: -7%;
+            text-align: left;
+        }
+
+        .company-info {
+            font-size: 14px;
+            margin-top: -4%;
+            font-family: Verdana sans-serif;
+
+        }
+
+        .client-info {
+            margin-top: -5%;
+            text-align: right;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #2b2a2a;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            font-size: 12px;
+            background-color: #ffa310;
+            color: black;
+        }
+
+        .total {
+            text-align: right;
+        }
+
+        .footer {
+            font-size: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+
+        .company-info p {
+            list-style: none;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 4%;
+        }
+
+        .pied {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            justify-content: center;
+            text-align: center;
+            justify-items: center;
+            margin-right: -10%;
+        }
+
+        .hide td{
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="{{image_url}}" alt="Logo" style="width:170px;">
+            </div>
+            <div class="invoice-number">
+                <span style="font-size:18px"><b>FACTURE N°</b></span><strong
+                    style="color:#ffa310; font-size:18px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+            </div>
+        </div>
+        <!-- Company Info -->
+        <div class="company-info">
+            <p>
+                 <b style="color: rgb(8, 115, 129);">
+               <u><span>bendingiron.info@gmail.com</span></u></b><br>
+                <span>Douala, Cameroun</span> <br>
+                <span>(+237) 686 088 869</span> <br>
+                <span>(+237) 681 951 410</span>
+            </p>
+        </div>
+        <!-- Client Info -->
+        <div class="client-info">
+            <strong style="font-size:16px">{{order.infoclient.nom}}</strong><br>
+            <span style="font-size:10px"><b>O.L : </b>{{order.infoclient.mode_livraison}}</span><br>
+            <span style="font-size:10px"><b>A.L : </b>{{order.infoclient.adresse}}</span><br>
+            <span style="font-size:10px"><b>Tel : </b>{{order.infoclient.telephone}}</span><br><br>
+            
+            <span style="font-size:10px; color:#ffa310">
+                <b>C.D :</b> {% if order.remise > 0 %}
+                <i>utilisé</i>
+                {% else %}
+                <i>non utilisé</i>
+                {% endif %}
+        </div>
+        <!-- Table -->
+        <table>
+            <tr>
+                <th>Produit</th>
+                <th>Description</th>
+                <th>Qte</th>
+                <th>Prix unitaire(FCFA)</th>
+                <th>Prix total(FCFA)</th>
+            </tr>
+
+            {% for item in produits %}
+            <tr>
+                <td>{{item.produit}}</td>
+                <td>{{item.details}}
+                <td>{{item.quantite}}</td>
+                <td>{{item.prix|intcomma}}</td>
+                <td>{{item.total|intcomma}}</td>
+            </tr>
+            {% endfor %}
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>Montant HT</b> :</td>
+                <td colspan="1"><b>{{totals|intcomma}}FCFA</b></td>
+            </tr>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>TVA 19,25%</b> :</td>
+                <td colspan="1"><b>{{montant_tva|intcomma}} FCFA</b></td>
+            </tr>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>Montant TTC</b> :</td>
+                <td colspan="1"><b>{{net_payer|intcomma}} FCFA</b></td>
+            </tr>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
+                        30%</b> :</td>
+                <td colspan="1"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
+            </tr>
+            <!-- Ajouter d'autres lignes ici si nécessaire -->
+        </table>
+    </div>
+
+    <div class="footer">
+        <!-- Additional Information -->
+        <div class="additional-info">
+            <b><u>Modalité et condition de règlement :</u></b><br>
+            Pour garantir votre satisfaction, un acompte <br>
+            de 30% est règle en ligne à la commande,<br> le
+            solde de 70% <b>à la livraison sous 48h.</b>
+            <br><br>
+            Les produits restent notre propriété<br>
+            jusqu’au paiement intégral.
+        </div>
+        <!-- Signature -->
+        <div class="signature">
+            <img src="{{cachet_url}}" alt="Logo" style="width:200px;">
+        </div>
+    </div>
+
+    </div>
+    <div class="pied">
+        <img src="{{footer_url}}" alt="footer" style="width: 100%;">
+    </div>
+</body>
+
+</html>

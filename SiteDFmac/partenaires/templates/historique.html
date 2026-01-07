@@ -1,0 +1,97 @@
+{% extends 'appf.html' %}
+{% block 'title' %}
+projets
+{% endblock %}
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Commandes pour le projet : {{ projet }}</h2>
+
+                {% for order in orders%}
+                <table class="table table-responsive">
+                    <thead class="bg-warning">
+                        <tr>
+                            <th>Code</th>
+                            <th>Date</th>
+                            <th>Statut</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</td>
+                            <td>{{ order.created_at }}</td>
+                            <th>
+                                {% if order.get_statut_actuel == "en_attente" %}
+                                <span class="badge bg-warning text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {% if order.get_statut_actuel == "en_production" %}
+                                <span class="badge bg-primary text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {% if order.get_statut_actuel == "pret_pour_livraison" %}
+                                <span class="badge bg-info text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {%if order.get_statut_actuel == "solde_facture" %}
+                                <span class="badge bg-secondary text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+                                {%if order.get_statut_actuel == "termine" %}
+                                <span class="badge bg-success text-dark">
+                                    {{order.get_statut_actuel}}
+                                </span>
+                                {%endif%}
+
+                            </th>
+                            <td class='text-center'>
+                                <!-- <a href="{% url 'download-bon' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a> -->
+                                <a href="{% url 'front.orders.details' order.id %}" class='btn btn-info'
+                                    name='supprimer'><i class='fas fa-file'></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {% empty %}
+                <p>Aucune commande pour ce projet.</p>
+                {% endfor %}
+            </div>
+            <div class="col-md-4 shadow-sm">
+                <h3>Historique des paiements</h3>
+                <table>
+                    <thead class="table bordered bg-warning">
+                        <tr>
+                            <th>Tranche</th>
+                            <th>Date</th>
+                            <th>Mode de paiement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paiement in paiements %}
+                        <tr>
+                            <td>Tranche {{paiement.tranche}}</td>
+                            <td>{{paiement.date_paiement}}</td>
+                            <td>{{paiement.mode_paiement}}</td>
+                        </tr>
+                        {% empty %}
+                        <p>Aucun paiement n'a ete effectué</p>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+{% endblock %}t

@@ -50,6 +50,13 @@ distributeur
                                 <br><span style="color:red;">{{ form.expiration.errors }}</span>
                                 {% endif %}
                             </div>
+                             <div class="col-md-12 mt-3">
+                                <label>{{ form.nb_utilidation.label }}</label><br>
+                                {{ form.nb_utilidation }}
+                                {% if form.nb_utilidation.errors %}
+                                <br><span style="color:red;">{{ form.nb_utilidation.errors }}</span>
+                                {% endif %}
+                            </div>
                             <button class="btn btn-primary form-control mt-2 mb-2">Enregistrer</button>
                         </form>
                     </div>

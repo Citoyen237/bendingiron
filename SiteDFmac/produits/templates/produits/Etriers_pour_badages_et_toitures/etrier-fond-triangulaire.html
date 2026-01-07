@@ -1,0 +1,399 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+detail
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<style>
+    h4 {
+        text-transform: initial;
+        font-weight: normal;
+    }
+</style>
+
+<section class="content project-area solid-bg">
+    <div class="container border shadow py-2 my-2">
+        <div class="row">
+            <div class="col-lg-12 "><br>
+                <h3 class="column-title bg-warning p-3 text-center">Parametre  de {{product.nom}}</h3>
+            </div><!-- Col end -->
+        
+        <!-- insersion des info -->
+        
+    
+        <div class="col-lg-7 ml-5">
+            <!-- label et input ici-->
+             <form action="" method="post">
+                    {% csrf_token %}
+
+                    <input type="hidden" id="val" value={{val}}>
+                    {{form.prix_revient}}
+                    {{form.fer}}
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">Materiaux</h4>
+                        </div>
+                        <div class="col">
+                         <input type='radio' checked>
+                         Acier
+                        </div>
+                    </div>
+                    </br>
+                     <div class="row">
+                        <div class="col">
+                            <h4 class="">Qui fourni le fer ?</h4>
+                        </div>
+                        <div class="col">
+                           <input class="text-primary" type='radio' checked> Bending Iron
+                        </div>
+                    </div>
+                    <br>
+                       <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.tube_etrier.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.tube_etrier }}
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>M. </b>{{form.Diametre_fer.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.Diametre_fer}}
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>A. </b>{{form.hauteur.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.hauteur}}
+                            <div id="hauteur-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>B. </b>{{form.largeur.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.largeur}}
+                            <div id="largeur-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary"><b>C. </b>{{form.hauteur_Filetage.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.hauteur_Filetage}}
+                            <div id="hauteurFiletage-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+                </br>
+    
+                <div class="row">
+                        <div class="col">
+                            <h4 class="text-secondary">{{form.longueur_Total.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.longueur_Total}}
+                            <div id="longueurTotal-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                        </div>
+                    </br>
+
+                    <div class="row">
+                        <div class="col">
+                            <h4 class="">{{form.quantite.label}}</h4>
+                        </div>
+                        <div class="col">
+                            {{ form.quantite}}
+                            <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
+
+                    
+
+        </div>
+
+        <div class="col-lg-4">
+            <!-- image prix unitaire prix total -->
+             <div class="latest-post-media">
+                    <a href="" class="latest-post-img">
+                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}"
+                            alt="img">
+                    </a>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix }}                    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h4 class="">{{form.prix_Total.label}} (fcfa)</h4>
+                    </div>
+                    <div class="col">
+                        {{ form.prix_Total }}                    
+                    </div>
+                </div>
+        </div>
+
+    </div>
+
+        <div class="row mb-3">
+            <div class="col-lg-6 text-center "><br>
+                <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
+                    reinitialiser
+                </a>
+            </div><!-- Col end -->
+            <div class="col-lg-6 text-center">
+                <br>
+                <a class="btn btn-link" href="{% static 'front/images/abaques/etrierafonddroit.jpg'  %}">
+                    consulter
+                    l'ABAQUE
+                </a>
+                {% if user.is_authenticated %}
+                <button class="btn btn-warning ">
+                    Ajouter au panier
+                </button>
+                {% else %}
+                    <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
+                {% endif %}
+            </div><!-- Col end -->
+        </div>
+    </form>
+        <!--/ Content row end -->
+    </div>
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Récupérer les éléments du formulaire
+        let diametereField = document.getElementById('diametre');
+        //let angeField = document.getElementById('angle')
+        //let rayonField = document.getElementById('rayonCourbure');
+        //let longueurdptField = document.getElementById('longueurDepart');
+        let hauteurField = document.getElementById('hauteur');
+        let hauteurError = document.getElementById('hauteur-error');  // Élément pour afficher l'erreur
+        let largeurField = document.getElementById('largeur');
+        let largeurError = document.getElementById('largeur-error');
+        let hauteurFiletageField = document.getElementById('hauteurFiletage');
+        let hauteurFiletageError = document.getElementById('hauteurFiletage-error');
+        let longueurTotalField = document.getElementById('longueurTotal');
+        let prixField = document.getElementById('prix-id');
+        let prixTotalField = document.getElementById('prix-total');
+        let quantiteField = document.getElementById('quantite'); // Quantité de cadre
+        let val = document.getElementById('val');
+
+        //add
+        let prix_revientField =document.getElementById('prix_revient')
+        //tube en pouce pour etrier
+        let tube_etrierField = document.getElementById('tube_etrier');
+        let ferField = document.getElementById('fer')
+
+
+        // Fonction pour effectuer les calculs
+        const updateFields = () => {
+            //fer
+            let fer =document.querySelector('input[name="fer"]:checked')?.value
+            // Récupérer les valeurs des champs
+            let diametre = parseInt(diametereField.value);
+            let hauteurCote = parseFloat(hauteurField.value);
+            let largeurCote = parseFloat(largeurField.value);
+            let hauteurFiletageCote = parseFloat(hauteurFiletageField.value)
+            //let ange = parseFloat(angeField.value || 90)
+            let quantite = parseFloat(quantiteField.value || 1);
+
+            //add
+            let prix_revient = parseFloat(prix_revientField.value || 1);
+
+
+           //calcule rayon, longueur de depart
+            //rayonField.value = 5*diametre
+            //longueurdptField.value = 5*diametre
+            diametereField.value = diametre
+            //angeField.value = ange
+            // Vérification de la valeur minimale pour longueurCote
+             // Calcul de la longueur totale du cadre
+            longueurTotal = 0
+            longueurTotal = (2 * hauteurCote) + (largeurCote)
+
+              // Exemple de calcul, modifiez-le selon votre logique
+            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            
+             const donnees = JSON.parse('{{constantes|safe|escapejs}}');
+            let taxe = donnees.taxe;
+            let taux = donnees.taux;
+            let prixferCon = "m" + diametre
+            //coeficient fonction du fer
+            let prixfer = donnees[prixferCon]
+            prix_revient=0
+            switch (tube_etrierField.value) {
+                case '40X40':
+                    prix_revient = 80
+                    diametereField.value = "M8"
+                    hauteurField.value = 80
+                    largeurField.value = 45
+                    hauteurFiletageField.value = 45 
+                    break
+                case '45X45':
+                    prix_revient = 100
+                    diametereField.value = "M8"
+                    hauteurField.value = 90
+                    largeurField.value = 50
+                    hauteurFiletageField.value = 50
+                    break
+                case '50X50':
+                    prix_revient = 120
+                    diametereField.value = "M8"
+                    hauteurField.value = 100
+                    largeurField.value = 55
+                    hauteurFiletageField.value = 60 
+                    break
+                case '60X60':
+                    prix_revient = 140
+                    diametereField.value = "M10"
+                    hauteurField.value = 110
+                    largeurField.value = 65
+                    hauteurFiletageField.value = 60 
+                    break
+                case '70X70':
+                    prix_revient = 160
+                    diametereField.value = "M10"
+                    hauteurField.value = 120
+                    largeurField.value = 75
+                    hauteurFiletageField.value = 60
+                    break
+                case '80X80':
+                    prix_revient = 220
+                    diametereField.value = "M10"
+                    hauteurField.value = 130
+                    largeurField.value = 85
+                    hauteurFiletageField.value = 60
+                    break
+                case '100X100':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 150
+                    largeurField.value = 105
+                    hauteurFiletageField.value = 60
+                    break
+                case '120X120':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 170
+                    largeurField.value = 125
+                    hauteurFiletageField.value = 60
+                    break
+                case '135X135':
+                    prix_revient = 220
+                    diametereField.value = "M12"
+                    hauteurField.value = 195
+                    largeurField.value = 140
+                    hauteurFiletageField.value = 70
+                    break
+                case '150X150':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 210
+                    largeurField.value = 155
+                    hauteurFiletageField.value = 70
+                    break
+                case '160X160':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 220
+                    largeurField.value = 165
+                    hauteurFiletageField.value = 70
+                    break
+                case '180X180':
+                    prix_revient = 220
+                    diametereField.value = "M14"
+                    hauteurField.value = 240
+                    largeurField.value = 185
+                    hauteurFiletageField.value = 70
+                    break
+                case '200X200':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 270
+                    largeurField.value = 205
+                    hauteurFiletageField.value = 80
+                    break
+                case '220X220':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 290
+                    largeurField.value = 225
+                    hauteurFiletageField.value = 80
+                    break
+                case '250X250':
+                    prix_revient = 220
+                    diametereField.value = "M16"
+                    hauteurField.value = 320
+                    largeurField.value = 255
+                    hauteurFiletageField.value = 80
+                    break
+
+            }
+
+
+            let prixUnitaire = 0
+            
+           prixUnitaire = 4 + prix_revient +300 + (4 + prix_revient+300) * taux
+
+
+            prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
+
+            let prixTotal = (prixUnitaire*quantite);
+            prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
+       
+            //add
+            prix_revientField.value=prix_revient*quantite
+            ferField.value='bending iron'
+        };
+
+        // Mettre à jour les valeurs dès qu'un champ change
+        const fieldsToWatch = [
+            hauteurField,
+            largeurField,
+            hauteurFiletageField,
+            quantiteField,
+            //rayonField,
+            //longueurdptField,
+            prixField,
+            prixTotalField,
+            diametereField,
+            //angeField
+            tube_etrierField,
+            prix_revientField,
+            ferField
+        ];
+
+        fieldsToWatch.forEach(field => {
+            field.addEventListener('input', updateFields); // Recalcule lorsque l'utilisateur modifie la valeur d'un champ
+        });
+
+        // Mettre à jour les champs lors de l'initialisation
+        updateFields();
+    });
+
+</script>
+
+
+{% endblock%}

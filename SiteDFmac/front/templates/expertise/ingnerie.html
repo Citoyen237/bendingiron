@@ -1,0 +1,79 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+ingnerie de projet
+{% endblock %}
+
+{% block 'content' %}
+{% load static %}
+<div id="banner-area" class="banner-area" style="background-image:url({%static 'front/images/banner/expertise1.jpg'%}">
+    <div class="banner-text">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6" style=" background: rgba(46, 45, 45, 0.3);">
+                    <div class="banner-heading" style="text-align: left;">
+                        <h1 class="text-warning">INGÉNIERIE DE PROJETS
+                        </h1>
+                        <p class="text-ligth"><b>
+                                La division d’ingénierie de projet de l’entreprise BENDING IRON est
+                                un maillon primordial dans la réussite des projets, elle permet d’optimiser les
+                                méthodologies de
+                                réalisation.
+                            </b></p>
+                        <a href="{% url 'contact.index' %}" class="btn btn-primary mb-2">CONTACTEZ-NOUS !</a>
+                    </div>
+                </div><!-- Col end -->
+            </div><!-- Row end -->
+        </div><!-- Container end -->
+    </div><!-- Banner text end -->
+</div>
+<section class=" no-padding solid-bg">
+    <div class="container">
+        <div class="action-style-box">
+            <div class="row">
+                <div class="col-md-12 text-md-left mt-3">
+                    <h3 class="text-dark widget-title">INGÉNIERIE DE PROJETS
+                        <br>
+                    <b class="text-warning">DEFINIR UNE CENEMATIQUE D'ASSEMBLAGE</b>
+                    </h3>
+                    <p>Qu’il s’agisse de projets de grande
+                        envergure en raison de leur ampleur, de leur complexité technique ou de leur localisation, nous
+                        relevons ces défis avec succès à chaque fois, grâce à une collaboration étroite avec nos
+                        clients, pour donner vie à leurs projets.</p><!-- col end -->
+                </div><!-- row end -->
+            </div><!-- Action style box -->
+        </div><!-- Container end -->
+</section>
+<section id="ts-features" class="ts-features pb-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <div class="ts-service-image-wrapper">
+                        <img loading="lazy" class="w-100" src="{% static 'front/images/expertise/expertise1.jpg'%}"
+                            alt="service-image">
+                    </div>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+            <div class="col-lg-6 col-md-6 mb-5">
+                <div class="ts-service-box">
+                    <h3>LE DECORTICAGE</h3>
+                    <p><b>La phase de décorticage des plans d’armature, précède la phase de mise en fabrication
+                            effective et représentante une étape cruciale dans le processus de travail de l’entreprise
+                            BENDING IRON.</b><br>
+                        A partir des plans d’armatures, nos techniciens décortiqueurs détaillent, ajustent et
+                        définissent toutes les caractéristiques des composants aciers nécessaires à la création des
+                        ensembles d’armatures pour béton armé.
+                        Ils utilisent des logiciels standards de calcul de structure ainsi que des logiciels de mesure
+                        pour transformer les plans de ferraillage béton en schéma de fabrication simple pour l’atelier
+                        d’armature.
+                    </p>
+                    <p>
+                        <a href="{% url 'contact.index' %}" class="slider btn btn-primary">CONTACTEZ-NOUS !</a>
+                    </p>
+                </div><!-- Service2 end -->
+            </div><!-- Col 2 end -->
+        </div><!-- Content row end -->
+    </div><!-- Container end -->
+</section>
+{% endblock %}

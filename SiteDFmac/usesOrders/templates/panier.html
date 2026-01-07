@@ -1,0 +1,181 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+panier
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<section class="content project-area">
+    {% if user.is_authenticated %}
+    <div class="container-fluid border shadow">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table table-responsive mt-2">
+                    <thead class='bg-warning'>
+                        <th>Produits</th>
+                        <th>Description</th>
+                        <th>Quantite</th>
+                        <th>Prix(FCFA) </th>
+                        <th>Prix totale (FCFA) </th>
+                        <th>Retirer</th>
+                    </thead>
+                    <tbody>
+
+                        {% for item in paniers %}
+
+                        <tr>
+                            <td>{{item.produit}}</td>
+                            <td>{{item.details}}
+                            <td>{{item.quantite}}</td>
+                            <td>{{item.prix|intcomma}}</td>
+                            <td>{{item.total|intcomma}}</td>
+                            <td><a href="{% url 'supprimer_du_panier' item_id=item.id %}" class="btn btn-danger"
+                                    onclick="return confirmSuppression(event, this);"><i class='fas fa-trash'></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                <br>
+                                <span> Votre panier est vide</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light m-2">
+                    <div class="card-body">
+                        <h4 class="card-title">Valider la commande</h4>
+                        <hr>
+                        <p>Vous devez payer au moins les 30% de votre facture. pour lire nos condition generale de vente
+                            <a href="{% url 'cgv' %}" class="text-primary">Cliquez ici</a>
+                        </p>
+                        {% if paniers %}
+                        <form id="codeForm" class="d-flex">
+                            {% csrf_token %}
+                            <input type="text" id="code" class="form-control" placeholder="code distributeur">
+                            <button type="submit" class="btn btn-primary">Appliquer</button>
+                        </form>
+
+                        <div id="result" class="mt-2"></div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Checkbox -->
+                            <div class="form-check mb-0">
+                                <h6>Montant HT</h6>
+                            </div>
+                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>TVA 19,25% </h6>
+                            </div>
+                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Montant TTC</h6>
+                            </div>
+                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6><u>Net a payer (30%)</u></h6>
+                            </div>
+                            <u><a class="text-dark">{{get_tranche1|intcomma}} FCFA</a></u>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Reste a payer (70%)</h6>
+                            </div>
+                            <a class="text-dark">{{get_tranche2|intcomma}} FCFA</a>
+                        </div>
+                    </div>
+
+                    {% if user.email_verified %}
+                    <div class="input m-2">
+                        <a href="{% url 'info_user' %}" class="btn btn-primary form-control">
+                            {% if user.is_staff %}
+                            Client
+                            {% else %}
+                            Confirmer
+                            {% endif %}
+                        </a>
+                        {% if user.is_staff %}
+                        <a href="{% url 'partanaire.confirm' %}"
+                            class="btn btn-primary form-control mt-2">Partenaire</a>
+                        {% endif %}
+
+                    </div>
+
+                    {% else %}
+                    <div class="input m-2">
+                        <a class="btn btn-danger" href="{% url 'send_email_verify' %}">Verifier votre adresse email pour
+                            confirmer
+                            votre commande</a>
+                    </div>
+                    {% endif %}
+
+
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+    {% else %}
+    <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier
+    </h3>
+    {%endif%}
+
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+
+    document.getElementById("codeForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        let code = document.getElementById("code").value;
+        let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        fetch("{% url 'appliquer_code' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "code=" + encodeURIComponent(code)
+        })
+            .then(response => response.json())
+            .then(data => {
+                let result = document.getElementById("result");
+                if (data.success) {
+                    result.innerHTML = "<span class='text-primary mt-2'>" + data.message + "</span>";
+                } else {
+                    result.innerHTML = "<span class='text-danger mt-2'>" + data.message + "</span>";
+                }
+            });
+    });
+    // Fonction JavaScript pour confirmer la suppression
+    function confirmSuppression(event, link) {
+        // Demande de confirmation
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce produit de votre panier ?");
+
+        // Si l'utilisateur confirme, la suppression est effectuée
+        if (confirmation) {
+            return true;  // Lien est suivi et la suppression a lieu
+        } else {
+            event.preventDefault();  // Empêche la suppression si l'utilisateur annule
+            return false;
+        }
+    }
+</script>
+{% load static %}
+{%endblock%}

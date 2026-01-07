@@ -34,31 +34,32 @@ def get_produit_solution(request):
 
 # Create your views here.
 def all_produit(request):
-    sous_categories = (
-        Produit.objects
-        .filter(sous_categorie__isnull=False)
-        .values_list('sous_categorie', flat=True)
-        .distinct()
-    )
+        # ('Etrier pour bardage et toiture','Etrier pour bardage et toiture'),
+        # ('boulon d\'ancrage a beton','boulon d\'ancrage a beton'),
+        # ('Quincaillerie','Quincaillerie'),
+    redressages = Produit.objects.filter(sous_categorie='redressage et decoupage').all().order_by('nom')
+    extremites = Produit.objects.filter(sous_categorie='cintrage d\'extremite').all().order_by('nom')
+    cadres = Produit.objects.filter(sous_categorie='Cintrage de cadre').all().order_by('nom')
+    formes = Produit.objects.filter(sous_categorie='Cintrage de forme').all().order_by('nom')
+    etries = Produit.objects.filter(sous_categorie='Etrier pour bardage et toiture').all().order_by('nom')
+    boulons = Produit.objects.filter(sous_categorie='boulon d\'ancrage a beton').all().order_by('nom')
+    quincailleries = Produit.objects.filter(sous_categorie='Quincaillerie').all().order_by('nom')
 
-    # Dictionnaire { "sous_categorie": [produits] }
-    produits_groupes = {
-        sc: Produit.objects.filter(sous_categorie=sc)
-        for sc in sous_categories
+
+    context = {
+        'redressages':redressages,
+        'extremites':extremites,
+        'cadres':cadres,
+        'formes':formes,
+        'etries':etries,
+        'boulons':boulons,
+        'quincailleries':quincailleries
+
     }
 
-    return render(request, 'boutique.html', {
-        'produits_groupes': produits_groupes
-    })
-# class ListCategorie(ListView):
-#     model=Categorie
-#     context_object_name = 'categories'
-#     template_name = "boutique/categorie.html"
+    return render(request, 'boutique.html', context)
 
-#     def get_context_data(self, **kwargs):
-#       context = super().get_context_data(**kwargs)
-#       context['current_url'] = self.request.path
-#       return context 
+
 
 def get_sous_categorie(request, categorie_id):
     current_url = request.get_full_path()

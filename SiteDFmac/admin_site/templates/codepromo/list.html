@@ -1,0 +1,91 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+distributeur
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Codes distributeurs</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Codes distributeurs</a></li>
+                <li class="breadcrumb-item active">Liste des distributeurs</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title  mb-3"><a href="{% url 'code.add' %}" class="btn btn-primary">Ajouter</a>
+                            <br>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            <!-- Table with stripped rows -->
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Utilisateur</th>
+                                        <th>Revendeur</th>
+                                        <th>Code</th>
+                                        <th>Remise</th>
+                                        <th>Duree</th>
+                                        <th>Date d'expiration</th>
+                                        <th>Nombre d'utilisation</th>
+                                        <th>Statut</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for code in codes %}
+                                    <tr>
+                                        <td>{{code.user}}</td>
+                                        <td>{{code.client}}</td>
+                                        <td>{{code.code}}</td>
+                                        <td>{{code.remise}}%</td>
+                                        <td>{{code.expiration}} mois</td>
+                                        <td>{{code.nb_utilidation}}</td>
+                                        <td>{{code.nb_utilidation}}</td>
+                                        <td>
+                                            {% if code.statut %}
+                                            <span class="text-success">termine</span>
+                                            {% else %}
+                                            <span class="text-warning">en cour</span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">
+                                            <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                            <br>
+                                            <span>Acun code promo n'a ete trouver</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+{%endblock%}
