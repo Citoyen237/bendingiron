@@ -10,6 +10,11 @@ class StaticViewSitemap(Sitemap):
             'font.index',
             'about',
             'contact.index',
+            'services',
+            'domaine.expertise',
+            'domaine.boutique',
+            'domaine.faarmature',
+            'domaine.pose.armature'
         ]
 
     def location(self, item):
