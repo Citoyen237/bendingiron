@@ -150,9 +150,9 @@ statistique
                                         <i class="bi bi-cart"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>{{total_vente_client|intcomma}} fcfa</h6>
+                                        <h6>{{total_vente_client}} fcfa</h6>
                                         <span
-                                            class="text-success small pt-1 fw-bold">{{montant_total_revenue_client|intcomma}}
+                                            class="text-success small pt-1 fw-bold">{{montant_total_revenue_client}}
                                             fcfa</span> <span class="text-muted small pt-2 ps-1">Benefice</span>
 
                                     </div>
@@ -173,8 +173,8 @@ statistique
                                         <i class="bi bi-currency-dollar"></i>
                                     </div>
                                     <div class="ps-3">
-                                        <h6>{{total_projet|intcomma}} fcfa</h6>
-                                        <span class="text-success small pt-1 fw-bold">{{benefice_total|intcomma}}
+                                        <h6>{{total_projet}} fcfa</h6>
+                                        <span class="text-success small pt-1 fw-bold">{{benefice_total}}
                                             fcfa</span> <span class="text-muted small pt-2 ps-1">benefice</span>
 
                                     </div>
@@ -337,7 +337,7 @@ statistique
                                                         class="text-primary">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</a>
                                                 </td>
                                                 <td>{{order.infoclient.nom}}</td>
-                                                <td>{{order.get_prix_total|intcomma}}</td>
+                                                <td>{{order.get_prix_total}}</td>
                                                 <th>
                                                     {% if order.get_statut_actuel == "en_attente" %}
                                                     <span class="badge bg-warning text-dark">

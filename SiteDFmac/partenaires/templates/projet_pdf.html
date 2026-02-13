@@ -157,8 +157,8 @@
                 <td>{{item.produit}}</td>
                 <td>{{item.details}}
                 <td>{{item.quantite}}</td>
-                <td>{{item.prix|intcomma}}</td>
-                <td>{{item.total|intcomma}}</td>
+                <td>{{item.prix}}</td>
+                <td>{{item.total}}</td>
             </tr>
             {% endfor %}
             <tr>
@@ -166,25 +166,25 @@
             </tr>
             <tr>
                 <td style="text-align: right;"><b>Montant HT</b></td>
-                <td><b>{{order.montant_total|intcomma}} FCFA</b></td>
+                <td><b>{{order.montant_total}} FCFA</b></td>
                 <td colspan="2"><b>Tranche 1</b></td>
-                <td>{{order.tranche1|intcomma}} FCFA</td>
+                <td>{{order.tranche1}} FCFA</td>
             </tr>
             <tr>
                 <td style="text-align: right;"><b>Remise ({{order.reduction}}%)</b></td>
-                <td><b>{{order.montant_apres_remise|intcomma}} FCFA</b></td>
+                <td><b>{{order.montant_apres_remise}} FCFA</b></td>
                 <td colspan="2"><b>Tranche 2</b></td>
-                <td>{{order.tranche2|intcomma}} FCFA</td>
+                <td>{{order.tranche2}} FCFA</td>
             </tr>
             <tr>
                 <td style="text-align: right;"><b>TVA 19,25%</b></td>
-                <td><b>{{order.montant_tva|intcomma}} FCFA</b></td>
+                <td><b>{{order.montant_tva}} FCFA</b></td>
                 <td colspan="2"><b>Tranche 3</b></td>
-                <td>{{order.tranche3|intcomma}} FCFA</td>
+                <td>{{order.tranche3}} FCFA</td>
             </tr>
             <tr>
                 <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">Montant TTC</b></td>
-                <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{order.net_payer|intcomma}} FCFA</b></td>
+                <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{order.net_payer}} FCFA</b></td>
             </tr>
     </div>
     </table>

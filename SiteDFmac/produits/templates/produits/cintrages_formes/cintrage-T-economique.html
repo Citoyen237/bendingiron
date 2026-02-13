@@ -204,7 +204,7 @@ detail
                //longueurTotal = (longueurCote + largeurCote + diametre + 249) / 10
                longueurTotal = 50
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = Math.ceil(longueurTotal); // Afficher la longueur totale dans le champ --> -->
             longueur2 = longueurTotalField.value * 10
 
             const donnees = JSON.parse('{{constantes|safe|escapejs}}');

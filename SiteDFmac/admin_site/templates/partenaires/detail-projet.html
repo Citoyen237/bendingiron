@@ -35,25 +35,25 @@ detail projet
                         <h6>Réalisation : <b>{{ projet.pourcentage_realisation }} %</b></h6>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <h6>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h6>
-                        <h6>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h6>
-                        <h6>TVA : <b>{{projet.montant_tva|intcomma}} fcfa</b></h6>
-                        <h6>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b></h6>
+                        <h6>Montant HT : <b>{{projet.montant_total}} fcfa</b></h6>
+                        <h6>Montant Apres remise : <b>{{projet.montant_apres_remise}} fcfa</b></h6>
+                        <h6>TVA : <b>{{projet.montant_tva}} fcfa</b></h6>
+                        <h6>Net a payer : <b>{{projet.net_payer}} fcfa</b></h6>
                         <a href="{% url 'download.projet' projet.id %}" class="btn btn-outline-info">Telecharger</a>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <h6>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa </b>
+                        <h6>Tranche 1 : <b>{{projet.tranche1}} fcfa </b>
                             {% if projet.tranche1_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}
                             </b>
                         </h6>
-                        <h6>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa </b> 
+                        <h6>Tranche 2 : <b>{{projet.tranche2}} fcfa </b> 
                             {% if projet.tranche2_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}</b>
                         </h6>
-                        <h6>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa </b>{% if projet.tranche3_payee %}
+                        <h6>Tranche 3 : <b>{{projet.tranche3}} fcfa </b>{% if projet.tranche3_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}</b>
                         </h6>

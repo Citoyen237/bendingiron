@@ -203,10 +203,10 @@ detail
             let longueurTotal = 0
             longueurCote = longueurCote*10
             console.log(longueurCote)
-            longueurTotal = (4*longueurCote) + (20.5*diametre)
+            longueurTotal = (4*longueurCote) + (2.05*diametre)
             
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = longueurTotal.toFixed(2)/10; // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = Math.ceil(longueurTotal)/10; // Afficher la longueur totale dans le champ --> -->
             
             const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;

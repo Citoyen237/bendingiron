@@ -35,10 +35,7 @@ class BarreDroiteForm(forms.Form):
         ('10', 'Fer 10'),
         ('12', 'Fer 12'),
         ('14', 'Fer 14'),
-        ('16', 'Fer 16'),
-        ('20', 'Fer 20'),
-        ('25', 'Fer 25'),
-        ('32', 'Fer 32')
+       
     ]
     
     diametre_fer = forms.ChoiceField(
@@ -148,10 +145,6 @@ class BarreCouUneExForm(forms.Form):
         ('10', 'Fer 10'),
         ('12', 'Fer 12'),
         ('14', 'Fer 14'),
-        ('16', 'Fer 16'),
-        ('20', 'Fer 20'),
-        ('25', 'Fer 25'),
-        ('32', 'Fer 32')
     ]
     
     diametre_fer = forms.ChoiceField(
@@ -298,10 +291,6 @@ class BarreCouDeuxExForm(forms.Form):
         ('10', 'Fer 10'),
         ('12', 'Fer 12'),
         ('14', 'Fer 14'),
-        ('16', 'Fer 16'),
-        ('20', 'Fer 20'),
-        ('25', 'Fer 25'),
-        ('32', 'Fer 32')
     ]
     
     diametre_fer = forms.ChoiceField(
@@ -315,7 +304,6 @@ class BarreCouDeuxExForm(forms.Form):
             # 'readonly': 'readonly',  # Attribut readonly (facultatif)
         })
     )
-    
     # choix angle de cintrage
     CHOICES = [
         ('90', '90'),

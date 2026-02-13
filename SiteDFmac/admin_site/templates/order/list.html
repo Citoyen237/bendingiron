@@ -45,7 +45,7 @@ commandes
                                     <td>{{order.user}}</td>
                                     <td>{{order.infoclient.nom}}</td>
                                     <td>{{order.created_at}}</td>
-                                    <td>{{order.get_prix_total|intcomma}}</td>
+                                    <td>{{order.get_prix_total}}</td>
                                     <th>
                                         {% if order.get_statut_actuel == "en_attente" %}
                                         <span class="badge bg-warning text-dark">

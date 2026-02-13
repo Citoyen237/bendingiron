@@ -11,8 +11,8 @@ taux de transaction : taux default==0.04
 diametre de diametre
 prixfer = prixFer/12000
 
-m6 :2200
-m8 : 2900
+m6 :1700
+m8 : 3100
 m10 : 4500
 m12 : 6300
 m14 : 7500

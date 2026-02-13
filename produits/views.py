@@ -34,9 +34,9 @@ def get_produit_solution(request):
 
 # Create your views here.
 def all_produit(request):
-        # ('Etrier pour bardage et toiture','Etrier pour bardage et toiture'),
-        # ('boulon d\'ancrage a beton','boulon d\'ancrage a beton'),
-        # ('Quincaillerie','Quincaillerie'),
+    # ('Etrier pour bardage et toiture','Etrier pour bardage et toiture'),
+    # ('boulon d\'ancrage a beton','boulon d\'ancrage a beton'),
+    # ('Quincaillerie','Quincaillerie'),
     redressages = Produit.objects.filter(sous_categorie='redressage et decoupage').all().order_by('nom')
     extremites = Produit.objects.filter(sous_categorie='cintrage d\'extremite').all().order_by('nom')
     cadres = Produit.objects.filter(sous_categorie='Cintrage de cadre').all().order_by('nom')
@@ -44,7 +44,6 @@ def all_produit(request):
     etries = Produit.objects.filter(sous_categorie='Etrier pour bardage et toiture').all().order_by('nom')
     boulons = Produit.objects.filter(sous_categorie='boulon d\'ancrage a beton').all().order_by('nom')
     quincailleries = Produit.objects.filter(sous_categorie='Quincaillerie').all().order_by('nom')
-
 
     context = {
         'redressages':redressages,
@@ -54,7 +53,6 @@ def all_produit(request):
         'etries':etries,
         'boulons':boulons,
         'quincailleries':quincailleries
-
     }
 
     return render(request, 'boutique.html', context)
@@ -103,6 +101,7 @@ def get_produit(request, produit_id):
 # # @login_required
 def detail_produit(request, product_id):
     product = get_object_or_404(Produit, id=product_id)
+    print(product_id)
     template=None
     form=None
 
@@ -111,6 +110,7 @@ def detail_produit(request, product_id):
         template="produits/cintrages_cadres/cadre-carre.html"
     
     if(product.nom=="cadre rectangulaire"):
+        print("hello")
         form=RectangleForm(request.POST or None)
         template="produits/cintrages_cadres/cadre-rectangle.html"
         

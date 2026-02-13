@@ -239,12 +239,12 @@ detail
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
             if(ange=90){
-               longueurTotal = (2*longueurCote)+(2*largeurCote) + (20.5*diametre)
+               longueurTotal = (2*longueurCote)+(2*largeurCote) + (2.05*diametre)
             }else{
-               longueurTotal = (2*longueurCote)+(2*largeurCote) + (20.5*diametre)
+               longueurTotal = (2*longueurCote)+(2*largeurCote) + (2.05*diametre)
             }
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = Math.ceil(longueurTotal); // Afficher la longueur totale dans le champ --> -->
             
              const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;

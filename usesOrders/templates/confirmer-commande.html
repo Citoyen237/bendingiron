@@ -30,8 +30,8 @@ confirmer la commande
                             <td>{{item.produit}}</td>
                             <td>{{item.details}}
                             <td>{{item.quantite}}</td>
-                            <td>{{item.prix|intcomma}}</td>
-                            <td>{{item.total|intcomma}}</td>
+                            <td>{{item.prix}}</td>
+                            <td>{{item.total}}</td>
                             <td><a href="{% url 'supprimer_du_panier' item_id=item.id %}" class="btn btn-danger"
                                     onclick="return confirmSuppression(event, this);"><i class='fas fa-trash'></i></a>
                             </td>
@@ -69,31 +69,31 @@ confirmer la commande
                             <div class="form-check mb-0">
                                 <h6>Montant HT</h6>
                             </div>
-                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                            <a class="text-dark">{{total_prix}} FCFA</a>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>TVA 19,25% </h6>
                             </div>
-                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
+                            <a class="text-dark">{{montant_tva}} FCFA</a>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Montant TTC</h6>
                             </div>
-                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
+                            <b><a class="text-dark">{{net_payer}} FCFA</a></b>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6><u>Net a payer (30%)</u></h6>
                             </div>
-                            <u><a class="text-dark">{{get_tranche1|intcomma}} FCFA</a></u>
+                            <u><a class="text-dark">{{get_tranche1}} FCFA</a></u>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
                                 <h6>Reste a payer (70%)</h6>
                             </div>
-                            <a class="text-dark">{{get_tranche1|intcomma}} FCFA</a>
+                            <a class="text-dark">{{get_tranche1}} FCFA</a>
                         </div>
                     </div>
                     <div class="input m-2">

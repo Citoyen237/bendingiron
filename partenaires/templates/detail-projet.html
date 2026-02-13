@@ -18,10 +18,10 @@ details sur le projet
 
             </div>
             <div class="col-md-4">
-                <h4>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h4>
-                <h4>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h4>
-                <h4>TVA (19,25%): <b>{{projet.montant_tva|intcomma}} fcfa</b></h4>
-                <h4>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b> </h4>
+                <h4>Montant HT : <b>{{projet.montant_total}} fcfa</b></h4>
+                <h4>Montant Apres remise : <b>{{projet.montant_apres_remise}} fcfa</b></h4>
+                <h4>TVA (19,25%): <b>{{projet.montant_tva}} fcfa</b></h4>
+                <h4>Net a payer : <b>{{projet.net_payer}} fcfa</b> </h4>
                 <h4>
                     <button id="downloadBtn" class="btn btn-warning download_btn"
                         data-url="{% url 'download.projet' projet.id  %}">
@@ -33,17 +33,17 @@ details sur le projet
                     <!-- <a href="{% url 'download.projet' projet.id %}" class="btn btn-warning"><i class="fas fa-download"></i> Telecharger</a></h4> -->
             </div>
             <div class="col-md-4">
-                <h4>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa</b>
+                <h4>Tranche 1 : <b>{{projet.tranche1}} fcfa</b>
                     {% if projet.tranche1_payee %}
                     <i class="fa fa-check text-success"></i>
                     {% endif %}
                 </h4>
-                <h4>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa</b>
+                <h4>Tranche 2 : <b>{{projet.tranche2}} fcfa</b>
                     {% if projet.tranche2_payee %}
                     <i class="fa fa-check text-success"></i>
                     {% endif %}
                 </h4>
-                <h4>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa</b>
+                <h4>Tranche 3 : <b>{{projet.tranche3}} fcfa</b>
                     {% if projet.tranche3_payee %}
                     <i class="fa fa-check text-success"></i>
                     {% endif %}

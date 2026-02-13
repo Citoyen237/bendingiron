@@ -25,7 +25,7 @@ commandes
                 <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
                 <h6>Date : <b>{{order.created_at}}</b></h6>
                 <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
-                <h6>Montant total: <b>{{order.get_prix_total|intcomma}} fcfa</b></h6>
+                <h6>Montant total: <b>{{order.get_prix_total}} fcfa</b></h6>
             </div>
             <div class="col-md-6 mt-2">
                 <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
@@ -51,17 +51,25 @@ commandes
                                     <td>{{item.produit}}</td>
                                     <td>{{item.details}}
                                     <td>{{item.quantite}}</td>
-                                    <td>{{item.prix|intcomma}}</td>
-                                    <td>{{item.total|intcomma}}</td>
+                                    <td>{{item.prix}}</td>
+                                    <td>{{item.total}}</td>
                                 </tr>
                                 {% endfor %}
 
 
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
-                                        <a class="btn btn-primary"
+                                        {% comment %} <a class="btn btn-primary"
                                             href="{% url 'invoice_download' invoice_id=order.id %}"><i
-                                                class="bi bi-download"></i></a>
+                                                class="bi bi-download"></i></a> {% endcomment %}
+                                        
+                                         <button id="downloadBtn" class="btn btn-success download_btn"
+                  data-url="{% url 'invoice_download' order.id %}">
+                  <i class="fas fa-download"></i>
+                  <span id="btnText" class="btn_text"></span>
+                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>
+                </button>
 
                                         {% if status == "en_attente" %}
                                         <a href="{% url 'change.status' orderId %}"
@@ -100,15 +108,15 @@ commandes
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
-                                    <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+                                    <td colspan="2"><b>{{totals}}FCFA</b></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-                                    <td colspan="2"><b>{{order.montant_tva|intcomma}} FCFA</b></td>
+                                    <td colspan="2"><b>{{order.montant_tva}} FCFA</b></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
-                                    <td colspan="2"><b>{{order.net_payer|intcomma}} FCFA</b></td>
+                                    <td colspan="2"><b>{{order.net_payer}} FCFA</b></td>
                                 </tr>
                                 <tr>
 
@@ -116,7 +124,7 @@ commandes
                                             style="background-color: rgb(43, 255, 0);">ACOMPTE
                                             30% :</b></td>
                                     <td colspan="2"><b
-                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche1|intcomma}}
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche1}}
                                             FCFA</b></td>
                                 </tr>
                                 <tr>
@@ -125,7 +133,7 @@ commandes
                                             style="background-color: rgb(64, 219, 32);">SOLDE
                                             70% :</b></td>
                                     <td colspan="2"><b
-                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche2|intcomma}}
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche2}}
                                             FCFA</b></td>
                                 </tr>
                             </tbody>
@@ -141,4 +149,53 @@ commandes
 
 
 </main>
+<script>
+  document.querySelectorAll(".download_btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      //let btn = this;
+      //let spinner = document.getElementById("spinner");
+      let spinner = btn.querySelector(".spinner-border");
+      //let btnText = document.querySelector(".btn_text");
+      let url = btn.dataset.url;
+
+      // Affiche le spinner
+      spinner.classList.remove("d-none");
+      //btnText.textContent = "Téléchargement...";
+      btn.disabled = true;
+
+      // Téléchargement via fetch
+      fetch(url)  // 👈 ta vue Django
+        .then(response => {
+          // Récupérer le header Content-Disposition pour le nom
+          let disposition = response.headers.get("Content-Disposition");
+          let filename = "download.pdf"; // nom par défaut
+
+          if (disposition && disposition.indexOf("filename=") !== -1) {
+            filename = disposition.split("filename=")[1].replace(/"/g, "");
+          }
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          // Reset bouton
+          spinner.classList.add("d-none");
+          //btnText.textContent = "Telechargé";
+          btn.disabled = false;
+        })
+        .catch(error => {
+          console.error("Erreur téléchargement :", error);
+          spinner.classList.add("d-none");
+          btnText.textContent = "Réessayer";
+          btn.disabled = false;
+        });
+    });
+  });
+</script>
 {%endblock%}

@@ -138,7 +138,7 @@ detail
         <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
         <h6>Date : <b>{{order.created_at}}</b></h6>
         <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
-        <h6>Montant total : <b>{{order.get_prix_total|intcomma}}fcfa</b></h6>
+        <h6>Montant total : <b>{{order.get_prix_total}}fcfa</b></h6>
       </div>
       <div class="col-md-6 mt-2">
         <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
@@ -169,7 +169,7 @@ detail
                 <div class="form-check mb-0">
                   <h6>Total</h6>
                 </div>
-                <a class="text-dark">{{totals|intcomma}} FCFA</a>
+                <a class="text-dark">{{totals}} FCFA</a>
               </div>
               <div class="input mb-3">
                 <a href="/produits/confirmer-la-commande/" class="btn btn-primary form-control text-dark">Confirmer</a>
@@ -194,8 +194,8 @@ detail
               <td>{{item.produit}}</td>
               <td>{{item.details}}
               <td>{{item.quantite}}</td>
-              <td>{{item.prix|intcomma}}</td>
-              <td>{{item.total|intcomma}}</td>
+              <td>{{item.prix}}</td>
+              <td>{{item.total}}</td>
             </tr>
             {% endfor %}
             <tr>
@@ -203,21 +203,21 @@ detail
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
-              <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+              <td colspan="2"><b>{{totals}}FCFA</b></td>
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-              <td colspan="2"><b>{{montant_tva|intcomma}} FCFA</b></td>
+              <td colspan="2"><b>{{montant_tva}} FCFA</b></td>
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
-              <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
+              <td colspan="2"><b>{{net_payer}} FCFA</b></td>
             </tr>
             <tr>
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                   30% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b> <a
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1}} FCFA</b> <a
                   href="{% url 'invoice_download' order.id %}" class='btn btn-success' name='supprimer'><i
                     class="fas fa-download"></i></a></td>
             </tr>
@@ -225,7 +225,7 @@ detail
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(64, 219, 32);">SOLDE
                   70% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2|intcomma}} FCFA</b> <a
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2}} FCFA</b> <a
                   href="{% url 'invoice_download2' order.id %}" class='btn btn-success' name='supprimer'><i
                     class="fas fa-download"></i></a>
               </td>
@@ -250,8 +250,8 @@ detail
               <td>{{item.produit}}</td>
               <td>{{item.details}}
               <td>{{item.quantite}}</td>
-              <td>{{item.prix|intcomma}}</td>
-              <td>{{item.total|intcomma}}</td>
+              <td>{{item.prix}}</td>
+              <td>{{item.total}}</td>
             </tr>
             {% endfor %}
             <tr>
@@ -259,22 +259,22 @@ detail
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
-              <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+              <td colspan="2"><b>{{totals}}FCFA</b></td>
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-              <td colspan="2"><b>{{montant_tva|intcomma}} FCFA</b></td>
+              <td colspan="2"><b>{{montant_tva}} FCFA</b></td>
             </tr>
             <tr>
               <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
-              <td colspan="2"><b>{{net_payer|intcomma}} FCFA</b></td>
+              <td colspan="2"><b>{{net_payer}} FCFA</b></td>
             </tr>
             <tr>
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                   30% :</b></td>
               <td colspan="2">
-                <b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b>
+                <b style="background-color: rgb(43, 255, 0);">{{get_tranche1}} FCFA</b>
                 <button id="downloadBtn" class="btn btn-success download_btn"
                   data-url="{% url 'invoice_download' order.id %}">
                   <i class="fas fa-download"></i>
@@ -288,7 +288,7 @@ detail
 
               <td colspan="3" style="text-align: right;"><b style="background-color: rgb(64, 219, 32);">SOLDE
                   70% :</b></td>
-              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2|intcomma}} FCFA</b>
+              <td colspan="2"><b style="background-color: rgb(43, 255, 0);">{{get_tranche2}} FCFA</b>
                 <button id="downloadBtn" class="btn btn-success download_btn"
                   data-url="{% url 'invoice_download2' order.id %}">
                   <i class="fas fa-download"></i>

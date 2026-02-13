@@ -167,26 +167,26 @@
                 <td>{{item.produit}}</td>
                 <td>{{item.details}}
                 <td>{{item.quantite}}</td>
-                <td>{{item.prix|intcomma}}</td>
-                <td>{{item.total|intcomma}}</td>
+                <td>{{item.prix}}</td>
+                <td>{{item.total}}</td>
             </tr>
             {% endfor %}
             <tr class="hide">
                 <td colspan="4" style="text-align: right;"><b>Montant HT</b> :</td>
-                <td colspan="1"><b>{{totals|intcomma}}FCFA</b></td>
+                <td colspan="1"><b>{{totals}}FCFA</b></td>
             </tr>
             <tr class="hide">
                 <td colspan="4" style="text-align: right;"><b>TVA 19,25%</b> :</td>
-                <td colspan="1"><b>{{montant_tva|intcomma}} FCFA</b></td>
+                <td colspan="1"><b>{{montant_tva}} FCFA</b></td>
             </tr>
             <tr class="hide">
                 <td colspan="4" style="text-align: right;"><b>Montant TTC</b> :</td>
-                <td colspan="1"><b>{{net_payer|intcomma}} FCFA</b></td>
+                <td colspan="1"><b>{{net_payer}} FCFA</b></td>
             </tr>
             <tr class="hide">
                 <td colspan="4" style="text-align: right;"><b style="background-color: rgb(43, 255, 0);">ACOMPTE
                         30%</b> :</td>
-                <td colspan="1"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1|intcomma}} FCFA</b></td>
+                <td colspan="1"><b style="background-color: rgb(43, 255, 0);">{{get_tranche1}} FCFA</b></td>
             </tr>
             <!-- Ajouter d'autres lignes ici si nécessaire -->
         </table>

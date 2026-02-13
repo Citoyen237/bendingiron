@@ -35,25 +35,33 @@ detail projet
                         <h6>Réalisation : <b>{{ projet.pourcentage_realisation }} %</b></h6>
                     </div>
                     <div class="col-md-4 mt-2">
-                        <h6>Montant HT : <b>{{projet.montant_total|intcomma}} fcfa</b></h6>
-                        <h6>Montant Apres remise : <b>{{projet.montant_apres_remise|intcomma}} fcfa</b></h6>
-                        <h6>TVA : <b>{{projet.montant_tva|intcomma}} fcfa</b></h6>
-                        <h6>Net a payer : <b>{{projet.net_payer|intcomma}} fcfa</b></h6>
-                        <a href="{% url 'download.projet' projet.id %}" class="btn btn-outline-info">Telecharger</a>
+                        <h6>Montant HT : <b>{{projet.montant_total}} fcfa</b></h6>
+                        <h6>Montant Apres remise : <b>{{projet.montant_apres_remise}} fcfa</b></h6>
+                        <h6>TVA : <b>{{projet.montant_tva}} fcfa</b></h6>
+                        <h6>Net a payer : <b>{{projet.net_payer}} fcfa</b></h6>
+                        <button id="downloadBtn" class="btn btn-success download_btn"
+                  data-url="{% url 'download.projet' projet.id %}">
+                  <i class="fas fa-download"></i>
+                  <span id="btnText" class="btn_text"></span>
+                  <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                    aria-hidden="true"></span>Telecharger
+                </button>
+
+                        {% comment %} <a href="{% url 'download.projet' projet.id %}" class="btn btn-outline-info">Telecharger</a> {% endcomment %}
                     </div>
                     <div class="col-md-4 mt-2">
-                        <h6>Tranche 1 : <b>{{projet.tranche1|intcomma}} fcfa </b>
+                        <h6>Tranche 1 : <b>{{projet.tranche1}} fcfa </b>
                             {% if projet.tranche1_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}
                             </b>
                         </h6>
-                        <h6>Tranche 2 : <b>{{projet.tranche2|intcomma}} fcfa </b> 
+                        <h6>Tranche 2 : <b>{{projet.tranche2}} fcfa </b> 
                             {% if projet.tranche2_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}</b>
                         </h6>
-                        <h6>Tranche 3 : <b>{{projet.tranche3|intcomma}} fcfa </b>{% if projet.tranche3_payee %}
+                        <h6>Tranche 3 : <b>{{projet.tranche3}} fcfa </b>{% if projet.tranche3_payee %}
                             <i class="bi bi-check2-circle text-success"></i>
                             {% endif %}</b>
                         </h6>
@@ -132,5 +140,53 @@ detail projet
     </div>
     </div><!-- End Vertically centered Modal-->
 </main>
+<script>
+  document.querySelectorAll(".download_btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      //let btn = this;
+      //let spinner = document.getElementById("spinner");
+      let spinner = btn.querySelector(".spinner-border");
+      //let btnText = document.querySelector(".btn_text");
+      let url = btn.dataset.url;
 
+      // Affiche le spinner
+      spinner.classList.remove("d-none");
+      //btnText.textContent = "Téléchargement...";
+      btn.disabled = true;
+
+      // Téléchargement via fetch
+      fetch(url)  // 👈 ta vue Django
+        .then(response => {
+          // Récupérer le header Content-Disposition pour le nom
+          let disposition = response.headers.get("Content-Disposition");
+          let filename = "download.pdf"; // nom par défaut
+
+          if (disposition && disposition.indexOf("filename=") !== -1) {
+            filename = disposition.split("filename=")[1].replace(/"/g, "");
+          }
+          return response.blob().then(blob => ({ blob, filename }));
+        })
+        .then(({ blob, filename }) => {
+          let url = window.URL.createObjectURL(blob);
+          let a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          // Reset bouton
+          spinner.classList.add("d-none");
+          //btnText.textContent = "Telechargé";
+          btn.disabled = false;
+        })
+        .catch(error => {
+          console.error("Erreur téléchargement :", error);
+          spinner.classList.add("d-none");
+          btnText.textContent = "Réessayer";
+          btn.disabled = false;
+        });
+    });
+  });
+</script>
 {% endblock %}

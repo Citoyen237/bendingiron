@@ -23,7 +23,6 @@ detail
             </div><!-- Col end -->
         
         <!-- insersion des info -->
-        
     
         <div class="col-lg-7 ml-5">
             <!-- label et input ici-->
@@ -115,18 +114,14 @@ detail
                             {{ form.quantite}}
                             <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
                         </div>
-                    </div>
-
-                    
-
+                    </div>              
         </div>
 
         <div class="col-lg-4">
             <!-- image prix unitaire prix total -->
              <div class="latest-post-media">
                     <a href="" class="latest-post-img">
-                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}"
-                            alt="img">
+                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}"  alt="img">
                     </a>
                 </div>
                 <br>
@@ -244,7 +239,7 @@ detail
                longueurTotal = (2*longueurCote)+(2*largeurCote) + (20.5*diametre)
             }
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = longueurTotal.toFixed(2); // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = Math.ceil(longueurTotal); // Afficher la longueur totale dans le champ --> -->
             
              const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;

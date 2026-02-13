@@ -25,7 +25,7 @@ commandes
                 <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
                 <h6>Date : <b>{{order.created_at}}</b></h6>
                 <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
-                <h6>Montant total: <b>{{order.get_prix_total|intcomma}} fcfa</b></h6>
+                <h6>Montant total: <b>{{order.get_prix_total}} fcfa</b></h6>
             </div>
             <div class="col-md-6 mt-2">
                 <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
@@ -51,8 +51,8 @@ commandes
                                     <td>{{item.produit}}</td>
                                     <td>{{item.details}}
                                     <td>{{item.quantite}}</td>
-                                    <td>{{item.prix|intcomma}}</td>
-                                    <td>{{item.total|intcomma}}</td>
+                                    <td>{{item.prix}}</td>
+                                    <td>{{item.total}}</td>
                                 </tr>
                                 {% endfor %}
 
@@ -100,15 +100,15 @@ commandes
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
-                                    <td colspan="2"><b>{{totals|intcomma}}FCFA</b></td>
+                                    <td colspan="2"><b>{{totals}}FCFA</b></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
-                                    <td colspan="2"><b>{{order.montant_tva|intcomma}} FCFA</b></td>
+                                    <td colspan="2"><b>{{order.montant_tva}} FCFA</b></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
-                                    <td colspan="2"><b>{{order.net_payer|intcomma}} FCFA</b></td>
+                                    <td colspan="2"><b>{{order.net_payer}} FCFA</b></td>
                                 </tr>
                                 <tr>
 
@@ -116,7 +116,7 @@ commandes
                                             style="background-color: rgb(43, 255, 0);">ACOMPTE
                                             30% :</b></td>
                                     <td colspan="2"><b
-                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche1|intcomma}}
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche1}}
                                             FCFA</b></td>
                                 </tr>
                                 <tr>
@@ -125,7 +125,7 @@ commandes
                                             style="background-color: rgb(64, 219, 32);">SOLDE
                                             70% :</b></td>
                                     <td colspan="2"><b
-                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche2|intcomma}}
+                                            style="background-color: rgb(43, 255, 0);">{{order.get_tranche2}}
                                             FCFA</b></td>
                                 </tr>
                             </tbody>

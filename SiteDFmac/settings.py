@@ -52,6 +52,11 @@ EMAIL_HOST_USER = 'contact@bending-iron.com'  # ton adresse mail complète
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'contact@bending-iron.com'
 
+# LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'es'
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
+
 
 DATABASES = {
     'default': {
