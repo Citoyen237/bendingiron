@@ -244,7 +244,7 @@ detail
                longueurTotal = (2*longueurCote)+(2*largeurCote) + (2.05*diametre)
             }
               // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = Math.ceil(longueurTotal); // Afficher la longueur totale dans le champ --> -->
+            longueurTotalField.value = Math.ceil(longueurTotal) // Afficher la longueur totale dans le champ --> -->
             
              const donnees = JSON.parse('{{constantes|safe|escapejs}}');
             let taxe = donnees.taxe;
@@ -267,6 +267,7 @@ detail
                     prix_revient=36
                     break
             }
+            //longueurTotal = (3 * longueurCote) + (2.05 * diametre)
             let prixUnitaire = 0
             let cal2=prix_revient+(prixfer*longueurTotal)
             let  cal3=prixfer*10
