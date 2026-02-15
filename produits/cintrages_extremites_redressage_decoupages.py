@@ -55,7 +55,7 @@ class BarreDroiteForm(forms.Form):
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=30, 
-        max_value=600,
+        max_value=500,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -200,7 +200,7 @@ class BarreCouUneExForm(forms.Form):
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=30, 
-        max_value=600,
+        max_value=500,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -344,7 +344,7 @@ class BarreCouDeuxExForm(forms.Form):
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=30, 
-        max_value=6000,
+        max_value=500,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS

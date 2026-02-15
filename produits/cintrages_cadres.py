@@ -307,8 +307,8 @@ class RectangleForm(forms.Form):
         label=" Largeur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=1, 
-        max_value=800,
+        min_value=8, 
+        max_value=100,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -321,8 +321,8 @@ class RectangleForm(forms.Form):
         label="Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=1, 
-        max_value=1000,
+        min_value=8, 
+        max_value=100,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -426,8 +426,8 @@ class TriangleForm(forms.Form):
         label=" Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=1, 
-        max_value=1000,
+        min_value=8, 
+        max_value=50,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS
@@ -576,8 +576,8 @@ class HexagonaleForm(forms.Form):
         label=" Diametre de cintrage (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
-        min_value=1, 
-        max_value=1000,
+        min_value=20, 
+        max_value=50,
         widget=forms.NumberInput(attrs={
             #'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS

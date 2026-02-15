@@ -207,7 +207,7 @@ detail
             }
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
-            longueurTotal = (3 * longueurCote) + (2.05 * diametre)
+            longueurTotal = (3 * longueurCote) + (1.1 * diametre)
            
             // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = Math.ceil(longueurTotal) // Afficher la longueur totale dans le champ --> -->
@@ -235,14 +235,14 @@ detail
             }
             let prixUnitaire = 0
             let cal2 = prix_revient + (prixfer * longueurTotal)
-            let cal3 = prixfer * 10
+            let cal3 = prixfer * 2
             if (fer === 'bending iron') {
                 cal4 = cal2 + cal3
                 cal5 = cal4 + (cal4 * taux)
                 prixUnitaire = cal5
             }
             if (fer === 'le client') {
-                prixUnitaire = 6 + prix_revient + (cal2 + cal3) * taux; // Exemple de calcul
+                prixUnitaire = 8 + prix_revient + (cal2 + cal3) * taux; // Exemple de calcul
             }
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ

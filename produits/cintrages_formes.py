@@ -111,7 +111,7 @@ class CrochetForm(forms.Form):
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
         min_value=8, 
-        max_value=100,
+        max_value=50,
         widget=forms.NumberInput(attrs={
             # 'readonly': 'readonly',  # Attribut readonly
             'class': 'form-control',  # Classe CSS

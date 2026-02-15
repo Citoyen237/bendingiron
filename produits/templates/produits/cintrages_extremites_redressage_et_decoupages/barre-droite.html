@@ -188,6 +188,7 @@ detail
             let longueurTotal = 0
             longueurTotal = longueurBarreCote
             
+            
             // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = Math.ceil(longueurTotal) // Afficher la longueur totale dans le champ --> -->
             //choix du fer
@@ -230,17 +231,20 @@ detail
                     break
             }
             let prixUnitaire = 0
-            let cal1=(prix_revient*longueurTotal)/1000
+            let cal1=(prix_revient*longueurTotal)/100
             let cal2=prixfer*longueurTotal
+            
             if (fer === 'bending iron') {
-                cal3=prixfer*10
+                cal3=prixfer*2
                 cal4=cal1+cal2+cal3
+                console.log(cal4)
                 cal5=cal4*(1+taux)
                 prixUnitaire=cal5
             } 
+
             if (fer === 'le client') {
-                prixUnitaire = 6+cal1+(cal1+cal2)*taux; // Exemple de calcul
-            }
+                prixUnitaire = 6+cal1+(cal1)*taux; // Exemple de calcul
+            }   
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
 

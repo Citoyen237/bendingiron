@@ -71,4 +71,4 @@ class FerPrice(models.Model):
 
     @property
     def prix_utile(self):
-        return self.prix/12000
+        return self.prix/1200

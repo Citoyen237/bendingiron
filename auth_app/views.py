@@ -153,7 +153,7 @@ def resetpass(request):
                 send_mail(
                     'Réinitialisation de votre mot de passe',
                     f'Votre nouveau mot de passe est : {new_password}',
-                    'prodistributionltd@gmail.com',  # Remplacez par votre email
+                    'contact@bending-iron.com',  # Remplacez par votre email
                     [email],
                     fail_silently=False,
                 )

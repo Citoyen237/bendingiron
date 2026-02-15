@@ -52,10 +52,6 @@ EMAIL_HOST_USER = 'contact@bending-iron.com'  # ton adresse mail complète
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = 'contact@bending-iron.com'
 
-# LANGUAGE_CODE = 'fr'
-LANGUAGE_CODE = 'es'
-USE_L10N = True
-USE_THOUSAND_SEPARATOR = True
 
 
 DATABASES = {
@@ -81,7 +77,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CSRF_COOKIE_DOMAIN = '.bending-iron.com'
-SITE_ID = 1
 
 # nouvelle route de login
 LOGIN_URL = 'auth/login/'
@@ -89,8 +84,6 @@ LOGIN_URL = 'auth/login/'
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.sites',
-    'django.contrib.sitemaps',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
