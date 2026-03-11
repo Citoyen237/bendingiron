@@ -165,13 +165,13 @@ detail
                     consulter
                     l'ABAQUE
                 </a>
-                {% if user.is_authenticated %}
+                {% comment %} {% if user.is_authenticated %}
                 <button class="btn btn-warning ">
                     Ajouter au panier
                 </button>
                 {% else %}
                     <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div><!-- Col end -->
         </div>
     </form>

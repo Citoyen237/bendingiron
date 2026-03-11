@@ -174,13 +174,13 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
-                {% if user.is_authenticated %}
+                {% comment %} {% if user.is_authenticated %}
                 <button class="btn btn-warning ">
                     Ajouter au panier
                 </button>
                 {% else %}
                 <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div><!-- Col end -->
         </div>
         </form>
@@ -228,13 +228,13 @@ detail
             //calcule rayon, longueur de depart
             rayonField.value = (5 * diametre) /10
             if (ange == 180) {
-                longueurdptField.value = (5 * diametre) /10
+                longueurdptField.value = (1 * diametre) /2
             }
             if (ange == 90) {
-                longueurdptField.value = (15 * diametre) /10
+                longueurdptField.value = (3 * diametre) /2
             }
              if (ange == 135) {
-                longueurdptField.value = (10 * diametre) /10
+                longueurdptField.value = (2 * diametre) /2
             }
 
             diametereField.value = diametre
@@ -276,13 +276,13 @@ detail
             let longueurTotal = 0
 
             if (ange == 90) {
-                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (42 * diametre)
+                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (3 * diametre)
             }
             else if (ange == 135) {
-                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (40 * diametre)
+                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (2 * diametre)
             }
             else {
-                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (39 * diametre)
+                longueurTotal = hauteurGaucheCote + largeurFondCote + hauteurDroiteCote + (1 * diametre)
             }
 
             // Exemple de calcul, modifiez-le selon votre logique
@@ -312,14 +312,14 @@ detail
             }
             let prixUnitaire = 0
             let cal2 = prix_revient + (prixfer * longueurTotal)
-            let cal3 = prixfer * 10
+            let cal3 = prixfer * 2
             if (fer === 'bending iron') {
                 cal4 = cal2 + cal3
                 cal5 = cal4 + (cal4 * taux)
                 prixUnitaire = cal5
             }
             if (fer === 'le client') {
-                prixUnitaire = 6 + prix_revient + (cal2 + cal3) * taux; // Exemple de calcul
+                prixUnitaire = 8 + prix_revient + (cal2 + cal3) * taux; // Exemple de calcul
             }
 
             prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ

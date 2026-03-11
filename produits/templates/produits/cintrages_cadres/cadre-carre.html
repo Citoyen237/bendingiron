@@ -138,13 +138,13 @@ detail
                 </a>
             </div><!-- Col end -->
             <div class="col-lg-6 text-center"><br>
-                {% if user.is_authenticated %}
+                {% comment %} {% if user.is_authenticated %}
                 <button class="btn btn-warning ">
                     Ajouter au panier
                 </button>
                 {% else %}
                 <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
-                {% endif %}
+                {% endif %} {% endcomment %}
             </div><!-- Col end -->
         </div>
         </form>
@@ -201,7 +201,7 @@ detail
             }
             // Calcul de la longueur totale du cadre
             let longueurTotal = 0
-            longueurTotal = (4*longueurCote) + (1.1*diametre)
+            longueurTotal = (4*longueurCote) + (1.3*diametre)
             
               // Exemple de calcul, modifiez-le selon votre logique
             longueurTotalField.value = Math.ceil(longueurTotal);
