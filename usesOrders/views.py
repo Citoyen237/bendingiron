@@ -1,17 +1,20 @@
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template, render_to_string
-from xhtml2pdf import pisa
 import tempfile
 from weasyprint import HTML
 from django.conf import settings
 import os
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.db import transaction
+from auth_app.permissions import admin_required, get_owned_or_404, is_admin
 from django.utils.decorators import method_decorator
 from .form import *
+from .promo import erreur_conditions, retirer_remise_si_invalide
 
 @login_required
 def show_cart(request):
@@ -60,16 +63,23 @@ def supprimer_du_panier(request, item_id):
             cart.delete()  # supprimer aussi le panier s'il n'a plus d'items
     return redirect('panier')
 
-@login_required
+@admin_required
 def confirmer_commande(request):
+    """Création manuelle d'une commande SANS paiement en ligne (ex. paiement en espèces).
+    Réservée aux administrateurs : les clients passent par /paiements/confirmer/."""
     user = request.user
     # 1. Récupérer le panier
     cart = Cart.objects.filter(user=user).first()
     if not cart:
         return redirect('panier')  # panier vide
 
+    erreur = retirer_remise_si_invalide(cart)
+    if erreur:
+        messages.error(request, f"Code promo retiré : {erreur}")
+        return redirect('panier')
+
     # 2. Créer la commande
-    order = Order.objects.create(user=user)
+    order = Order.objects.create(user=user, remise=cart.remise)  # remise du code promo conservée
 
     # 3. Copier chaque CartItem en OrderItem
     for item in cart.items.all():
@@ -128,7 +138,7 @@ def detail_commande(request, order_id):
             })
     current_url = '/mes-commandes/'
     date=commande.created_at.strftime("%d%m%y")
-    filename=f'facture_{date}B-iron{commande.id}_{commande.infoclient.nom}_solde'
+    filename=f'facture_{date}BI{commande.numero}_{commande.infoclient.nom}_solde'
     context = {
         'current_url':current_url,
         'produits':produits_details,
@@ -143,8 +153,9 @@ def detail_commande(request, order_id):
     }
     return render(request, 'detail-commande.html',context)
 
-@login_required
+@admin_required
 def send_info_user(request):
+    """Comme confirmer_commande : réservé aux administrateurs (commande sans paiement en ligne)."""
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
     paniers_details = []
@@ -162,8 +173,9 @@ def send_info_user(request):
             # Calculer le prix total du panier si nécessaire
         total_prix = panier.get_prix_total
     else:
-        panier = None  # ou crée un panier vide, selon besoin
-    
+        messages.info(request, "Votre panier est vide.")
+        return redirect('panier')
+
     if request.method == "POST":
 
         form=OrderUserInfoForm(request.POST)
@@ -174,8 +186,13 @@ def send_info_user(request):
             if not cart:
                 return redirect('panier')  # panier vide
 
+            erreur = retirer_remise_si_invalide(cart)
+            if erreur:
+                messages.error(request, f"Code promo retiré : {erreur}")
+                return redirect('info_user')
+
             # 2. Créer la commande
-            order = Order.objects.create(user=user)
+            order = Order.objects.create(user=user, remise=cart.remise)  # remise du code promo conservée
 
             # 3. Copier chaque CartItem en OrderItem
             for item in cart.items.all():
@@ -209,14 +226,14 @@ def send_info_user(request):
 
             # 7. Rediriger vers la page de confirmation ou liste des commandes
             return redirect('mes_commande')  # à adapter selon ton URL
-        else :
-            print(form.errors)
-
     else:
         form=OrderUserInfoForm() 
     context={
-            'paniers': paniers_details, 
+            'paniers': paniers_details,
             'total_prix': total_prix,
+            'montant_ht_brut': panier.montant_ht_brut,
+            'remise': panier.remise,
+            'montant_remise': round(panier.montant_remise()),
             'montant_tva' :panier.montant_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
@@ -228,7 +245,7 @@ def send_info_user(request):
 @login_required
 def generate_invoice_pdf(request, invoice_id):
   # Charger les données nécessaires (exemple : une commande)
-    order = get_object_or_404(Order, id=invoice_id)
+    order = get_owned_or_404(request, Order, "user", id=invoice_id)
 
     produits = OrderItem.objects.filter(order=order)
 
@@ -245,10 +262,10 @@ def generate_invoice_pdf(request, invoice_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
     background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
     
     # Charger le template HTML 
     template_path = 'invoice.html'
@@ -272,7 +289,7 @@ def generate_invoice_pdf(request, invoice_id):
     pdf = html.write_pdf()
 
     date=order.created_at.strftime("%d%m%y")
-    filename=f'facture_{date}B-iron{order.id}_{order.infoclient.nom}_acompte'
+    filename=f'facture_{date}BI{order.id}_{order.infoclient.nom}_acompte'
     
 
     response = HttpResponse(pdf, content_type='application/pdf')
@@ -282,7 +299,7 @@ def generate_invoice_pdf(request, invoice_id):
 @login_required
 def generate_invoice_pdf_solde(request, invoice_id):
   # Charger les données nécessaires (exemple : une commande)
-    order = get_object_or_404(Order, id=invoice_id)
+    order = get_owned_or_404(request, Order, "user", id=invoice_id)
 
     produits = OrderItem.objects.filter(order=order)
 
@@ -299,10 +316,10 @@ def generate_invoice_pdf_solde(request, invoice_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logo.png')
+    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
     background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturecachet.png')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'pieddepage.png')
+    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
+    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
     
     # Charger le template HTML 
     template_path = 'invoice2.html'
@@ -333,62 +350,57 @@ def generate_invoice_pdf_solde(request, invoice_id):
     response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
     return response
 
-@csrf_exempt
+@login_required
+@require_POST
 def appliquer_code_promo(request):
-        code_saisi = request.POST.get("code")
-        user = request.user  
+    """Applique un code distributeur au panier.
 
-        # Récupérer le panier de l'utilisateur
-        panier = Cart.objects.filter(user=user).first()
+    Le jeton CSRF est obligatoire : le JavaScript doit envoyer l'en-tête
+    X-CSRFToken (voir panier.html). L'utilisation n'est comptée qu'une fois
+    par panier, et après tous les contrôles.
+    """
+    code_saisi = (request.POST.get("code") or "").strip()
+    user = request.user
+
+    if not code_saisi:
+        return JsonResponse({"success": False, "message": "Veuillez saisir un code."})
+
+    with transaction.atomic():
+        panier = Cart.objects.select_for_update().filter(user=user).first()
         if not panier:
             return JsonResponse({"success": False, "message": "Panier introuvable."})
 
-        # Vérifier la quantité totale dans le panier
-        quantite_totale = sum(item.quantite for item in panier.items.all())
-        if quantite_totale < 500:
-            return JsonResponse({
-                "success": False,
-                "message": "Vous devez avoir au moins 500 produits pour appliquer un code promo."
-            })
-        
-        # Vérifier description des produits
-        for item in panier.items.all():
-            description = item.details  # JSON (dict)
-            # Vérifier que la clé "Fer" existe et que sa valeur est "bending iron"
-            if not description or description.get("fer") != "bending iron":
-                return JsonResponse({
-                    "success": False,
-                    "message": "Le fer de tous les produits doit être fourni par 'bending iron' pour appliquer ce code."
-                })
+        # Conditions : fer fourni par Bending Iron + quantité minimale (0 par défaut)
+        erreur = erreur_conditions(panier)
+        if erreur:
+            return JsonResponse({"success": False, "message": erreur})
 
-        # Vérifier si le code promo existe
-        try:
-            code_promo = CodePromo.objects.get(code=code_saisi, client=user)
-        except CodePromo.DoesNotExist:
+        # Un client ne peut utiliser que SES codes. Un administrateur qui passe
+        # une commande pour un client saisit le code de ce client.
+        codes = CodePromo.objects.select_for_update().filter(code=code_saisi)
+        if not is_admin(user):
+            codes = codes.filter(client=user)
+        code_promo = codes.first()
+        if code_promo is None:
             return JsonResponse({"success": False, "message": "Code promo invalide."})
 
-        
-        # verifier si le nombre d'utilisation a ete atteint
-        if code_promo.nb_utilidation > 0 : 
-            # verifier le nombre de fois utiliser
-            if code_promo.nb_uses_atteint : 
-                return JsonResponse({"success": False, "message": "Le nombre d'utilisation de code a ette atteint."})
-            else:
-                CodePromoUse.objects.create(
-                    promo_code=code_promo
-                )
-               
-        # Vérifier expiration
-        if code_promo.expiration > 0 :
-            if code_promo.is_expired:
-                return JsonResponse({"success": False, "message": "Ce code promo est expiré."})
+        # Expiration vérifiée AVANT de compter une utilisation
+        if code_promo.expiration > 0 and code_promo.is_expired:
+            return JsonResponse({"success": False, "message": "Ce code promo est expiré."})
+
+        deja_applique = panier.remise == code_promo.remise and panier.remise > 0
+        if not deja_applique:
+            if code_promo.nb_utilidation > 0 and code_promo.nb_uses_atteint:
+                return JsonResponse({"success": False, "message": "Le nombre d'utilisations de ce code a été atteint."})
+            if code_promo.nb_utilidation > 0:
+                CodePromoUse.objects.create(promo_code=code_promo)
 
         # ✅ Appliquer la remise
         panier.remise = code_promo.remise
-        panier.save()
+        panier.save(update_fields=["remise", "updated_at"])
 
-        return JsonResponse({
-            "success": True,
-            "message": f"Code promo appliqué ! Remise : {code_promo.remise}%",
-            "remise": float(code_promo.remise)
-        })
+    return JsonResponse({
+        "success": True,
+        "message": f"Code promo appliqué ! Remise : {code_promo.remise}%",
+        "remise": float(code_promo.remise)
+    })

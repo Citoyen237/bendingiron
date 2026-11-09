@@ -15,7 +15,7 @@ commandes
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Details de la commande</a></li>
-                <li class="breadcrumb-item active">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</li>
+                <li class="breadcrumb-item active">{{order.numero}}BI{{order.created_at|date:"ymd"}}</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -25,6 +25,18 @@ commandes
                 <b>Nom du projet</b> : {{order.projet.name}} <br>
                 <b>Partenaire</b> : {{order.projet.partenariat}} <br>
                 <b>Date </b>: {{order.created_at}} <br>
+
+                
+
+                 <button id="downloadBtn" class="btn btn-outline-warning download_btn"
+                                            data-url="{% url 'download-bon' order.id %}">
+                                            <i class="fas fa-download">Bon de livraison partiel</i>
+                                            <span id="btnText" class="btn_text"></span>
+                                            <span id="spinner" class="spinner-border spinner-border-sm d-none"
+                                                role="status" aria-hidden="true"></span>
+                </button>
+
+
                 <br>
             </div>
             <div class="col-lg-12">
@@ -49,29 +61,29 @@ commandes
                                 <tr>
                                     <td colspan="11" class="text-center text-dark">
                                         <a class="btn btn-primary"
-                                            href="{% url 'download-bon' orderId %}"><i
+                                            href="{% url 'download-bon-livraion' orderId %}"><i
                                                 class="bi bi-download"></i></a>
 
                                         {% if status == "en_attente" %}
-                                        <a href="{% url 'partenariat.orders.statut' orderId %}"
+                                        <form method="post" action="{% url 'partenariat.orders.statut' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-warning text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
                                         {%endif%}
                                         {% if status == "en_production" %}
-                                        <a href="{% url 'partenariat.orders.statut' orderId %}"
+                                        <form method="post" action="{% url 'partenariat.orders.statut' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-primary text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
                                         {%endif%}
                                         {% if status == "pret_pour_livraison" %}
-                                        <a href="{% url 'partenariat.orders.statut' orderId %}"
+                                        <form method="post" action="{% url 'partenariat.orders.statut' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-info text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
 
                                         {%endif%}
                                         {% if status == "solde_facture" %}
-                                        <a href="{% url 'partenariat.orders.statut' orderId %}"
+                                        <form method="post" action="{% url 'partenariat.orders.statut' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-secondary text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
 
                                         {%endif%}
                                         {%if status == "termine" %}
@@ -97,4 +109,53 @@ commandes
 
 
 </main>
+<script>
+    document.querySelectorAll(".download_btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            //let btn = this;
+            //let spinner = document.getElementById("spinner");
+            let spinner = btn.querySelector(".spinner-border");
+            //let btnText = document.querySelector(".btn_text");
+            let url = btn.dataset.url;
+
+            // Affiche le spinner
+            spinner.classList.remove("d-none");
+            //btnText.textContent = "Téléchargement...";
+            btn.disabled = true;
+
+            // Téléchargement via fetch
+            fetch(url)  // 👈 ta vue Django
+                .then(response => {
+                    // Récupérer le header Content-Disposition pour le nom
+                    let disposition = response.headers.get("Content-Disposition");
+                    let filename = "download.pdf"; // nom par défaut
+
+                    if (disposition && disposition.indexOf("filename=") !== -1) {
+                        filename = disposition.split("filename=")[1].replace(/"/g, "");
+                    }
+                    return response.blob().then(blob => ({ blob, filename }));
+                })
+                .then(({ blob, filename }) => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    // Reset bouton
+                    spinner.classList.add("d-none");
+                    //btnText.textContent = "Telechargé";
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error("Erreur téléchargement :", error);
+                    spinner.classList.add("d-none");
+                    btnText.textContent = "Réessayer";
+                    btn.disabled = false;
+                });
+        });
+    });
+</script>
 {%endblock%}

@@ -45,31 +45,31 @@ archives
                                         <td>{{item.titre}}</td>
                                         <td>{{item.description}}</td>
                                         <td>
-                                            {% if archive.type == "image" %}
+                                            {% if item.type == "image" %}
 
-                                            {% elif archive.type == "video" %}
+                                            {% elif item.type == "video" %}
                                             <video width="400" controls>
-                                                <source src="{{ archive.file.url }}" type="video/mp4">
+                                                <source src="{% url 'archive.file' item.id %}" type="video/mp4">
                                                 Ton navigateur ne supporte pas la vidéo.
                                             </video>
                                             {% else %}
                                             {% endif %}
 
                                             {% if type == 'documents' %}
-                                            <a href="{{ item.file.url }}" target="_blank"
+                                            <a href="{% url 'archive.file' item.id %}" target="_blank"
                                                 class='btn btn-outline-primary' name='supprimer'><i
                                                     class="bi bi-file-earmark-pdf"></i></a>
                                             {% endif %}
                                             {% if type == 'images' %}
-                                            <img src="{{ item.file.url }}" alt="Image" style="max-width:400px;">
+                                            <img src="{% url 'archive.file' item.id %}" alt="Image" style="max-width:400px;">
                                             {% endif %}
                                             {% if type == 'videos' %}
                                             <video width="400" controls>
-                                                <source src="{{ archive.file.url }}" type="video/mp4">
+                                                <source src="{% url 'archive.file' item.id %}" type="video/mp4">
                                                 Ton navigateur ne supporte pas la vidéo.
                                             </video>
                                             {% endif %}
-                                            <a href="{{ item.file.url }}" download class='btn btn-success' name='supprimer'><i
+                                            <a href="{% url 'archive.file' item.id %}" download class='btn btn-success' name='supprimer'><i
                                                     class="bi bi-download"></i></a>
                                         </td>
                                     </tr>

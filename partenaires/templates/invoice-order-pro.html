@@ -1,0 +1,217 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <!-- <link href="{% static 'front/plugins/bootstrap/bootstrap.min.css' %}" rel="stylesheet"> -->
+     <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+            
+
+            @bottom-right {
+                content: "Page " counter(page) " sur " counter(pages);
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 9px;
+                color: #444;
+                vertical-align: middle;
+            }
+        }
+
+        body {
+            font-family: Verdana;
+            background-image: url('{{background_url}}');
+            background-repeat: no-repeat;
+            background-size: 600px 600px;
+            background-position: center;
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            justify-items: center;
+        }
+
+        .header .invoice-number {
+            text-align: right;
+        }
+
+        .logo {
+            margin-top: -7%;
+            text-align: left;
+        }
+
+        .company-info {
+            margin-top: -4%;
+
+        }
+
+        .client-info {
+            margin-top: -5%;
+            text-align: right;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #2b2a2a;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            font-size: 12px;
+            background-color: #ffa310;
+            color: black;
+        }
+
+        .total {
+            text-align: right;
+        }
+
+        .footer {
+            font-size: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+
+        .company-info p {
+            list-style: none;
+            text-align: left;
+            font-size: 10px;
+        }
+
+         .website {
+            text-align: left;
+            font-size: 9px;
+            margin: 4px 0 1px 0;
+          
+        }
+
+        .mail {
+            
+            font-size: 10px;
+            color: #1155cc;
+            text-decoration: underline;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: -2%;
+        }
+
+        .pied {
+            position: fixed;
+            bottom: -2%;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            justify-content: center;
+            text-align: center;
+            justify-items: center;
+            margin-right: -10%;
+        }
+
+        .hide td{
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="{{image_url}}" alt="Logo" style="width:170px;">
+            </div>
+            <div class="invoice-number">
+                <span style="font-size:18px"><b>DEMANDE DE LIVRAISON <br>PARTIELLE (DLP) N°</b></span><strong
+                    style="color:#ffa310; font-size:18px">{{order.id}}BI{{order.created_at|date:"ymd"}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+            </div>
+        </div>
+
+       <!-- Company Info -->
+        <div class="company-info">
+            <p>
+                <br>
+               <span class="mail">contact@bending-iron.com</span></b><br>
+               <span>(+237) 676 868 367</span> <br>
+               <span>(+237) 698 365 156</span>
+            </p>
+        </div>
+
+        <!-- Client Info -->
+        <div class="client-info">
+            <br>
+            <span> <strong style="font-size:16px">{{order.projet}}</strong></span><br>
+           <span style="font-size:10px"> <b>Partenaire :</b> {{order.projet.partenariat}}</span><br>
+           <span style="font-size:10px"> <b>Telephone :</b> {{order.projet.partenariat.telephone}}</span><br>
+            <span style="font-size:10px"><b>Adresse :</b> {{order.projet.partenariat.adresse}}</span><br>
+           
+        </div>
+
+        <div class="website">www.bending-iron.com</div>
+        <!-- Table -->
+        <table>
+            <tr>
+                <th>Produit</th>
+                <th>Description</th>
+                <th>Qte</th>
+            </tr>
+            {% for item in produits %}
+            <tr>
+                <td>{{item.produit}}</td>
+                <td>{{item.details}}
+                <td>{{item.quantite}}</td>
+            </tr>
+            {% endfor %}
+    </div>
+    </table>
+
+    <div class="footer">
+        <!-- Additional Information -->
+        <div class="additional-info">
+            <b><u>Modalité de paiement</u></b><br>
+             Le règlement  de la présente demande de livraison partielle<br>
+             s’effectuera suivant les modalités du projet.
+        </div>
+        <!-- Signature -->
+
+        <div class="signature">
+            <img src="{{cachet_url}}" alt="Logo" style="width:270px;">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- <div class="footer">
+            <p>Mon entreprise — Société au capital de __ euros</p>
+        </div> -->
+
+    </div>
+    <div class="pied">
+        <img src="{{footer_url}}" alt="footer" style="width: 100%;">
+    </div>
+</body>
+
+</html>

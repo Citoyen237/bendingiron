@@ -1,0 +1,520 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bon de livraison</title>
+    <style>
+        @page {
+            size: A4 landscape;
+            margin: 10mm 12mm 16mm 12mm;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            color: #000;
+            background-image: url('{{background_url}}');
+            background-repeat: no-repeat;
+            background-size: 520px 520px;
+            background-position: center;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        /* ---------- En-tête ---------- */
+        .header td {
+            vertical-align: middle;
+        }
+
+        .header .col-logo {
+            width: 30%;
+            text-align: left;
+        }
+
+        .header .col-title {
+            width: 40%;
+            text-align: center;
+        }
+
+        .header .col-services {
+            width: 30%;
+            text-align: right;
+            font-size: 9px;
+            line-height: 1.35;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: bold;
+            font-style: italic;
+            text-decoration: underline;
+        }
+
+        .sq {
+            color: #ffa310;
+            font-size: 9px;
+        }
+
+        /* ---------- Cases grises ---------- */
+        .box {
+            border: 1px solid #333;
+            border-right: 2px solid #333;
+            border-bottom: 2px solid #333;
+            background-color: #e6e6e6;
+            padding: 5px 8px;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        .sp {
+            border: none;
+        }
+
+        .serie {
+            color: #ffa310;
+            font-weight: bold;
+        }
+
+        .contact {
+            font-size: 10px;
+            line-height: 1.35;
+            margin: 6px 0 6px 0;
+        }
+
+        .contact .mail {
+            color: #1155cc;
+            text-decoration: underline;
+        }
+
+        .website {
+            text-align: right;
+            font-size: 9px;
+            margin: 4px 0 1px 0;
+        }
+
+        /* ---------- Tableau des produits ---------- */
+        table.items {
+            margin-top: 0;
+        }
+
+        table.items th,
+        table.items td {
+            border: 1px solid #333;
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        table.items th {
+            background-color: #ffc000;
+            font-weight: bold;
+        }
+
+        table.items td {
+            height: 26px;
+        }
+
+        table.items tr {
+            page-break-inside: avoid;
+        }
+
+        /* ---------- Signatures ---------- */
+        table.sign {
+            margin-top: 14px;
+        }
+
+        table.sign td {
+            padding: 3px 0;
+            font-size: 11px;
+            vertical-align: bottom;
+        }
+
+        .sign-title {
+            font-weight: bold;
+            text-decoration: underline;
+            padding-top: 8px;
+        }
+
+        .dots {
+            border-bottom: 1px dotted #000;
+        }
+
+        /* ---------- Pied de page ---------- */
+        .pied {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 8px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======= EN-TÊTE : logo / titre / activités ======= -->
+    <table class="header">
+        <tr>
+            <td class="col-logo">
+                <img src="{{image_url}}" alt="Logo" style="width:190px;">
+            </td>
+            <td class="col-title">
+                <span class="title">BON DE LIVRAISON</span>
+            </td>
+            <td class="col-services">
+                Armatures de ferraillage <span class="sq">&#9632;</span><br>
+                Accessoires pour armatures <span class="sq">&#9632;</span><br>
+                Fer à béton <span class="sq">&#9632;</span><br>
+                <br>
+                Fabrication d'armatures <span class="sq">&#9632;</span><br>
+                Assemblage d'armatures <span class="sq">&#9632;</span><br>
+                Pose d'armatures <span class="sq">&#9632;</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ======= ENTREPRISE / DESTINATAIRE / N° SÉRIE ======= -->
+    <table style="margin-top: 14px;">
+        <tr>
+            <td class="box" style="width: 25%;"><b>ENTREPRISE :</b> BENDING IRON</td>
+            <td class="sp" style="width: 12%;"></td>
+            <td class="box" style="width: 28%;"><b>DESTINATAIRE :</b> {{order.infoclient.nom}}</td>
+            <td class="sp" style="width: 12%;"></td>
+            <td class="box" style="width: 23%;">
+                <b>N° SERIE :</b>
+                <span class="serie">{{order.numero}}BI{{order.created_at|date:"ymd"}}</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ======= Coordonnées de l'entreprise ======= -->
+    <div class="contact">
+        <span class="mail">contact@bending-iron.com</span><br>
+        Bepanda l'an 2000; Douala<br>
+        (+237) 686 088 869<br>
+        (+237) 681 951 410
+    </div>
+
+    <!-- ======= ADRESSE DE LIVRAISON / DATE & HEURE ======= -->
+    <table>
+        <tr>
+            <td class="box" style="width: 45%; text-align: left;">
+                <b>ADRESSE DE LIVRAISON :</b> {{order.infoclient.adresse}}
+            </td>
+            <td class="sp" style="width: 30%;"></td>
+            <td class="box" style="width: 25%;">
+                <b>DATE &amp; HEURE :</b> {{order.created_at|date:"d/m/Y H:i"}}
+            </td>
+        </tr>
+    </table>
+
+    <div class="website">www.bending-iron.com</div>
+
+    <!-- ======= TABLEAU DES PRODUITS ======= -->
+    <table class="items">
+        <thead>
+            <tr>
+                <th style="width: 5%;">No.</th>
+                <th style="width: 12%;">Produit</th>
+                <th style="width: 27%;">Description</th>
+                <th style="width: 10%;">Qté<br>commandée</th>
+                <th style="width: 8%;">Qté<br>livrée</th>
+                <th style="width: 12%;">Vérification<br>Livreur</th>
+                <th style="width: 12%;">Vérification<br>Client</th>
+                <th style="width: 14%;">Observation<br>Client</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in produits %}
+            <tr>
+                <td>{{ forloop.counter }}.</td>
+                <td>{{item.produit}}</td>
+                <td>{{item.details}}</td>
+                <td>{{item.quantite}}</td>
+                <td>{{item.quantite}}</td>
+                <td></td>
+                <td></td>
+                {% if forloop.first %}
+                <td rowspan="{{ produits|length }}"></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ======= SIGNATURES ======= -->
+    <table class="sign">
+        <tr>
+            <td colspan="5" class="sign-title">BENDING IRON :</td>
+        </tr>
+        <tr>
+            <td style="width: 24%;">Nom Responsable Production :</td>
+            <td class="dots" style="width: 30%;"></td>
+            <td style="width: 3%;">&nbsp;;</td>
+            <td style="width: 10%;">Signature :</td>
+            <td class="dots" style="width: 33%;"></td>
+        </tr>
+
+        <tr>
+            <td colspan="5" class="sign-title">TRANSPORTEUR :</td>
+        </tr>
+        <tr>
+            <td>Nom du chauffeur :</td>
+            <td class="dots"></td>
+            <td>&nbsp;;</td>
+            <td>Signature :</td>
+            <td class="dots"></td>
+        </tr>
+
+        <tr>
+            <td colspan="5" class="sign-title">CLIENT :</td>
+        </tr>
+        <tr>
+            <td>Nom du référent :</td>
+            <td class="dots"></td>
+            <td>&nbsp;;</td>
+            <td>Signature :</td>
+            <td class="dots"></td>
+        </tr>
+    </table>
+
+    <!-- ======= PIED DE PAGE ======= -->
+    <div class="pied">
+        SARL pluripersonnelle au capital de 960 000 Frs CFA - N° RCCM : CM-DLA-01-2026-B12-00166 -
+        N° contribuable : M022618895214M – No. Compte Bancaire Afriland : 10005 00025 00000182763-80
+    </div>
+
+</body>
+
+</html>
+
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        body {
+            font-family: Verdana;
+            background-image: url('{{background_url}}');
+            background-repeat: no-repeat;
+            background-size: 600px 600px;
+            background-position: center;
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            justify-items: center;
+        }
+
+        .header .invoice-number {
+            text-align: right;
+        }
+
+        .logo {
+            margin-top: -7%;
+            text-align: left;
+        }
+
+        .company-info {
+            margin-top: -4%;
+
+        }
+
+        .client-info {
+            margin-top: -5%;
+            text-align: right;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: -5px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #2b2a2a;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            font-size: 12px;
+            background-color: #ffa310;
+            color: black;
+        }
+
+        .total {
+            text-align: right;
+        }
+
+        .footer {
+            font-size: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+
+        .company-info p {
+            list-style: none;
+            text-align: left;
+            font-size: 10px;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: -2%;
+        }
+
+        .pied {
+            position: fixed;
+            bottom: -2%;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            justify-content: center;
+            text-align: center;
+            justify-items: center;
+            margin-right: -10%;
+        }
+
+        .hide td {
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="{{image_url}}" alt="Logo" style="width:190px;">
+            </div>
+            <div class="invoice-number">
+                <span style="font-size:18px"><b>BON DE LIVRAISON N°</b></span><br><strong
+                    style="color:#ffa310; font-size:18px">{{order.numero}}BI{{order.created_at|date:"ymd"}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+            </div>
+        </div>
+        <!-- Company Info -->
+        <div class="company-info">
+            <p>
+                <br>
+                <span>contact@bending-iron.com</span></b><br>
+                <span>(+237) 676 868 367</span> <br>
+                <span>(+237) 698 365 156</span>
+            </p>
+        </div>
+        <!-- Client Info -->
+        <div class="client-info"><br>
+            <strong style="font-size:16px">{{order.infoclient.nom}}</strong><br>
+            <span style="font-size:10px"><b>O.L : </b>{{order.infoclient.mode_livraison}}</span><br>
+            <span style="font-size:10px"><b>A.L : </b>{{order.infoclient.adresse}}</span><br>
+            <span style="font-size:10px"><b>Tel : </b>{{order.infoclient.telephone}}</span><br><br>
+        </div>
+        <!-- Table -->
+        <table>
+            <table border="1" cellspacing="0" cellpadding="8"
+                style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px;">
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 15%;">Produit</th>
+                        <th rowspan="2" style="width: 35%;">Description</th>
+                        <th rowspan="2" style="width: 12%;">Qte commandée</th>
+                        <th rowspan="2" style="width: 12%;">Qte livrée</th>
+                        <th colspan="2" style="width: 26%;">Observation</th>
+                    </tr>
+                    <tr>
+                        <th>Livreur</th>
+                        <th>client</th>
+                    </tr>
+                </thead>
+                <tbody>
+                     {% for item in produits %}
+                    <tr style="height: 30px;">
+                        <td>{{item.produit}}</td>
+                        <td>{{item.details}}</td>
+                        <td>{{item.quantite}}</td>
+                        <td>{{item.quantite}}</td>
+                        <td><input type="checkbox" name="" id=""></td>
+                        <td><input type="checkbox" name="" id=""></td>
+                    </tr>
+                          {% endfor %}
+                </tbody>
+            </table>
+
+            <br>
+            <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px;">
+        <thead>
+            <tr>
+                <th style="width: 15%;"></th>
+                <th style="width: 30%;">BENDING IRON SARL</th>
+                <th style="width: 27.5%;">TRANSPORTEUR</th>
+                <th style="width: 27.5%;">CLIENT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-weight: bold; text-align: right;">Fonctions :</td>
+                <td style="font-style: italic;">Responsable Production</td>
+                <td style="font-style: italic;">Chauffeur</td>
+                <td style="font-style: italic;">Référent</td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; text-align: right;">Noms :</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; text-align: right;">Date :</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="font-weight: bold; text-align: right;">Visas :</td>
+                <td style="height: 80px;"></td>
+                <td style="height: 80px;"></td>
+                <td style="height: 80px;"></td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+    
+    <div class="pied">
+        <img src="{{footer_url}}" alt="footer" style="width: 100%;">
+    </div>
+</body>
+
+</html>

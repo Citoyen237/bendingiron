@@ -22,15 +22,14 @@ def panier_count(request):
     # return {}
 
 def commandes_en_attente(request):
-    nb_en_attente = 0
-        # Récupérer toutes les commandes de l'utilisateur
-    commandes = Order.objects.all()
-
-    for commande in commandes:
-        dernier_traiment = Traiment.objects.filter(order=commande).order_by('-created_at').first()
-        if dernier_traiment and dernier_traiment.statut == 'en_attente':
-            nb_en_attente += 1
-
-    return {
-        'nb_order': nb_en_attente
-    }
+    """Nombre de commandes clients en attente — seulement pour les admins, en UNE requête."""
+    from django.db.models import OuterRef, Subquery
+    from auth_app.permissions import is_admin
+    if not is_admin(getattr(request, "user", None)):
+        return {}
+    dernier = Traiment.objects.filter(order=OuterRef("pk")).order_by("-created_at")
+    nb_en_attente = (Order.objects
+                     .annotate(dernier_statut=Subquery(dernier.values("statut")[:1]))
+                     .filter(dernier_statut="en_attente")
+                     .count())
+    return {'nb_order': nb_en_attente}

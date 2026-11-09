@@ -15,7 +15,7 @@
         }
 
         body {
-            font-family: Adobe Arabic;
+            font-family: Verdana;
             background-image: url('{{background_url}}');
             background-repeat: no-repeat;
             background-size: 600px 600px;
@@ -29,6 +29,12 @@
             justify-items: center;
         }
 
+        .website {
+            text-align: left;
+            font-size: 9px;
+            margin: 4px 0 1px 0;
+        }
+        
         .header .invoice-number {
             text-align: right;
         }
@@ -39,9 +45,15 @@
         }
 
         .company-info {
-            font-size: 14px;
             margin-top: -4%;
-            font-family: Aptos (Corps);
+
+        }
+
+        .mail {
+            
+            font-size: 10px;
+            color: #1155cc;
+            text-decoration: underline;
         }
 
         .client-info {
@@ -62,7 +74,7 @@
         }
 
         table th {
-            font-size: 18px;
+            font-size: 12px;
             background-color: #ffa310;
             color: black;
         }
@@ -83,23 +95,23 @@
         .company-info p {
             list-style: none;
             text-align: left;
-            font-size: 18px;
+            font-size: 10px;
         }
 
         td {
-            font-size: 16px;
+            font-size: 12px;
         }
 
         .footer {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
-            margin-top: 4%;
+            font-size: 12px;
+            margin-bottom:3;
         }
 
         .pied {
             position: fixed;
-            bottom: 0;
+            bottom: -2%;
             left: 0;
             width: 100%;
             height: 15px;
@@ -108,41 +120,46 @@
             justify-items: center;
             margin-right: -10%;
         }
+
+        .hide td{
+            border: none;
+        }
     </style>
 </head>
 
 <body>
     <div class="invoice-container">
         <!-- Header -->
+         <!-- Header -->
         <div class="header">
             <div class="logo">
-                <img src="{{image_url}}" alt="Logo" style="width:170px;">
+                <img src="{{image_url}}" alt="Logo" style="width:190px;">
             </div>
             <div class="invoice-number">
-                <span style="font-size:26px"><b>PROJET N°</b></span><strong
-                    style="color:#ffa310; font-size:26px">{{order.created_at|date:"dmy"}}B-iron{{order.id}}</strong><br>
-                <span style="font-size: 18px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+                <span style="font-size:18px"><b>FACTURE N°</b></span><strong
+                    style="color:#ffa310; font-size:18px">{{order.numero}}BI{{order.created_at|date:"ymd"}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
             </div>
         </div>
-
         <!-- Company Info -->
         <div class="company-info">
-            <p><b style="color: rgb(8, 115, 129);"><u>bendingiron.info@gmail.com</u></b><br>
-                Douala, Cameroun <br>
-                (+237) 686 088 869 <br>
-                (+237) 681 951 410
+            <p>
+                <br>
+               <span class="mail">contact@bending-iron.com</span></b><br>
+               <span>(+237) 676 868 367</span> <br>
+               <span>(+237) 698 365 156</span>
             </p>
         </div>
 
         <!-- Client Info -->
         <div class="client-info">
-            Projet : <strong style="font-size:26px">{{order.name}}</strong><br>
-            Partenaire : <span style="font-size:18px">{{order.partenariat}}</span><br>
-            Telephone : <span style="font-size:18px">{{order.partenariat.telephone}}</span><br>
-            Adresse : <span style="font-size:18px">{{order.partenariat.adresse}}</span><br>
+            <span style="font-size:10px"><strong>Projet :</strong>{{order.name}}<br>
+            <span style="font-size:10px"><b>Partenaire :</b>{{order.partenariat}}</span><br>
+            <span style="font-size:10px"><b>Telephone : </b>{{order.partenariat.telephone}}</span><br>
+            <span style="font-size:10px"><b>Adresse :</b>{{order.partenariat.adresse}}</span><br>
 
         </div>
-
+        <div class="website">www.bending-iron.com</div>
         <!-- Table -->
         <table>
             <tr>
@@ -199,8 +216,8 @@
         </div>
         <!-- Signature -->
 
-        <div class="signature">
-            <img src="{{cachet_url}}" alt="Logo" style="width:270px;">
+         <div class="signature">
+            <img src="{{cachet_url}}" alt="Logo" style="width:200px;">
         </div>
     </div>
 

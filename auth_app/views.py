@@ -5,9 +5,13 @@ from django.contrib.auth import get_user_model, login,logout
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import Group
-import string
-import random
-from .utils import *
+from django.core.cache import cache
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+from django.conf import settings
+from django.views.decorators.http import require_POST
+from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.http import HttpResponse
@@ -18,6 +22,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 
 token_generator = PasswordResetTokenGenerator()
@@ -27,17 +32,11 @@ def send_verification_email(request,user):
     # user=User.objects.get(id=user)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = token_generator.make_token(user)
-    link = f"http://{request.get_host()}/auth/verification-email/{uid}/{token}/"
-
-    send_mail(
-        subject="Vérifiez votre adresse email",
-        message=f"Cliquez sur ce lien pour confirmer votre email : {link}",
-        from_email="contact@bending-iron.com",
-        recipient_list=[user.email],
-    )
+    # Lien construit à partir de SITE_URL (https) et non de l'en-tête Host envoyé par le navigateur
+    link = settings.SITE_URL + reverse("verify_email", args=[uid, token])
 
     template="emails/verified_email.html"
-    objet="lVérifiez votre adresse email"
+    objet="Vérifiez votre adresse email"
     context = {
        'user': user,
        'link':link
@@ -86,27 +85,47 @@ def verify_email(request,uidb64,token):
         message="Lien invalide ou expiré"
         return render(request, 'comfirm-register.html', {'message':message}, status=400)
     
-# Create your views here
+# --- Limitation des tentatives de connexion (anti force brute) ---
+MAX_ECHECS = 5
+DUREE_BLOCAGE = 15 * 60  # secondes
+
+def _ip(request):
+    # Derrière Nginx, l'IP réelle est dans X-Real-IP
+    return request.META.get("HTTP_X_REAL_IP") or request.META.get("REMOTE_ADDR", "")
+
+def _cle_echecs(request, email):
+    return f"login-echecs:{_ip(request)}:{(email or '').lower()}"
+
+
+@ensure_csrf_cookie
 def loginPage(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
-        if form.is_valid():   
-           email = form.cleaned_data.get('email')
-           password = form.cleaned_data.get('password')
-           UserModel = get_user_model()
-           try:
-                user = UserModel.objects.get(email=email)
-                if user.check_password(password):
-                    if not user.is_active:
-                        messages.error(request, "Votre compte est bloqué. Veuillez contacter l'administration.")
-                    else:
-                        login(request,user)
-                        messages.success(request, f'Bienvenue {user.first_name}!')
-                        return redirect('font.index')  # Remplacez 'home' par le nom de l'URL de votre page d'accueil
-                else:  
-                    messages.error(request, 'Email ou mot de passe incorrect.')
-           except UserModel.DoesNotExist:
-                messages.error(request, 'Email ou mot de passe incorrect.')    
+        if form.is_valid():
+            email = form.cleaned_data.get('email', '').strip().lower()
+            password = form.cleaned_data.get('password')
+            cle = _cle_echecs(request, email)
+
+            if cache.get(cle, 0) >= MAX_ECHECS:
+                messages.error(request, "Trop de tentatives. Réessayez dans 15 minutes.")
+                return render(request, 'login.html', {'form': form}, status=429)
+
+            UserModel = get_user_model()
+            user = UserModel.objects.filter(email__iexact=email).first()
+            if user is None:
+                # Même coût de calcul que pour un compte existant (évite de deviner les e-mails)
+                UserModel().set_password(password)
+            if user is not None and user.check_password(password):
+                if not user.is_active:
+                    messages.error(request, "Votre compte est bloqué. Veuillez contacter l'administration.")
+                else:
+                    cache.delete(cle)
+                    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    messages.success(request, f'Bienvenue {user.first_name}!')
+                    return redirect('font.index')
+            else:
+                cache.set(cle, cache.get(cle, 0) + 1, DUREE_BLOCAGE)
+                messages.error(request, 'Email ou mot de passe incorrect.')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form':form})
@@ -120,56 +139,132 @@ def register(request):
             phone = form.cleaned_data.get('phone')
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = User.objects.create_user(username=first_name,first_name=first_name,phone_number=phone,last_name=last_name, email=email, password=password)
-            user_group = Group.objects.get(name='simple')
-            user.groups.add(user_group)
-            if user is not None :
-                send_verification_email(request,user)
-                messages.success(request,'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter')
-                message="Un email de vérification vous a été envoyé. Veuillez consulter votre boîte mail"
-                return render(request, 'comfirm-register.html', {'message':message})
-
-            else:
-                messages.error('erreur')
+            # username = e-mail : unique, alors que deux clients peuvent avoir le même prénom
+            with transaction.atomic():
+                user = User.objects.create_user(username=email, first_name=first_name, phone_number=phone,
+                                                last_name=last_name, email=email, password=password)
+                user_group, _ = Group.objects.get_or_create(name='simple')
+                user.groups.add(user_group)
+            send_verification_email(request, user)
+            messages.success(request,'Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter')
+            message="Un email de vérification vous a été envoyé. Veuillez consulter votre boîte mail"
+            return render(request, 'comfirm-register.html', {'message':message})
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form':form})
 
-def generate_random_password(length=8):
-    characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for i in range(length))
+# --- Mot de passe oublié : mécanisme standard de Django ---
+# L'utilisateur reçoit un lien signé, à usage unique et limité dans le temps.
+# Son mot de passe ne change que lorsqu'il en choisit un nouveau lui-même.
+class ResetPasswordView(auth_views.PasswordResetView):
+    template_name = 'resetpass.html'
+    form_class = PasswordResetForm
+    email_template_name = 'emails/password_reset_email.txt'
+    html_email_template_name = 'emails/password_reset_email.html'
+    subject_template_name = 'emails/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
 
-def resetpass(request):
-    if request.method == 'POST':
-        form = PasswordResetForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            try:
-                user = User.objects.get(email=email)
-                new_password = generate_random_password()
-                user.set_password(new_password)
-                user.save()
+    def form_valid(self, form):
+        # Lien construit avec le vrai domaine du site, pas avec l'en-tête Host
+        domaine = settings.SITE_URL.split('://', 1)[-1]
+        opts = {
+            'use_https': settings.SITE_URL.startswith('https'),
+            'token_generator': self.token_generator,
+            'from_email': settings.DEFAULT_FROM_EMAIL,
+            'email_template_name': self.email_template_name,
+            'subject_template_name': self.subject_template_name,
+            'request': self.request,
+            'html_email_template_name': self.html_email_template_name,
+            'domain_override': domaine,
+        }
+        form.save(**opts)
+        return redirect(self.get_success_url())
 
-                send_mail(
-                    'Réinitialisation de votre mot de passe',
-                    f'Votre nouveau mot de passe est : {new_password}',
-                    'contact@bending-iron.com',  # Remplacez par votre email
-                    [email],
-                    fail_silently=False,
-                )
 
-                messages.success(request, 'Un nouveau mot de passe a été envoyé à votre adresse email.')
-                return redirect('login')
-            except User.DoesNotExist:
-                messages.error(request, "Aucun utilisateur n'est associé à cet email.")
-    else:
-        form = PasswordResetForm()
+class ResetPasswordDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'auth-message.html'
+    extra_context = {'titre': 'Mot de passe oublié',
+                     'message': "Si un compte existe avec cette adresse, un lien de réinitialisation "
+                                "vient d'être envoyé. Pensez à vérifier vos courriers indésirables."}
 
-    return render(request, 'resetpass.html', {'form':form})
+
+class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'reset-confirm.html'
+    form_class = StyledSetPasswordForm
+    success_url = reverse_lazy('password_reset_complete')
+
+
+class ResetPasswordCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'auth-message.html'
+    extra_context = {'titre': 'Mot de passe modifié',
+                     'message': "Votre mot de passe a été modifié. Vous pouvez vous connecter."}
+
 
 def logoutPage(request):
     logout(request)
     messages.success(request, 'Vous avez été déconnecté avec succès.')
     return redirect('login')
 
+
+def _erreurs_mot_de_passe(motdepasse, user):
+    from django.contrib.auth.password_validation import validate_password
+    from django.core.exceptions import ValidationError
+    try:
+        validate_password(motdepasse, user)
+        return []
+    except ValidationError as e:
+        return list(e.messages)
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            user = request.user
+            # Récupérer les données du formulaire
+            oldpassword = form.cleaned_data.get('oldpassword')
+            newpassword = form.cleaned_data.get('newpasspassword')
+            confirmpassword = form.cleaned_data.get('confirmpassword')
+            # Vérifier si le compte est actif
+            if not user.is_active:
+                messages.error(
+                    request,
+                    "Votre compte est bloqué. Veuillez contacter l'administration."
+                )
+            # Vérifier l'ancien mot de passe
+            elif not user.check_password(oldpassword):
+                messages.error(
+                    request,
+                    "L'ancien mot de passe est incorrect."
+                )
+            # Vérifier que les nouveaux mots de passe correspondent
+            elif newpassword != confirmpassword:
+                messages.error(
+                    request,
+                    "Les nouveaux mots de passe ne correspondent pas."
+                )
+            # Vérifier que le nouveau mot de passe est différent de l'ancien
+            elif oldpassword == newpassword:
+                messages.error(
+                    request,
+                    "Le nouveau mot de passe doit être différent de l'ancien."
+                )
+            elif _erreurs_mot_de_passe(newpassword, user):
+                for err in _erreurs_mot_de_passe(newpassword, user):
+                    messages.error(request, err)
+            else:
+                # Enregistrer le nouveau mot de passe
+                user.set_password(newpassword)
+                user.save()
+                # Garder l'utilisateur connecté
+                logout(request)
+                messages.success(
+                    request,
+                    "Votre mot de passe a été modifié avec succès."
+                )
+                return redirect('login')
+    else:
+        form = ChangePasswordForm()
+    return render( request,'change-password.html',{'form': form})
 

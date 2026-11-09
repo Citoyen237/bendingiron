@@ -93,6 +93,7 @@
                             <thead>
                                 <tr>
                                     <th>Tranche</th>
+                                    <th>Montant payé</th>
                                     <th>Date</th>
                                     <th>Confierme par</th>
                                     <th>Mode de paiement</th>
@@ -102,6 +103,7 @@
                                 {% for paiement in paiements %}
                                 <tr>
                                     <td>Tranche {{paiement.tranche}}</td>
+                                    <td>{{paiement.montant|floatformat:0}} FCFA</td>
                                     <td>{{paiement.date_paiement}}</td>
                                     <td>{{paiement.user}}</td>
                                     <td>{{paiement.mode_paiement}}</td>

@@ -8,63 +8,39 @@ confirmer la commande
 {% block 'content' %}
 {% load static %}
 {% load humanize %}
+<style>
+    /* Les classes Bootstrap (.row, .d-flex) ne doivent pas annuler l'attribut hidden */
+    #etapes [hidden] { display: none !important; }
+    #ecran-lancement {
+        position: fixed; inset: 0; z-index: 2000;
+        background: rgba(255, 255, 255, 0.92);
+        display: flex; align-items: center; justify-content: center;
+        padding: 16px; text-align: center;
+    }
+    #ecran-lancement .boite { max-width: 420px; }
+</style>
 <section class="content project-area">
     {% if user.is_authenticated %}
-    <div class="container-fluid border shadow">
-        <div class="row">
-            <div class="col-md-8">
-                <table class="table table-responsive mt-2">
-                    <thead class='bg-warning'>
-                        <th>Produits</th>
-                        <th>Description</th>
-                        <th>Quantite</th>
-                        <th>Prix(FCFA) </th>
-                        <th>Prix totale (FCFA) </th>
-                        <th>Retirer</th>
-                    </thead>
-                    <tbody>
-
-                        {% for item in paniers %}
-
-                        <tr>
-                            <td>{{item.produit}}</td>
-                            <td>{{item.details}}
-                            <td>{{item.quantite}}</td>
-                            <td>{{item.prix}}</td>
-                            <td>{{item.total}}</td>
-                            <td><a href="{% url 'supprimer_du_panier' item_id=item.id %}" class="btn btn-danger"
-                                    onclick="return confirmSuppression(event, this);"><i class='fas fa-trash'></i></a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="6" class="text-center">
-                                <img src="{% static 'nodata.png'%}" alt="" height="100px">
-                                <br>
-                                <span> Votre panier est vide</span>
-                            </td>
-                        </tr>
-                        {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-light m-2">
-                    <div class="card-body">
-                        {% if paniers %}
-                        <h4 class="card-title">Informations de facturation</h4>
-                        <hr>
-                        <form action="" method="post">
-                            {% csrf_token %}
-                            {{form.as_p}}
-                            <br>
-                            <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
-                            <br>
-                           <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
-                        
-                        <hr>
+    <div class="container">
+        <div class="row"> 
+            <div class="col-md-12">
+                <div class="card bg-light m-4">
+                    <div class="card-header bg-warning">
+                        {% if remise %}
                         <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Montant HT avant remise</h6>
+                            </div>
+                            <a class="text-dark">{{montant_ht_brut|floatformat:0|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center" id="ligne-remise">
+                            <div class="form-check mb-0">
+                                <h6>Remise code promo ({{remise|floatformat:"-2"}}%)</h6>
+                            </div>
+                            <a class="text-dark">- {{montant_remise|intcomma}} FCFA</a>
+                        </div>
+                        {% endif %}
+                          <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
                             <div class="form-check mb-0">
                                 <h6>Montant HT</h6>
@@ -93,15 +69,155 @@ confirmer la commande
                             <div class="form-check mb-0">
                                 <h6>Reste a payer (70%)</h6>
                             </div>
-                            <a class="text-dark">{{get_tranche1}} FCFA</a>
+                            <a class="text-dark">{{get_tranche2}} FCFA</a>
                         </div>
                     </div>
-                    <div class="input m-2">
-                        <button type="submit" class="btn btn-primary form-control">
-                            Payer
-                        </button>
-                    </div>
+                    <div class="card-body m-4">
+                        {% if paniers %}
+                        {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}info{% endif %}">{{ message }}</div>
+                        {% endfor %}
+                        <!-- Étapes : sans JavaScript tout reste affiché ; avec JavaScript une seule
+                             étape est visible. Étape d'ouverture : celle qui contient une erreur. -->
+                        <div id="etapes"
+                             data-etape-initiale="{% if form.nom.errors or form.telephone.errors or form.adresse.errors or form.mode_livraison.errors or form.pour_qui.errors %}2{% elif erreur_paiement or form.errors %}3{% else %}1{% endif %}">
+
+                        <!-- 1. Code promo -->
+                        <div class="etape" data-etape="1">
+                            <h4 class="card-title">Code promo</h4>
+                            <hr>
+                            {% if remise %}
+                            <p class="mx-4 text-primary">Code promo appliqué : remise de {{remise|floatformat:"-2"}}%.</p>
+                            {% else %}
+                            <div class="mx-4" id="question-promo" hidden>
+                                <p>Avez-vous un code promo ?</p>
+                                <button type="button" class="btn btn-outline-primary" id="promo-oui">Oui</button>
+                                <button type="button" class="btn btn-outline-secondary" id="promo-non">Non</button>
+                            </div>
+                            <div id="bloc-code">
+                                <form id="codeForm" class="d-flex m-4">
+                                    {% csrf_token %}
+                                    <input type="text" id="code" class="form-control" placeholder="code distributeur">
+                                    <button type="submit" class="btn btn-primary">Appliquer</button>
+                                </form>
+                                <div id="result" class="m-4"></div>
+                            </div>
+                            {% endif %}
+                            <div class="mx-4 mt-2 nav-etape" hidden>
+                                <button type="button" class="btn btn-primary" data-aller="2"
+                                        {% if not remise %}id="continuer-promo" hidden{% endif %}>Continuer</button>
+                            </div>
+                        </div>
+
+                        <form action="" method="post" id="commandeForm">
+                            {% csrf_token %}
+                            {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+
+                            <!-- 2. Facturation -->
+                            <div class="etape" data-etape="2">
+                            <h4 class="card-title">Informations de facturation</h4>
+                            <hr>
+                            {% if form.pour_qui %}
+                            <div class="row m-4" id="choix-pour-qui">
+                                <div class="col-md-12">
+                                    {% for radio in form.pour_qui %}
+                                    <label class="mr-4">{{ radio.tag }} {{ radio.choice_label }}</label>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-md-12 mt-2 text-muted" id="infos-compte">
+                                    Facturé à : <b>{{ user.last_name }} {{ user.first_name }}</b> — {{ user.phone_number }}
+                                </div>
+                            </div>
+                            {% endif %}
+                            <div class="row m-4" id="infos-autre-client">
+                                <div class="col-md-6">
+                                    {{form.nom.label}}
+                                    {{form.nom}}
+                                    <span class="text-danger">{{ form.nom.errors|join:" " }}</span>
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.telephone.label}}
+                                    {{form.telephone}}
+                                    <span class="text-danger">{{ form.telephone.errors|join:" " }}</span>
+                                </div>
+                            </div>
+                            <div class="row m-4">
+                                <div class="col-md-6">
+                                    {{form.mode_livraison.label}}
+                                    {{form.mode_livraison}}
+                                    <span class="text-danger">{{ form.mode_livraison.errors|join:" " }}</span>
+                                </div>
+                                <div class="col-md-6" id="bloc-adresse">
+                                    {{form.adresse.label}}
+                                    {{form.adresse}}
+                                    <span class="text-danger">{{ form.adresse.errors|join:" " }}</span>
+                                </div>
+                            </div>
+                            <div class="mx-4 nav-etape" hidden>
+                                <button type="button" class="btn btn-secondary" data-aller="1">Retour</button>
+                                <button type="button" class="btn btn-primary" data-aller="3" data-verifier="2">Continuer</button>
+                            </div>
+                            </div>
+
+                            <!-- 3. Paiement : « Payer » lance directement le paiement -->
+                            <div class="etape" data-etape="3">
+                            <h4 class="card-title">Informations de paiement</h4>
+                            <hr>
+                            {% if erreur_paiement %}
+                            <div class="alert alert-danger mx-4" id="erreur-paiement">
+                                <b>Le paiement n'a pas pu être lancé.</b><br>
+                                Motif : {{ erreur_paiement }}
+                            </div>
+                            {% endif %}
+                            <div class="row m-4">
+                                <div class="col-md-4">
+                                    {{form.mode_payement.label}}
+                                    {{form.mode_payement}}
+                                    <span class="text-danger">{{ form.mode_payement.errors|join:" " }}</span>
+                                </div>
+                                <div class="col-md-4">
+                                    {{form.reglement.label}}
+                                    {{form.reglement}}
+                                    <span class="text-danger">{{ form.reglement.errors|join:" " }}</span>
+                                </div>
+                                <div class="col-md-4">
+                                    {{form.telephone_pay.label}}
+                                    {{form.telephone_pay}}
+                                    <span class="text-danger">{{ form.telephone_pay.errors|join:" " }}</span>
+                                </div>
+                            </div>
+                            <p class="mx-4 text-muted">
+                                En cliquant sur « Payer », une demande de paiement est envoyée sur votre téléphone.
+                                La commande est enregistrée et le panier vidé une fois le paiement confirmé.
+                            </p>
+                            <div class="row ml-4">
+                                <div class="col-md-12">
+                                    <input class="form-checkbox" required type="checkbox" id="accepte-politique"> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
+                                </div>
+                                <div class="col-md-12">
+                                    <input class="form-checkbox" required type="checkbox" id="accepte-cgv"> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
+                                </div>
+                                <div class="col-md-12 mt-2 nav-etape" hidden>
+                                    <button type="button" class="btn btn-secondary" data-aller="2">Retour</button>
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    <button type="submit" class="btn btn-primary form-control" id="bouton-payer">Payer</button>
+                                </div>
+                            </div>
+                            </div>
+
+                            <!-- Écran d'attente affiché dès le clic sur « Payer » -->
+                            <div id="ecran-lancement" hidden role="status" aria-live="polite">
+                                <div class="boite">
+                                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                                    <h4>Lancement du paiement…</h4>
+                                    <p class="mb-0">Nous contactons Orange Money. Une demande va arriver sur votre téléphone.<br>
+                                        <b>Ne fermez pas cette page.</b></p>
+                                </div>
+                            </div>
                     </form>
+                        </div>
+                    </div>
                     {% endif %}
                     
 
@@ -121,6 +237,132 @@ confirmer la commande
 </section><!-- Content end -->
 
 <script>
+    const codeForm = document.getElementById("codeForm");
+    if (codeForm) {
+        codeForm.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const code = document.getElementById("code").value;
+            const csrfToken = codeForm.querySelector('[name=csrfmiddlewaretoken]').value;
+            const result = document.getElementById("result");
+
+            fetch("{% url 'appliquer_code' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "code=" + encodeURIComponent(code)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const span = document.createElement("span");
+                    span.className = data.success ? "text-primary" : "text-danger";
+                    span.textContent = data.message;
+                    result.replaceChildren(span);
+                    // Recharger pour afficher les montants recalculés avec la remise,
+                    // puis rouvrir directement l'étape « facturation »
+                    if (data.success) {
+                        setTimeout(() => {
+                            history.replaceState(null, "", window.location.pathname + "#facturation");
+                            window.location.reload();
+                        }, 800);
+                    }
+                });
+        });
+    }
+
+    // Étapes : une seule visible à la fois (code promo -> facturation -> paiement)
+    (function () {
+        const conteneur = document.getElementById("etapes");
+        if (!conteneur) { return; }
+        const etapes = conteneur.querySelectorAll(".etape");
+
+        function afficher(numero) {
+            etapes.forEach(e => { e.hidden = e.dataset.etape !== String(numero); });
+            conteneur.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        // Le JavaScript fonctionne : on montre les boutons de navigation
+        conteneur.querySelectorAll(".nav-etape").forEach(n => { n.hidden = false; });
+
+        // Boutons Retour / Continuer (avec vérification des champs de l'étape)
+        conteneur.querySelectorAll("[data-aller]").forEach(bouton => {
+            bouton.addEventListener("click", () => {
+                const aVerifier = bouton.dataset.verifier;
+                if (aVerifier) {
+                    const champs = conteneur.querySelectorAll(
+                        '.etape[data-etape="' + aVerifier + '"] input, .etape[data-etape="' + aVerifier + '"] select');
+                    for (const champ of champs) {
+                        if (!champ.checkValidity()) { champ.reportValidity(); return; }
+                    }
+                }
+                afficher(bouton.dataset.aller);
+            });
+        });
+
+        // Question « Avez-vous un code promo ? »
+        const question = document.getElementById("question-promo");
+        if (question) {
+            const blocCode = document.getElementById("bloc-code");
+            const continuer = document.getElementById("continuer-promo");
+            question.hidden = false;
+            blocCode.hidden = true;
+            document.getElementById("promo-oui").addEventListener("click", () => {
+                blocCode.hidden = false;
+                continuer.hidden = false;  // on peut aussi continuer sans l'appliquer
+                document.getElementById("code").focus();
+            });
+            document.getElementById("promo-non").addEventListener("click", () => afficher(2));
+        }
+
+        // Étape d'ouverture : erreur renvoyée par le serveur, sinon #facturation / #paiement, sinon 1
+        let initiale = conteneur.dataset.etapeInitiale || "1";
+        if (initiale === "1") {
+            if (window.location.hash === "#facturation") { initiale = "2"; }
+            if (window.location.hash === "#paiement") { initiale = "3"; }
+        }
+        etapes.forEach(e => { e.hidden = e.dataset.etape !== initiale; });
+    })();
+
+    // Écran d'attente dès le clic sur « Payer » (le serveur contacte Orange,
+    // ce qui peut prendre plusieurs secondes), et pas de double envoi.
+    (function () {
+        const form = document.getElementById("commandeForm");
+        const ecran = document.getElementById("ecran-lancement");
+        const bouton = document.getElementById("bouton-payer");
+        if (!form || !ecran) { return; }
+        form.addEventListener("submit", () => {   // déclenché seulement si le formulaire est valide
+            ecran.hidden = false;
+            bouton.disabled = true;
+        });
+        // Retour arrière du navigateur : ne pas laisser l'écran bloqué
+        window.addEventListener("pageshow", () => { ecran.hidden = true; bouton.disabled = false; });
+    })();
+    // Affiche les champs nom/téléphone seulement pour « autre client »,
+    // et l'adresse seulement pour une livraison sur chantier.
+    (function () {
+        const form = document.getElementById("commandeForm");
+        if (!form) { return; }
+        const blocAutre = document.getElementById("infos-autre-client");
+        const infosCompte = document.getElementById("infos-compte");
+        const blocAdresse = document.getElementById("bloc-adresse");
+        const livraison = form.querySelector('[name="mode_livraison"]');
+
+        function maj() {
+            const choix = form.querySelector('[name="pour_qui"]:checked');
+            const pourMoi = choix && choix.value === "moi";
+            blocAutre.hidden = pourMoi;
+            if (infosCompte) { infosCompte.hidden = !pourMoi; }
+            blocAdresse.hidden = livraison.value === "retrait en usine";
+            // Obligatoires seulement quand ils sont affichés (vérifiés par « Continuer »)
+            blocAutre.querySelectorAll("input").forEach(i => { i.required = !blocAutre.hidden; });
+            blocAdresse.querySelectorAll("input").forEach(i => { i.required = !blocAdresse.hidden; });
+        }
+        form.querySelectorAll('[name="pour_qui"]').forEach(r => r.addEventListener("change", maj));
+        livraison.addEventListener("change", maj);
+        maj();
+    })();
+
     // Fonction JavaScript pour confirmer la suppression
     function confirmSuppression(event, link) {
         // Demande de confirmation

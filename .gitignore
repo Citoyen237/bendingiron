@@ -1,0 +1,14 @@
+# Secrets et données locales — ne jamais committer
+.env
+*.sqlite3
+data/
+medias/contacts/
+medias/archives/
+
+# Fichiers générés
+staticfiles/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/

@@ -25,13 +25,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Désactivé par défaut : il faut DEBUG=True explicitement dans le .env de développement.
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# bendingiron.onrender.com
-ALLOWED_HOSTS = ['bending-iron.com', 'www.bending-iron.com', 'localhost', '127.0.0.1']
+def _liste(valeur):
+    return [v.strip() for v in valeur.split(',') if v.strip()]
+
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='bending-iron.com,www.bending-iron.com,localhost,127.0.0.1',
+    cast=_liste,
+)
+if '*' in ALLOWED_HOSTS:
+    raise ValueError("ALLOWED_HOSTS ne doit pas contenir '*'")
+
+# URL publique du site, utilisée pour construire les liens envoyés par e-mail
+SITE_URL = config('SITE_URL', default='https://www.bending-iron.com').rstrip('/')
 
 # nouveau model de connexion
 AUTH_USER_MODEL = 'auth_app.CustomUser'
+
+USE_THOUSAND_SEPARATOR = True
 
 # configuration de l'email
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -44,42 +58,64 @@ AUTH_USER_MODEL = 'auth_app.CustomUser'
 # DEFAULT_FROM_EMAIL = 'bendingiron.info@gmail.com'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.hostinger.com'
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.hostinger.com')
 EMAIL_PORT = 465   # ou 587 si tu utilises TLS
 EMAIL_USE_SSL = True   # True si port 465, sinon False
 EMAIL_USE_TLS = False  # True si port 587
-EMAIL_HOST_USER = 'contact@bending-iron.com'  # ton adresse mail complète
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='contact@bending-iron.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 DEFAULT_FROM_EMAIL = 'contact@bending-iron.com'
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT')
+if config('DB_ENGINE', default='mysql') == 'sqlite':
+    # Pratique pour les tests et le développement sans MySQL
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT'),
+            # Tables créées en InnoDB (transactions, verrous) même si le
+            # serveur MySQL/MariaDB utilise MyISAM par défaut
+            'OPTIONS': {'init_command': "SET default_storage_engine=INNODB"},
+        }
+    }
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://bending-iron.com,https://www.bending-iron.com',
+    cast=_liste,
+)
 
-# addresse acepter en production
-CSRF_TRUSTED_ORIGINS = [
-    "https://bending-iron.com",
-    "https://www.bending-iron.com",
-    "http://localhost",
-    "http://127.0.0.1",
-]
+# --- Durcissement HTTPS / cookies (actif dès que DEBUG est False) ---
+SESSION_COOKIE_HTTPONLY = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = 'same-origin'
+X_FRAME_OPTIONS = 'DENY'
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=31536000, cast=int)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
-CSRF_COOKIE_DOMAIN = '.bending-iron.com'
+# Taille maximale des fichiers téléversés gardés en mémoire / des formulaires
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024
 
 # nouvelle route de login
-LOGIN_URL = 'auth/login/'
+LOGIN_URL = '/auth/login/'
 
 # Application definition
 
@@ -99,8 +135,13 @@ INSTALLED_APPS = [
     'contact',
     'tinymce',
     'django.contrib.humanize',
+    'django.contrib.sitemaps',   # nécessaire au gabarit de /sitemap.xml (référencement Google)
     'partenaires',
     'archives',
+    'paiements',
+    'proforma',
+    'gestion_prix_fer',
+    'boutique',   # gabarit universel et calcul des prix (voir LOGIQUE_CALCUL_PRIX.txt)
     # 'forms'
 ]
 
@@ -164,9 +205,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Douala'
 
 USE_I18N = True
 
@@ -188,6 +229,12 @@ STATICFILES_DIRS = [
 # ✅ Emplacement des fichiers statiques collectés (prod)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+'''manipulation des medias'''
+MEDIA_ROOT = os.path.join(BASE_DIR, "medias")
+
+'''localisation des images'''
+MEDIA_URL='/medias/'
+
 # STATIC_URL = 'static/'
 
 # '''localisation des fichiers static'''
@@ -195,13 +242,51 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 #     BASE_DIR / "static",
 # ]
 
-'''manipulation des medias'''
-MEDIA_ROOT = os.path.join(BASE_DIR, "medias")
 
-'''localisation des images'''
-MEDIA_URL='/medias/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# --- MTN MoMo : toutes les valeurs viennent du .env ---
+MOMO_BASE_URL = config("MOMO_BASE_URL", default="https://sandbox.momodeveloper.mtn.com")
+MOMO_SUBSCRIPTION_KEY = config("MOMO_SUBSCRIPTION_KEY", default="")
+MOMO_API_USER = config("MOMO_API_USER", default="")
+MOMO_API_KEY = config("MOMO_API_KEY", default="")
+MOMO_TARGET_ENVIRONMENT = config("MOMO_TARGET_ENVIRONMENT", default="sandbox")
+MOMO_CALLBACK_HOST = config("MOMO_CALLBACK_HOST", default="")
+
+# --- Orange Money : toutes les valeurs viennent du .env (jamais en dur ici) ---
+OM_BASE_URL = config("OM_BASE_URL", default="https://api-s1.orange.cm")
+OM_CONSUMER_KEY = config("OM_CONSUMER_KEY", default="")
+OM_CONSUMER_SECRET = config("OM_CONSUMER_SECRET", default="")
+OM_API_USER = config("OM_API_USER", default="")
+OM_API_PASSWORD = config("OM_API_PASSWORD", default="")
+OM_PIN = config("OM_PIN", default="")
+OM_CHANNEL_USER_MSISDN = config("OM_CHANNEL_USER_MSISDN", default="")
+OM_NOTIF_URL = config("OM_NOTIF_URL", default="")
+
+# --- Paiement simulé (développement) : aucun appel à Orange/MTN ---
+# Ignoré si DEBUG=False : impossible de l'activer en production par erreur.
+PAIEMENT_SIMULATION = DEBUG and config("PAIEMENT_SIMULATION", default=False, cast=bool)
+
+# --- Journalisation : erreurs dans la console (récupérées par Docker) ---
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "root": {"handlers": ["console"], "level": config("LOG_LEVEL", default="INFO")},
+}
+
+
+# basculer en prod ou local 
+# N'oublie pas d'ajouter "momo" à INSTALLED_APPS,
+# et un cache fonctionnel (LocMemCache suffit en dev) pour le cache du token :
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}

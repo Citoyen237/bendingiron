@@ -24,12 +24,19 @@
       </a>
     </li><!-- End Dashboard Nav -->
 
-   <li class="nav-item">
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="{% url 'liste-order-pro' %}">
+        <i class="bi bi-journal-text"></i>
+        <span>Proforma</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+   <!-- <li class="nav-item">
       <a class="nav-link collapsed" href="{% url 'admin.stock.list' %}">
         <i class="bi bi-journal-text"></i>
         <span>Produits vendus</span>
       </a>
-    </li><!-- End Dashboard Nav -->
+    </li>End Dashboard Nav -->
   
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
@@ -57,13 +64,18 @@
           </a>
         </li>
         <li>
-          <a href="{% url 'portefeuille-partenaire' %}">
+          <a href="{% url 'partenariat.orders' %}">
             <i class="bi bi-circle"></i><span>Commandes</span>
           </a>
         </li>
         <li>
           <a href="{% url 'partenariat.projet' %}">
             <i class="bi bi-circle"></i><span>Projets</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'partenariat.order.additional' %}">
+            <i class="bi bi-circle"></i><span>Travaux additionnelles</span>
           </a>
         </li>
         <li>

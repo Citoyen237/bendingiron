@@ -1,8 +1,11 @@
 # version de python
-FROM python:3.10.6
+FROM python:3.12-slim
 
 # S'assurer que le système est à jour
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+        build-essential default-libmysqlclient-dev pkg-config \
+        libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz0b libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 # Définir les variables d'environnement pour configurer Python
 ENV PYTHONUNBUFFERED 1  
@@ -26,3 +29,7 @@ RUN pip install -r requirements.txt
 
 # Copier le code de l'application dans le répertoire de travail
 COPY . $APP_HOME
+
+# L'application ne tourne pas en root dans le conteneur
+RUN useradd --create-home appuser && chown -R appuser $APP_HOME /tmp/runtime-root
+USER appuser

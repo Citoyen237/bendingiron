@@ -1,0 +1,221 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+
+            @bottom-right {
+                content: "Page " counter(page) " sur " counter(pages);
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 9px;
+                color: #444;
+                vertical-align: middle;
+            }
+        }
+
+        body {
+            font-family: Verdana;
+            background-image: url('{{background_url}}');
+            background-repeat: no-repeat;
+            background-size: 600px 600px;
+            background-position: center;
+        }
+
+        .header,
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            justify-items: center;
+        }
+
+        .header .invoice-number {
+            text-align: right;
+        }
+
+        .logo {
+            margin-top: -7%;
+            text-align: left;
+        }
+
+        .company-info {
+            margin-top: -4%;
+
+        }
+
+        .website {
+            text-align: left;
+            font-size: 9px;
+            margin: 4px 0 1px 0;
+        }
+
+        .client-info {
+            margin-top: -5%;
+            text-align: right;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin-top: -1px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #2b2a2a;
+            padding: 8px;
+            text-align: left;
+        }
+
+        table th {
+            font-size: 12px;
+            background-color: #ffa310;
+            color: black;
+        }
+
+        .total {
+            text-align: right;
+        }
+
+        .footer {
+            font-size: 12px;
+        }
+
+        .signature {
+            text-align: right;
+            margin-top: 50px;
+        }
+
+        .company-info p {
+            list-style: none;
+            text-align: left;
+            font-size: 10px;
+        }
+
+        .mail {
+            
+            font-size: 10px;
+            color: #1155cc;
+            text-decoration: underline;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: -2%;
+        }
+
+        .pied {
+            position: fixed;
+            bottom: -2%;
+            left: 0;
+            width: 100%;
+            height: 15px;
+            justify-content: center;
+            text-align: center;
+            justify-items: center;
+            margin-right: -10%;
+        }
+
+        .hide td{
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <img src="{{image_url}}" alt="Logo" style="width:190px;">
+            </div>
+            <div class="invoice-number">
+                <span style="font-size:18px"><b>FACTURE N°</b></span><strong
+                    style="color:#ffa310; font-size:18px">{{order.numero}}BI{{order.created_at|date:"ymd"}}</strong><br>
+                <span style="font-size: 10px;">Douala, {{order.created_at|date:"d-m-Y H:i"}}</span>
+            </div>
+        </div>
+        <!-- Company Info -->
+        <div class="company-info">
+            <p>
+            <br>
+               <span class="mail">contact@bending-iron.com</span></b><br>
+               <span>(+237) 676 868 367</span> <br>
+               <span>(+237) 698 365 156</span>
+            </p>
+        </div>
+        <!-- Client Info -->
+        <div class="client-info">
+            <h5>TRAVAUX ADDITONNELLES </h5>
+            <span style="font-size:10px"><strong>Projet :</strong>{{order.projet_order.name}}<br>
+            <span style="font-size:10px"><b>Partenaire :</b>{{order.projet_order.partenariat}}</span><br>
+            <span style="font-size:10px"><b>Telephone : </b>{{order.projet_order.partenariat.telephone}}</span><br>
+            <span style="font-size:10px"><b>Adresse :</b>{{order.projet_order.partenariat.adresse}}</span><br>
+        </div>
+        <!-- Table -->
+        <div class="website">www.bending-iron.com</div>
+        <table>
+            <tr>
+                <th>Produit</th>
+                <th>Description</th>
+                <th>Qte</th>
+                <th>Prix unitaire(FCFA)</th>
+                <th>Prix total(FCFA)</th>
+            </tr>
+
+            {% for item in produits %}
+            <tr>
+                <td>{{item.produit}}</td>
+                <td>{{item.details}}
+                <td>{{item.quantite}}</td>
+                <td>{{item.prix}}</td>
+                <td>{{item.total}}</td>
+            </tr>
+            {% endfor %}
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>Montant HT</b> :</td>
+                <td colspan="1"><b>{{totals}}FCFA</b></td>
+            </tr>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b>TVA 19,25%</b> :</td>
+                <td colspan="1"><b>{{montant_tva}} FCFA</b></td>
+            </tr>
+            <tr class="hide">
+                <td colspan="4" style="text-align: right;"><b b style="background-color: rgb(43, 255, 0);">Montant TTC</b> :</td>
+                <td colspan="1"><b style="background-color: rgb(43, 255, 0);">{{net_payer}} FCFA</b></td>
+            </tr>
+            <!-- Ajouter d'autres lignes ici si nécessaire -->
+        </table>
+    </div>
+
+    <div class="footer">
+        <!-- Additional Information -->
+        <div class="additional-info">
+            <b><u>Modalité de paiement :</u></b><br>
+            Paiement intégral exigible à la livraison <br> de la commande additionnelle <br>
+        </div>
+        <!-- Signature -->
+        <div class="signature">
+            <img src="{{cachet_url}}" alt="Logo" style="width:200px;">
+        </div>
+    </div>
+
+    </div>
+    <div class="pied">
+        <img src="{{footer_url}}" alt="footer" style="width: 100%;">
+    </div>
+</body>
+
+</html>

@@ -42,6 +42,10 @@ urlpatterns = [
     path('partenariats/commandes/statut/<int:order_id>', change_statut_order, name='partenariat.orders.statut'),
     path('partenariats/commandes/Suivis/<int:order_id>', suivis_order, name='partenariat.orders.suivis'),
     path('partenariats/projets/historique/<int:projet_id>', historique_projet, name='partenariat.projet.historique'),
+    path('partenariats/commandes-additionnelles', get_order_additional, name='partenariat.order.additional'),
+    path('partenariats/<int:projet_id>/commandes-additionnelles-projet/', get_order_additional_projet, name='partenariat.order.additional.projet'),
+    path('partenariats/<int:order_id>/commandes-additionnelles/', get_detail_order_additional, name='partenariat.detail.order.additional'),
+    path('partenariats/<int:order_id>/commandes-additionnelles/statut/', change_statut_order_add, name='partenariat.order.additional.statut'),
 
 
     path('codes-distributeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),
@@ -52,4 +56,11 @@ urlpatterns = [
     
     path('commandes-client/<int:id_user>', get_order_user, name='order.users'),
 
+
+    path('proforma/facturation-proforma', get_order_pro, name='liste-order-pro'),
+    path('proforma/detail-commande/<int:order_id>', detail_order_pro, name='detail.proforma'),
+    path('proforma/suivis-commande/<int:order_id>/suivis', suivis_commande_pro, name='suivis.proforma'),
+    path('proforma/change-statut/<int:order_id>', change_statut_pro, name='change.status.pro'),
+    path("proforma/<int:pk>/supprimer/", supprimer_order_pro, name="supprimer_order_pro"),
+    path("proforma/<int:order_id>/historique-paiement/", get_historique_paiement_pro, name="historique-paiement-pro"),
 ]

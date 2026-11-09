@@ -1,0 +1,194 @@
+=====================================================================
+  BENDING IRON - MISE EN PRODUCTION (VPS)
+=====================================================================
+Rédigé le 09/11/2026. Rien n'est encore en ligne.
+
+
+---------------------------------------------------------------------
+1. LA SITUATION
+---------------------------------------------------------------------
+- GitHub (https://github.com/Citoyen237/bendingiron, branche main)
+  contient la version du 11/03/2026. C'est celle qui tourne sur le VPS.
+- Le dossier de travail C:\Users\citoyen\Desktop\bendingiron contient
+  environ 8 mois de travail en plus, jamais envoyés sur GitHub :
+  paiements Orange Money, proformas, prix du fer, corrections de
+  sécurité, application boutique (gabarit universel), etc.
+- Le dossier C:\Users\citoyen\Desktop\SiteDFmac est une copie Git de
+  GitHub (même version que GitHub). C'est depuis ce dossier qu'on
+  pourra pousser.
+- Le dépôt GitHub est PUBLIC : ne jamais y envoyer le fichier .env.
+  Vérifié : aucune clé ni aucun mot de passe dans l'historique GitHub.
+
+Pourquoi on remplace la base de production :
+  la version de mars crée ses migrations directement sur le serveur ;
+  elles ne correspondent pas à celles du nouveau code. Un simple
+  « migrate » risquerait d'empêcher le site de démarrer.
+  DÉCISION (09/11/2026) : la base de production est REMPLACÉE par la
+  base locale. Les données actuelles de la production (clients,
+  commandes, paiements...) seront perdues. Sauvegarde de la
+  production : faite.
+
+
+---------------------------------------------------------------------
+1 bis. SÉCURITÉ - URGENT (trouvé le 09/11/2026)
+---------------------------------------------------------------------
+Le dépôt GitHub est public et contient :
+  - le fichier .env depuis septembre 2025 (SECRET_KEY, DB_PASSWORD,
+    EMAIL_HOST_PASSWORD) ;
+  - dans docker-compose.yml : mot de passe MySQL root
+    « MySuperStrongPassword123! » et utilisateur bendingiron /
+    bendingiron.
+Et la version en ligne ouvre MySQL (3306), phpMyAdmin (8080) et le site
+(8000) directement sur internet. Docker contourne le pare-feu ufw :
+il faut limiter les ports dans docker-compose.yml.
+
+ÉTAT AU 09/11/2026 (fait à la main dans la console web de l'hébergeur,
+le port SSH 22 ne répondant pas depuis le partage de connexion) :
+  [x] sauvegarde de la base : /var/www/bendingiron/sauvegarde_prod_securite.sql (128 Ko)
+      + .env.sauvegarde-securite + docker-compose.yml.sauvegarde-securite
+  [x] MySQL (3306) et phpMyAdmin (8080) limités à 127.0.0.1 dans le
+      docker-compose.yml du serveur, puis redémarrés
+      (le serveur utilise « docker-compose » avec un tiret)
+  [x] vérifié depuis le PC : 3306 et 8080 fermés, site HTTPS OK
+  [x] mot de passe MySQL root changé (connu de l'administrateur seul)
+      -> le jour de la mise en ligne, le mettre dans le .env du serveur :
+         MYSQL_ROOT_PASSWORD=<nouveau mot de passe root>
+  [ ] mot de passe de la messagerie (Hostinger) + EMAIL_HOST_PASSWORD
+      -> reporté au jour de la mise en ligne (choix du 09/11/2026) ;
+         d'ici là, surveiller le dossier « Envoyés » du webmail
+  [x] mot de passe du serveur changé (passwd)
+  [ ] port 8000 encore ouvert : fermé à la mise en ligne (nouveau
+      docker-compose.yml)
+  [ ] phase 2 : mot de passe MySQL de l'application + SECRET_KEY
+
+PHASE 1 - MAINTENANT (le site n'est pas redémarré)
+  Script sur le Bureau : securiser_vps_phase1.sh
+    1. copier le script sur le VPS dans /var/www/bendingiron ;
+    2. cd /var/www/bendingiron && bash securiser_vps_phase1.sh
+  Il sauvegarde la base, le .env et le docker-compose.yml, ferme
+  MySQL et phpMyAdmin à internet (127.0.0.1 seulement), change le mot
+  de passe MySQL root (généré sur le serveur, rangé dans le .env sous
+  MYSQL_ROOT_PASSWORD) et redémarre seulement la base et phpMyAdmin.
+
+  phpMyAdmin ensuite : raccourci « phpMyAdmin (tunnel SSH).bat » sur
+  le Bureau (à remplir une fois : utilisateur SSH et IP du VPS), puis
+  http://localhost:8080 .
+
+  Messagerie : changer le mot de passe de la boîte du site chez
+  Hostinger (hPanel > Emails > Comptes de messagerie > ... > Changer le
+  mot de passe) et vérifier les messages envoyés. Mettre le nouveau
+  mot de passe dans le .env du VPS (EMAIL_HOST_PASSWORD). Les e-mails
+  du site reprendront au prochain redémarrage du site (phase 2).
+
+PHASE 2 - LE JOUR DE LA MISE EN LIGNE (étape D, avant l'import)
+  Le site est arrêté de toute façon : on change aussi
+    - le mot de passe MySQL de l'application (utilisateur du .env) :
+        NOUVEAU=$(openssl rand -hex 20)
+        docker compose exec db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "ALTER USER \"$MYSQL_USER\"@\"%\" IDENTIFIED BY \"'"$NOUVEAU"'\"; FLUSH PRIVILEGES;"'
+        sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=$NOUVEAU|" .env
+    - la clé Django :
+        sed -i "s|^SECRET_KEY=.*|SECRET_KEY=$(openssl rand -base64 48 | tr -d '\n/+=')|" .env
+  Le nouveau docker-compose.yml limite aussi le site (8000) au serveur.
+
+Dans le dépôt GitHub (au moment du commit) :
+  - ne plus suivre .env (git rm --cached .env) ni les fichiers .pyc ;
+  - les anciens mots de passe restent dans l'historique : c'est
+    pourquoi il faut les CHANGER (phases 1 et 2), pas seulement les
+    retirer.
+
+
+---------------------------------------------------------------------
+2. FICHIERS PRÊTS (sur le Bureau)
+---------------------------------------------------------------------
+- bendingiron_db_pour_production_2026-11-09.sql  (154 Ko)
+    la base à importer en production : 62 tables, toutes en InnoDB
+    et en utf8mb4, sans nom de base à l'intérieur.
+- sauvegarde_bendingiron_db_avant_utf8mb4_2026-11-09.sql
+    la base locale avant la conversion en utf8mb4.
+- les autres « sauvegarde_bendingiron_db_avant_*.sql » : une
+  sauvegarde avant chaque changement de la base locale.
+
+Contenu de la base envoyée (aucun nettoyage, choix du 09/11/2026) :
+  données de test incluses (prix à la tonne, PrT = 1000, coefficients,
+  soudure, projets de test), cadre carré basculé sur le gabarit
+  universel, cadre rectangulaire en aperçu seulement.
+  -> Penser à saisir les vraies valeurs dans l'admin après la mise en
+     ligne (/larue/ > Boutique).
+
+
+---------------------------------------------------------------------
+3. ÉTAPES
+---------------------------------------------------------------------
+IMPORTANT : la base (étape D) et le code (étape E) doivent être mis en
+ligne l'un juste après l'autre. Entre les deux, l'ancien code tournerait
+sur la nouvelle base et le site afficherait des erreurs.
+
+A. Envoyer le code sur une branche, sans mise en ligne
+   - copier les modifications du dossier de travail vers SiteDFmac
+     (sans .env, base SQLite, medias/, __pycache__) ;
+   - vérifier la liste des fichiers (git status) ;
+   - pousser une branche « mise-a-jour » : GitHub lance les tests,
+     SANS déployer (le déploiement ne se fait que sur main).
+
+B. Configurer le nouveau déploiement GitHub
+   Le nouveau workflow se connecte en utilisateur « deploy » avec une
+   clé SSH (l'ancien utilisait root et un mot de passe).
+   Secrets GitHub à créer (Settings > Secrets and variables > Actions) :
+     VPS_IP           adresse IP du VPS
+     VPS_USER         deploy
+     VPS_SSH_KEY      clé privée ed25519 de l'utilisateur deploy
+     VPS_KNOWN_HOSTS  résultat de : ssh-keyscan -H <IP_DU_VPS>
+   (VPS_SSH_PASS n'est plus utilisé.)
+
+C. Compléter le .env du VPS (/var/www/bendingiron/.env)
+   Comparer avec .env.example. Variables à vérifier :
+     DJANGO_SETTINGS_MODULE=SiteDFmac.production
+     SECRET_KEY, DEBUG=False
+     ALLOWED_HOSTS, CSRF_TRUSTED_ORIGINS, SITE_URL
+     DB_ENGINE=mysql, DB_NAME, DB_USER, DB_PASSWORD, DB_HOST=db, DB_PORT=3306
+     MYSQL_ROOT_PASSWORD
+     EMAIL_HOST, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+     OM_BASE_URL, OM_CONSUMER_KEY, OM_CONSUMER_SECRET, OM_API_USER,
+     OM_API_PASSWORD, OM_PIN, OM_CHANNEL_USER_MSISDN,
+     OM_NOTIF_URL=https://www.bending-iron.com/paiements/notif/orange/
+     GUNICORN_WORKERS=4, LOG_LEVEL=INFO
+   NE PAS mettre PAIEMENT_SIMULATION=True en production (de toute
+   façon ignoré quand DEBUG=False).
+
+!! AVANT D et E : sur le serveur, « docker compose » (avec un espace)
+   n'existe pas, seul « docker-compose » (avec un tiret) fonctionne.
+   Or deploy.sh et les commandes ci-dessous utilisent « docker compose ».
+   Au choix : installer le plugin Compose v2 sur le VPS
+   (paquet docker-compose-plugin), ou remplacer « docker compose » par
+   « docker-compose » dans deploy.sh et dans les commandes ci-dessous.
+   Vérifier avec : docker compose version ; docker-compose --version
+
+D. Jour de la mise en ligne - remplacer la base (sur le VPS)
+   1. Copier le fichier sur le VPS, par exemple :
+        scp bendingiron_db_pour_production_2026-11-09.sql deploy@<IP>:/var/www/bendingiron/
+   2. Arrêter le site (la base reste allumée) :
+        cd /var/www/bendingiron
+        docker compose stop web
+   3. Vider la base et la recréer en utf8mb4 :
+        docker compose exec db sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "DROP DATABASE \`$MYSQL_DATABASE\`; CREATE DATABASE \`$MYSQL_DATABASE\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; GRANT ALL ON \`$MYSQL_DATABASE\`.* TO \"$MYSQL_USER\"@\"%\"; FLUSH PRIVILEGES;"'
+   4. Importer le fichier :
+        docker compose exec -T db sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE"' < bendingiron_db_pour_production_2026-11-09.sql
+   5. Vérifier (62 tables attendues) :
+        docker compose exec db sh -c 'mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_DATABASE" -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE();"'
+
+E. Juste après - mettre le code en ligne
+   Fusionner la branche « mise-a-jour » dans main sur GitHub.
+   Le workflow : tests -> copie du code sur le VPS -> docker compose up
+   --build -> migrate (rien à faire : la base correspond déjà au code)
+   -> collectstatic -> démarrage.
+
+F. Vérifications après la mise en ligne
+   - le site s'ouvre, connexion d'un compte, panier ;
+   - /sitemap.xml répond ;
+   - admin /larue/ > Boutique : saisir les vraies valeurs (prix à la
+     tonne, PrT, poids au cm, coefficients, soudure, constantes Ldf) ;
+   - page du cadre carré : prix et dessin.
+
+En cas de problème : réimporter la sauvegarde de la production faite
+avant l'étape D (même méthode qu'en D3 / D4) et remettre l'ancien code
+(revenir sur main au commit 0e1b628 « cache des boutons d'ajout panier »).
