@@ -1,0 +1,41 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+Nouveau mot de passe
+{% endblock %}
+
+{% block 'content' %}
+<section id="main-container" class="main-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card-body">
+                    <h1 class="text-center">Nouveau mot de passe</h1>
+                    {% if validlink %}
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+                        <div class="input mb-3">
+                            <h6>NOUVEAU MOT DE PASSE :</h6>
+                            {{ form.new_password1 }}
+                            {% for e in form.new_password1.errors %}<small class="text-danger d-block">{{ e }}</small>{% endfor %}
+                        </div>
+                        <div class="input mb-3">
+                            <h6>CONFIRMER :</h6>
+                            {{ form.new_password2 }}
+                            {% for e in form.new_password2.errors %}<small class="text-danger d-block">{{ e }}</small>{% endfor %}
+                        </div>
+                        <button class="btn btn-primary form-control">Enregistrer</button>
+                    </form>
+                    {% else %}
+                    <p class="text-center mt-3">Ce lien n'est plus valable (déjà utilisé ou expiré).</p>
+                    <p class="text-center"><a href="{% url 'resetpass' %}" class="btn btn-warning">Demander un nouveau lien</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

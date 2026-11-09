@@ -19,6 +19,9 @@ urlpatterns = [
     path('contact/',include('contact.urls')),
     path('partenaire/',include('partenaires.urls')),
     path('dashboard/archives/',include('archives.urls')),
+    path('paiements/',include('paiements.urls')),
+    path('commande-proforma/',include('proforma.urls')),
+    path('boutique/', include('boutique.urls')),   # gabarit universel : calcul en direct, aperçu admin
     path('larue/', admin.site.urls),   
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
          name='django.contrib.sitemaps.views.sitemap'),

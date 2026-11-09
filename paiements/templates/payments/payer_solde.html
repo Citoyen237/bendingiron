@@ -1,0 +1,44 @@
+{% extends 'appf.html' %}
+{% load humanize %}
+
+{% block 'title' %}
+Régler le solde
+{% endblock %}
+
+{% block 'content' %}
+<section class="main-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h2 class="mb-3 text-center">Régler le solde de la commande n° {{ order.numero }}</h2>
+                <p class="text-center">Reste à payer : <b>{{ reste_a_payer|intcomma }} FCFA</b></p>
+                {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}info{% endif %}">{{ message }}</div>
+                {% endfor %}
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" for="telephone_pay">Numéro de paiement</label>
+                        <input class="form-control" type="tel" id="telephone_pay" name="telephone_pay"
+                               placeholder="6XXXXXXXX" pattern="(237)?6[0-9]{8}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label d-block">Moyen de paiement</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="mode_payement" id="om" value="orange" checked>
+                            <label class="form-check-label" for="om">Orange Money</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="mode_payement" id="mtn" value="mtn"
+                                   {% if not mtn_disponible %}disabled{% endif %}>
+                            <label class="form-check-label {% if not mtn_disponible %}text-muted{% endif %}" for="mtn">
+                                MTN Mobile Money{% if not mtn_disponible %} (indisponible){% endif %}</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary form-control">Payer {{ reste_a_payer|intcomma }} FCFA</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

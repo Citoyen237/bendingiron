@@ -1,12 +1,16 @@
-from django.db import models
+from django.db import models , transaction
 from auth_app.models import CustomUser as User
 from django.utils import timezone
 from produits.models import *
 from django.db.models import Sum
 from decimal import Decimal
 # Create your models here.
+class CompteurFactureProj(models.Model):
+    annee = models.PositiveIntegerField(unique=True)
+    dernier = models.PositiveIntegerField(default=0) 
+
 class Partenariats(models.Model):
-    # interimaire
+    # referent
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name=models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
@@ -36,14 +40,42 @@ class Projet(models.Model):
     partenariat=models.ForeignKey(Partenariats, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name=models.CharField(max_length=255, unique=True)
+    annee = models.PositiveIntegerField(editable=False)
+    sequence = models.PositiveIntegerField(editable=False)
     statut=models.CharField(max_length=255, default='en cours') 
     reduction=models.IntegerField(default=15)
+    frais_ingenieurie=models.CharField(max_length=255, default=5000)
     created_at= models.DateTimeField(auto_now_add=True)
     update_at= models.DateTimeField(auto_now=True)
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['name','partenariat'],name='unique_name_partenariat')
+            models.UniqueConstraint(fields=['name','partenariat'],name='unique_name_partenariat'),
+             models.UniqueConstraint(
+                fields=["annee", "sequence"],
+                name="orderproj_numero_unique",
+            )
         ]
+    
+    def save(self, *args, **kwargs):
+        if self.pk:
+            return super().save(*args, **kwargs)
+
+        with transaction.atomic():
+            annee = timezone.localdate().year
+            compteur, _ = (
+                CompteurFactureProj.objects.select_for_update()
+                .get_or_create(annee=annee)
+            )
+            compteur.dernier += 1
+            compteur.save(update_fields=["dernier"])
+
+            self.annee = annee
+            self.sequence = compteur.dernier
+            super().save(*args, **kwargs)
+
+    @property
+    def numero(self):
+        return f"{self.sequence:03d}"   # ex. 00001
 
     def __str__(self):
         return self.name
@@ -66,7 +98,15 @@ class Projet(models.Model):
 
     @property
     def net_payer(self):
-        return round(self.montant_tva + self.montant_apres_remise)
+        # frais_ingenieurie est stocké en texte (CharField) : conversion avant le calcul
+        return round(self.montant_tva + self.montant_apres_remise + self.frais_ingenieurie_montant)
+
+    @property
+    def frais_ingenieurie_montant(self):
+        try:
+            return Decimal(str(self.frais_ingenieurie or 0))
+        except Exception:
+            return Decimal(0)
     
     @property
     def tranche1(self):
@@ -236,11 +276,12 @@ class ProjetItem(models.Model):
     def details_to_text(self):
         if not self.details:
             return ""
-        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
+        # « dessin_svg » : dessin 70 x 70 px du gabarit universel, affiché en image, pas en texte
+        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items()
+                          if key != "dessin_svg")
     
     def __str__(self):
         return f'{self.details_to_text()}'
-
 
 class PaiementProjet(models.Model):
     TRANCHES = (
@@ -251,6 +292,10 @@ class PaiementProjet(models.Model):
 
     projet = models.ForeignKey('Projet', on_delete=models.CASCADE, related_name='paiements')
     tranche = models.PositiveSmallIntegerField(choices=TRANCHES)
+    # Montant figé au moment du paiement : il ne change plus si le projet est
+    # modifié ensuite (articles, réduction, frais d'ingénierie).
+    montant = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True,
+                                  help_text="Montant de la tranche au moment du paiement (FCFA)")
     date_paiement = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='paiements_enregistres')
     mode_paiement = models.CharField(max_length=100, blank=True, null=True)
@@ -262,17 +307,24 @@ class PaiementProjet(models.Model):
     def __str__(self):
         return f"{self.projet.name} - Tranche {self.tranche}"
 
-    @property
-    def montant(self):
-        if self.tranche == 1:
-            return self.projet.tranche1
-        elif self.tranche == 2:
-            return self.projet.tranche2
-        elif self.tranche == 3:
-            return self.projet.tranche3
-        return 0
+    @staticmethod
+    def montant_prevu(projet, tranche):
+        """Montant de la tranche selon le total ACTUEL du projet (40 % / 40 % / 20 %)."""
+        return {1: projet.tranche1, 2: projet.tranche2, 3: projet.tranche3}.get(tranche, 0)
 
+    @staticmethod
+    def prochaine_tranche(projet):
+        """Tranches payées dans l'ordre 1 -> 2 -> 3 : renvoie la suivante, ou None si tout est payé."""
+        payees = set(projet.paiements.values_list('tranche', flat=True))
+        for numero, _ in PaiementProjet.TRANCHES:
+            if numero not in payees:
+                return numero
+        return None
 
+    def save(self, *args, **kwargs):
+        if self.montant is None:
+            self.montant = self.montant_prevu(self.projet, self.tranche)
+        super().save(*args, **kwargs)
 
 class ProjetOrder(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
@@ -301,3 +353,129 @@ class TraimentOrder(models.Model):
     
     def __str__(self):
         return f"{self.projet_order}-{self.statut}"
+
+
+class CompteurFactureAdd(models.Model):
+    annee = models.PositiveIntegerField(unique=True)
+    dernier = models.PositiveIntegerField(default=0)
+
+# Create your models here.
+class OrderAdd(models.Model):
+    projet_order= models.ForeignKey(Projet,related_name='projet_add', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    annee = models.PositiveIntegerField(editable=False)
+    sequence = models.PositiveIntegerField(editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["annee", "sequence"],
+                name="orderadd_numero_unique",
+            )
+        ]
+
+    @property
+    def numero(self):
+        return f"{self.sequence:03d}"   # ex. 00001
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            return super().save(*args, **kwargs)
+
+        with transaction.atomic():
+            annee = timezone.localdate().year
+            compteur, _ = (
+                CompteurFactureAdd.objects.select_for_update()
+                .get_or_create(annee=annee)
+            )
+            compteur.dernier += 1
+            compteur.save(update_fields=["dernier"])
+
+            self.annee = annee
+            self.sequence = compteur.dernier
+            super().save(*args, **kwargs)
+
+    @property
+    def prix_revient_total(self):
+        return sum(item.prix_revient for item in self.orderitemadd_set.all())
+    
+    #def montant_remise(self):
+        #return (self.prix_revient_total*self.remise)/100
+
+    @property
+    def get_prix_total(self):
+        total =sum(item.prix_u * item.quantite for item in self.orderitemadd_set.all())
+        return round(Decimal(total))
+
+    @property
+    def montant_tva(self):
+        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    
+    @property
+    def get_statut_actuel(self):
+        dernier_traiment = self.traimentadd_set.order_by('-created_at').first()
+        return dernier_traiment.statut if dernier_traiment else "Aucun traitement"
+
+    @property
+    def net_payer(self):
+        return round(self.montant_tva + self.get_prix_total)  
+    
+    @property
+    def total_paye(self):
+        return self.payments_add.aggregate(total=Sum("amount_paid"))["total"] or Decimal("0")
+
+    @property
+    def reste_a_payer(self):
+        return max(Decimal(self.net_payer) - self.total_paye, Decimal("0"))  
+    
+    def __str__(self):
+        return f"{self.user} - {self.get_prix_total}"
+
+class OrderItemAdd(models.Model):
+    order = models.ForeignKey(OrderAdd, on_delete=models.CASCADE)
+    produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
+    details = models.JSONField()  # Détails du produit (dimensions, choix d'angle, etc.)
+    quantite = models.PositiveIntegerField(default=1)
+    prix_revient=models.DecimalField(max_digits=10, decimal_places=2)
+    prix_u = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def details_to_text(self):
+        if not self.details:
+            return ""
+        # « dessin_svg » : dessin 70 x 70 px du gabarit universel, affiché en image, pas en texte
+        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items()
+                          if key != "dessin_svg")
+
+    @property
+    def get_prix_total(self):
+        return self.prix_u*self.quantite
+    
+
+    def __str__(self):
+        return f"{self.produit.nom} - Quantité: {self.quantite}"
+
+class TraimentAdd(models.Model):
+    order = models.ForeignKey(OrderAdd, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    statut = models.CharField(max_length=20, choices=[
+        ('en_attente', 'En attente'),
+        ('en_production', 'En production'),
+        ('pret_pour_livraison', 'Pret pour livraison'),
+        ('termine', 'Livraison termine'),
+    ], default='en_attente')
+    created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
+    
+    def __str__(self):
+        return f"{self.order}-{self.statut}"
+
+class PaymentAdd(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order = models.ForeignKey(OrderAdd, on_delete=models.CASCADE, related_name="payments_add")
+    amount_paid = models.DecimalField(max_digits=12, decimal_places=2, help_text="Montant payé")
+    mode_paid = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Paiement - Commande {self.order_id} : {self.amount_paid} fcfa" 

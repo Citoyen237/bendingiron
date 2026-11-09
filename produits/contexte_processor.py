@@ -24,37 +24,21 @@ m30 : 14000
 m32 : 14500
 '''
 
+CLES_DIAMETRES = ['m6', 'm8', 'm10', 'm12', 'm14', 'm16', 'm20', 'm24', 'm27', 'm30', 'm32']
+
+
 def constante_global(request):
-    taux=FerPrice.objects.filter(diametre='taux').first()
-    taxe=FerPrice.objects.filter(diametre='taxe').first()
-    m6=FerPrice.objects.filter(diametre='m6').first()
-    m8=FerPrice.objects.filter(diametre='m8').first()
-    m10=FerPrice.objects.filter(diametre='m10').first()
-    m12=FerPrice.objects.filter(diametre='m12').first()
-    m14=FerPrice.objects.filter(diametre='m14').first()
-    m16=FerPrice.objects.filter(diametre='m16').first()
-    m20=FerPrice.objects.filter(diametre='m20').first()
-    m24=FerPrice.objects.filter(diametre='m24').first()
-    m27=FerPrice.objects.filter(diametre='m27').first()
-    m30=FerPrice.objects.filter(diametre='m30').first()
-    m32=FerPrice.objects.filter(diametre='m32').first()
-    constante= {
-            'taux':taux.prix,
-            'taxe':taxe.prix,
-            'm6':m6.prix_utile,
-            'm8':m8.prix_utile,
-            'm10':m10.prix_utile,
-            'm12':m12.prix_utile,
-            'm14':m14.prix_utile,
-            'm16':m16.prix_utile,
-            'm20':m20.prix_utile,
-            'm24':m24.prix_utile,
-            'm27':m27.prix_utile,
-            'm30':m30.prix_utile,
-            'm32':m32.prix_utile,
+    """Constantes des anciens calculateurs, en UNE requête.
+    Une ligne manquante dans FerPrice ne fait plus planter toutes les pages (valeur 0)."""
+    lignes = {fp.diametre: fp for fp in FerPrice.objects.filter(diametre__in=['taux', 'taxe'] + CLES_DIAMETRES)}
+    constante = {
+        'taux': lignes['taux'].prix if 'taux' in lignes else 0,
+        'taxe': lignes['taxe'].prix if 'taxe' in lignes else 0,
     }
+    for cle in CLES_DIAMETRES:
+        constante[cle] = lignes[cle].prix_utile if cle in lignes else 0
     # conversion a deux chiffre apres la virgule
-    constante_arrondies = {k: round(v, 2) for k, v in constante.items()}
+    constante_arrondies = {k: round(v or 0, 2) for k, v in constante.items()}
     return {
         'constantes': json.dumps(constante_arrondies)
     }

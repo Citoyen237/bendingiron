@@ -1,0 +1,313 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+proformas
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Proformas</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Details de la commande proforma</a></li>
+                <li class="breadcrumb-item active">{{order.numero}}BI{{order.created_at|date:"ymd"}}</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-md-4 mt-2">
+                <h6>PROFORMA N° : <b>{{order.numero}}BI{{order.created_at|date:"ymd"}}</b></h6>
+                <h6>Date : <b>{{order.created_at}}</b></h6>
+                <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
+                <h6>Status final : <b>{{order.statut_final}}</b></h6>
+                <h6 class="text-warming">Montant total: <b>{{order.net_payer}} fcfa</b></h6>
+            </div>
+            <div class="col-md-4 mt-2">
+                <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
+                <h6>Telephone : <b>{{order.infoclient.telephone}}</b></h6>
+                <h6>Adresse : <b>{{order.infoclient.adresse}} </b></h6>
+                  <a href="{% url 'suivis.proforma' order.id %}" class='btn btn-outline-info'
+                                            name='supprimer'>suivis</a>
+                   <button id="downloadBtn" class="btn btn-outline-success download_btn"
+                                            data-url="{% url 'invoice_download_pro' order.id %}">
+                                            <i class="fas fa-download">Telechager</i>
+                                            <span id="btnText" class="btn_text"></span>
+                                            <span id="spinner" class="spinner-border spinner-border-sm d-none"
+                                                role="status" aria-hidden="true"></span>
+                                        </button>
+                    
+                    <button id="downloadBtn" class="btn btn-outline-warning download_btn"
+                                            data-url="{% url 'generate_bon_livraison_pro' order.id %}">
+                                            <i class="fas fa-download">Bon livraison</i>
+                                            <span id="btnText" class="btn_text"></span>
+                                            <span id="spinner" class="spinner-border spinner-border-sm d-none"
+                                                role="status" aria-hidden="true"></span>
+                                        </button>
+            </div>
+            <div class="col-md-4 mt-2">
+
+                <h6>Montant total: <b>{{order.net_payer}} FCFA</b></h6>
+                <h6>Montant recu : <b>{{ order.total_paye|floatformat:"0g" }} FCFA</b></h6>
+                <h6>Reste a payer : <b>{{ order.reste_a_payer|floatformat:"0g" }} FCFA </b></h6>
+                <h6><a href="{% url 'historique-paiement-pro' order.id %}" class="btn btn-outline-info">Voir historique</a>
+                
+                    <!-- Vertically centered Modal -->
+
+                   {% if not order.est_solde %}
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#verticalycentered">
+                        <i class="bi bi-plus">Paiement</i>
+                    </button>
+                    {% endif %}
+                </h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                        {% endfor %}
+                        <!-- Table with stripped rows -->
+                        <table class="table table-striped">
+                            <thead class=''>
+                                <th>Produit</th>
+                                <th>Description</th>
+                                <th>Quantite</th>
+                                <th>Prix ​​unitaire (fcfa)</th>
+                                <th>Prix ​​total (fcfa)</th>
+                            </thead>
+                            <tbody>
+
+                                {% for item in produits %}
+                                <tr>
+                                    <td>{{item.produit}}</td>
+                                    <td>{{item.details}}
+                                    <td>{{item.quantite}}</td>
+                                    <td>{{item.prix}}</td>
+                                    <td>{{item.total}}</td>
+                                </tr>
+                                {% endfor %}
+
+
+                                <tr>
+                                    <td colspan="11" class="text-center text-dark">
+                                        {% comment %} <a class="btn btn-primary"
+                                            href="{% url 'invoice_download' invoice_id=order.id %}"><i
+                                                class="bi bi-download"></i></a> {% endcomment %}
+
+                                     
+
+                                        {% if status == "en_attente" %}
+                                        <form method="post" action="{% url 'change.status.pro' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
+                                            class="btn btn-warning text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></button></form>
+                                        {%endif%}
+                                        {% if status == "en_production" %}
+                                        <form method="post" action="{% url 'change.status.pro' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
+                                            class="btn btn-primary text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></button></form>
+                                        {%endif%}
+                                        {% if status == "pret_pour_livraison" %}
+                                        <form method="post" action="{% url 'change.status.pro' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
+                                            class="btn btn-info text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></button></form>
+
+                                        {%endif%}
+                                        {% if status == "solde_facture" %}
+                                        <form method="post" action="{% url 'change.status.pro' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
+                                            class="btn btn-secondary text-lg">{{status}} <i
+                                                class="bi bi-arrow-right-circle"></i></button></form>
+
+                                        {%endif%}
+                                        {%if status == "termine" %}
+                                        <a class="btn btn-success text-lg">{{status}}</a>
+                                        {%endif%}
+                                        {% if order.est_supprimable %}
+                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                                            data-bs-target="#modalSuppression" data-numero="{{ order.id }}"
+                                            data-action="{% url 'supprimer_order_pro' order.pk %}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        {%endif%}
+                                        <!-- <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                        <br>
+                                        <span> Aucune commande n'a ete trouver</span> -->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>Montant HT :</b></td>
+                                    <td colspan="2"><b>{{totals}}FCFA</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
+                                    <td colspan="2"><b>{{order.montant_tva}} FCFA</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: right;"><b>Montant TTC :</b></td>
+                                    <td colspan="2"><b>{{order.net_payer}} FCFA</b></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Basic Modal -->
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.numero }}</td>
+        <td>
+            <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                data-bs-target="#modalSuppression" data-numero="{{ order.numero }}"
+                data-action="{% url 'supprimer_order_pro' order.id %}">
+                <i class="bi bi-trash"></i> Supprimer
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+
+    <div class="modal fade" id="modalSuppression" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" id="formSuppression">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Supprimer la commande</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        Voulez-vous vraiment supprimer cette commande ?
+                        Cette action est définitive.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+  <div class="modal fade" id="verticalycentered" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Paiement facture proforma :
+          <b>{{ order.numero }}BI{{ order.created_at|date:"ymd" }}</b>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+
+      {% if order.est_solde %}
+
+        <div class="modal-body">
+          <div class="alert alert-success mb-0">Cette facture est soldée.</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        </div>
+
+      {% else %}
+
+        <form method="post">
+          {% csrf_token %}
+
+          <div class="modal-body">
+            {{ form.as_p }}
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-success">Enregistrer le paiement</button>
+          </div>
+        </form>
+
+      {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% if form.errors %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    new bootstrap.Modal(document.getElementById("verticalycentered")).show();
+  });
+</script>
+{% endif %}
+</main>
+<script>
+    document.querySelectorAll(".download_btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            //let btn = this;
+            //let spinner = document.getElementById("spinner");
+            let spinner = btn.querySelector(".spinner-border");
+            //let btnText = document.querySelector(".btn_text");
+            let url = btn.dataset.url;
+
+            // Affiche le spinner
+            spinner.classList.remove("d-none");
+            //btnText.textContent = "Téléchargement...";
+            btn.disabled = true;
+
+            // Téléchargement via fetch
+            fetch(url)  // 👈 ta vue Django
+                .then(response => {
+                    // Récupérer le header Content-Disposition pour le nom
+                    let disposition = response.headers.get("Content-Disposition");
+                    let filename = "download.pdf"; // nom par défaut
+
+                    if (disposition && disposition.indexOf("filename=") !== -1) {
+                        filename = disposition.split("filename=")[1].replace(/"/g, "");
+                    }
+                    return response.blob().then(blob => ({ blob, filename }));
+                })
+                .then(({ blob, filename }) => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement("a");
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+
+                    // Reset bouton
+                    spinner.classList.add("d-none");
+                    //btnText.textContent = "Telechargé";
+                    btn.disabled = false;
+                })
+                .catch(error => {
+                    console.error("Erreur téléchargement :", error);
+                    spinner.classList.add("d-none");
+                    btnText.textContent = "Réessayer";
+                    btn.disabled = false;
+                });
+        });
+    });
+
+    document.getElementById("modalSuppression").addEventListener("show.bs.modal", function (event) {
+        const bouton = event.relatedTarget;
+        document.getElementById("numeroSuppression").textContent = bouton.dataset.numero;
+        document.getElementById("formSuppression").action = bouton.dataset.action;
+    });
+</script>
+{%endblock%}

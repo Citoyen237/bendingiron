@@ -25,7 +25,7 @@ commandes
                 <h6>FACTURE N° : <b>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</b></h6>
                 <h6>Date : <b>{{order.created_at}}</b></h6>
                 <h6>Mode de livraison : <b>{{order.infoclient.mode_livraison}}</b></h6>
-                <h6>Montant total: <b>{{order.get_prix_total}} fcfa</b></h6>
+                <h6 class="bg-success">Montant total: <b>{{order.net_payer}} fcfa</b></h6>
             </div>
             <div class="col-md-6 mt-2">
                 <h6>Nom du client : <b>{{order.infoclient.nom}}</b></h6>
@@ -65,32 +65,32 @@ commandes
                                         
                                          <button id="downloadBtn" class="btn btn-success download_btn"
                   data-url="{% url 'invoice_download' order.id %}">
-                  <i class="fas fa-download"></i>
+                  <i class="fas fa-download">Telechager</i>
                   <span id="btnText" class="btn_text"></span>
                   <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
                     aria-hidden="true"></span>
                 </button>
 
                                         {% if status == "en_attente" %}
-                                        <a href="{% url 'change.status' orderId %}"
+                                        <form method="post" action="{% url 'change.status' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-warning text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
                                         {%endif%}
                                         {% if status == "en_production" %}
-                                        <a href="{% url 'change.status' orderId %}"
+                                        <form method="post" action="{% url 'change.status' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-primary text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
                                         {%endif%}
                                         {% if status == "pret_pour_livraison" %}
-                                        <a href="{% url 'change.status' orderId %}"
+                                        <form method="post" action="{% url 'change.status' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-info text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
 
                                         {%endif%}
                                         {% if status == "solde_facture" %}
-                                        <a href="{% url 'change.status' orderId %}"
+                                        <form method="post" action="{% url 'change.status' orderId %}" class="d-inline">{% csrf_token %}<button type="submit"
                                             class="btn btn-secondary text-lg">{{status}} <i
-                                                class="bi bi-arrow-right-circle"></i></a>
+                                                class="bi bi-arrow-right-circle"></i></button></form>
 
                                         {%endif%}
                                         {%if status == "termine" %}

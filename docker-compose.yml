@@ -3,14 +3,17 @@ services:
     restart: always
     build: .
     command: "sh run.sh"
+    # Accessible uniquement depuis le serveur : Nginx fait le proxy vers 127.0.0.1:8000
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
-      - .:/bendingiron
+      - ./medias:/bendingiron/medias
+      - ./staticfiles:/bendingiron/staticfiles
     env_file:
       - ".env"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - default
 
@@ -21,31 +24,34 @@ services:
     volumes:
       - ./data/db:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: MySuperStrongPassword123!
-      MYSQL_DATABASE: bendingiron_db
-      MYSQL_USER: bendingiron
-      MYSQL_PASSWORD: bendingiron
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    # Pas de port publié : la base n'est joignable que par le réseau Docker.
+    # Pour y accéder depuis ton PC : ssh -L 3306:127.0.0.1:3306 ... puis docker exec.
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-u", "bendingiron", "-pbendingiron"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"]
       interval: 10s
       retries: 5
     networks:
       - default
-  
+
+  # phpMyAdmin seulement à la demande, et seulement en local sur le serveur :
+  #   docker compose --profile admin up -d phpmyadmin
+  #   puis tunnel SSH : ssh -L 8080:127.0.0.1:8080 deploy@VPS
   phpmyadmin:
     image: phpmyadmin
-    container_name: phpmyadmin
-    restart: always
+    profiles: ["admin"]
+    restart: "no"
     ports:
-      - "8080:80"
+      - "127.0.0.1:8080:80"
     environment:
       PMA_HOST: db
     depends_on:
       - db
     networks:
       - default
-  
+
 networks:
   default:

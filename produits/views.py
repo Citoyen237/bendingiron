@@ -14,6 +14,9 @@ from .cintrages_extremites_redressage_decoupages import *
 from .quincallerie import *
 from .cintrages_formes import *
 from .etries_toiture_bardage import *
+from gestion_prix_fer.models import *
+from django.contrib import messages
+from .pricing import calculer_prix, PrixInvalide
 
 
 def get_produit_solution(request):
@@ -97,11 +100,43 @@ def get_produit(request, produit_id):
     }
     return render(request, 'boutique/sous-categorie.html', context)
 
+# Correspondance : nom du fournisseur en base (en minuscules) -> valeur du radio marque_fer
+MARQUES_FORM = {
+    'prometal':   'prometal',
+    'autre fer': 'autre fer',
+}
+
+def get_tarifs_fer():
+    """Retourne tarifs[marque_form][type][diametre] = {'pvf': vente, 'pa': achat}"""
+    tarifs = {}
+    for fournisseur, types in PrixFer.objects.catalogue().items():
+        marque = MARQUES_FORM.get(fournisseur.lower())
+        if marque is None:
+            continue                      # fournisseur sans radio correspondant
+        for type_nom, diametres in types.items():
+            for diam, p in diametres.items():
+                tarifs.setdefault(marque, {}).setdefault(type_nom.lower(), {})[diam] = {
+                    'pvf': p['vente'],
+                    'pa':  p['achat'],
+                }
+    return tarifs
 
 # # @login_required
 def detail_produit(request, product_id):
     product = get_object_or_404(Produit, id=product_id)
-    print(product_id)
+
+    # L'ajout au panier exige un compte (la page reste consultable par tous)
+    if request.method == "POST" and not request.user.is_authenticated:
+        from django.contrib.auth.views import redirect_to_login
+        return redirect_to_login(request.get_full_path())
+
+    # Gabarit universel (application boutique) : seulement si la case « utiliser le
+    # gabarit universel » est cochée pour ce produit. Sinon, ancienne page inchangée.
+    from boutique.views import config_active, page_produit
+    config = config_active(product)
+    if config is not None:
+        return page_produit(request, product, config)
+
     template=None
     form=None
 
@@ -110,7 +145,6 @@ def detail_produit(request, product_id):
         template="produits/cintrages_cadres/cadre-carre.html"
     
     if(product.nom=="cadre rectangulaire"):
-        print("hello")
         form=RectangleForm(request.POST or None)
         template="produits/cintrages_cadres/cadre-rectangle.html"
         
@@ -234,32 +268,37 @@ def detail_produit(request, product_id):
        template="produits/Quincallerie/rondelle.html"
        
 
-     # Vérifier si le formulaire a été soumis
-    if request.method == "POST" and form:
-        # form = form.__class__(request.POST)  # Recharger le formulaire avec les données POST
-        if form.is_valid():
-             # 1. Récupérer les données du formulaire
-            datas = form.cleaned_data
-            quantite =datas.get('quantite', 1)
-            prix =datas['prix']  # prix unitaire
-            prix_revient = datas['prix_revient']
-            details = {k: v for k, v in form.cleaned_data.items() if k not in ['prix','quantite','prix_revient','prix_Total']}
-            # 2. Obtenir ou créer le panier de l'utilisateur
+    # Vérifier si le formulaire a été soumis
+    if request.method == "POST" and form and form.is_valid():
+        datas = form.cleaned_data
+        quantite = int(datas.get('quantite', 1))
+        details = {k: v for k, v in datas.items() if k not in ['prix', 'quantite', 'prix_revient', 'prix_Total']}
+
+        # Le prix est recalculé par le serveur : les valeurs envoyées par le navigateur sont ignorées
+        prix = prix_revient = None
+        try:
+            resultat = calculer_prix(product, datas)
+            if resultat is not None:
+                prix, prix_revient = resultat.prix_u, resultat.prix_revient
+                details.update(resultat.details)
+            else:
+                # Produit pas encore porté dans produits/pricing.py : ancien comportement,
+                # avec un contrôle minimal (voir README_SECURITE.md)
+                prix, prix_revient = datas.get('prix'), datas.get('prix_revient')
+                if not prix or prix <= 0 or prix_revient is None or prix_revient < 0:
+                    raise PrixInvalide("Prix invalide.")
+        except PrixInvalide as e:
+            messages.error(request, str(e))
+        else:
+            # Obtenir ou créer le panier de l'utilisateur
             cart, created = Cart.objects.get_or_create(user=request.user)
 
-            # 3. Vérifier si le produit avec les mêmes détails existe déjà dans le panier
-            existing_item = CartItem.objects.filter(
-                cart=cart,
-                produit=product,
-                details=details  # doit matcher exactement le JSON
-            ).first()
-
+            # Même produit avec les mêmes détails déjà dans le panier ?
+            existing_item = CartItem.objects.filter(cart=cart, produit=product, details=details).first()
             if existing_item:
-                # Mettre à jour la quantité si le produit existe déjà
                 existing_item.quantite += quantite
                 existing_item.save()
             else:
-                # Créer une nouvelle ligne de produit dans le panier
                 CartItem.objects.create(
                     cart=cart,
                     produit=product,
@@ -268,15 +307,14 @@ def detail_produit(request, product_id):
                     prix_u=prix,
                     prix_revient=prix_revient,
                 )
-            # Rediriger l'utilisateur vers la page du panier
-            return redirect('panier') 
-        else:
-            print("Formulaire invalide!")  # Ajoutez ceci pour vérifier
-            print(form.errors) # Remplacez par l'URL de votre page panier
+            return redirect('panier')
+
     current_url = '/produits/'
     return render(request, template, {
         'product': product,
         'form': form,
         'current_url':current_url,
+        'tarifs': get_tarifs_fer(),
+        'constantes': Constante.toutes(),
     })
 

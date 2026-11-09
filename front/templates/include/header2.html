@@ -70,6 +70,7 @@
                                     <a href="{% url 'admin.index' %}" class="nav-link dropdown-toggle">Dashboard</a>
 
                                 </li>
+                               
                                 {% endif %}
 
                                 <li class="nav-item
@@ -98,10 +99,10 @@
                             </a>
                             {% endif %}
                             {% if user.is_authenticated %}
-                            <a class="header-get-a-quote mr-2">
-                                <a class="btn btn-primary" href="{% url 'logout' %}"><i
-                                        class="fas fa-sign-in-alt"></i></a>
-                            </a>
+                           <button type="button" class="btn btn-warning ml-4" data-bs-toggle="modal" data-bs-target="#modalCompte">
+    <span class="badge bg-warning text-white ms-1 rounded-pill"></span>
+          <i class="fa fa-user"></i>
+  </button>
                             {% else %}
                             <a class="header-get-a-quote mr-2">
                                 <a class="btn btn-primary" href="{% url 'login' %}"><i

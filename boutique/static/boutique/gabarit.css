@@ -1,0 +1,347 @@
+/* Style du gabarit universel : repris de la page du cadre carré
+   (produits/templates/produits/cintrages_cadres/cadre-carre.html), non modifiée. */
+    h4 {
+        text-transform: initial;
+        font-weight: normal;
+    }
+
+    /* ===== Mise en page : liste des caractéristiques, cadre, champs, image ===== */
+    .param {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        padding: 1rem;
+    }
+
+    .param-fond {
+        display: none;
+    }
+
+    /* Caractéristiques cliquables (texte noir) */
+    .carac {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        width: 100%;
+        min-height: 3rem;
+        padding: .4rem 1rem;
+        background: #f2f2f2;
+        border: 1px solid #222;
+        color: #000;
+        font-size: 1.1rem;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .carac:hover {
+        background: #fff0b8;
+    }
+
+    .carac[aria-selected="true"] {
+        background: #ffc000;
+        font-weight: 600;
+    }
+
+    .carac:focus-visible {
+        outline: 3px solid #0d6efd;
+        outline-offset: 2px;
+    }
+
+    .carac-texte {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .carac-valeur {
+        color: #5a5a5a;
+        font-size: .8rem;
+        font-weight: normal;
+    }
+
+    .carac[aria-selected="true"] .carac-valeur {
+        color: #000;
+    }
+
+    .carac-fleche {
+        font-size: 1.2rem;
+        transition: transform .2s;
+    }
+
+    /* Cadre de droite */
+    .p-cadre {
+        min-height: 12rem;
+        padding: 1rem 1.25rem;
+        background: #fff;
+        border: 1px solid #222;
+    }
+
+    .p-vide {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        min-height: 10rem;
+        color: #8a8a8a;
+        text-align: center;
+    }
+
+    .panneau[hidden],
+    .p-vide[hidden] {
+        display: none;
+    }
+
+    .groupe+.groupe {
+        margin-top: 1.25rem;
+    }
+
+    .groupe-titre {
+        margin: 0 0 .5rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .options ul,
+    .options>div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem 1.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .options label {
+        margin: 0 .35rem 0 0;
+        font-size: 1.05rem;
+    }
+
+    .options input[type="radio"],
+    .options input[type="checkbox"] {
+        margin-right: .35rem;
+    }
+
+    .options select,
+    .options input[type="number"],
+    .options input[type="text"] {
+        max-width: 16rem;
+    }
+
+    /* Libellés et champs du bas */
+    .p-lab {
+        padding: .35rem 1rem;
+        background: #f2f2f2;
+        border: 1px solid #222;
+        font-size: 1.1rem;
+    }
+
+    .p-lab-gris {
+        color: #8c8c8c;
+    }
+
+    .p-champ input {
+        width: 100%;
+        height: 2.4rem;
+        padding: 0 .6rem;
+        border: 1px solid #222;
+        border-radius: 0;
+    }
+
+    .p-gris input {
+        background: #d9d9d9;
+        border-color: #d9d9d9;
+    }
+
+    .p-prix input {
+        background: #fff5c2;
+        border-color: #fff5c2;
+        font-weight: 600;
+    }
+
+    .p-image {
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #222;
+        text-align: center;
+    }
+
+    .p-boutons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Une ligne = un libellé + son champ. Le conteneur est transparent :
+       le libellé et le champ se placent directement dans la grille / la colonne. */
+    .p-ligne {
+        display: contents;
+    }
+
+    /* Ordre sur téléphone : chaque caractéristique est suivie de son panneau,
+       puis les lignes une à une, puis l'image */
+    .carac,
+    .p-lab {
+        order: calc(var(--row) * 10);
+    }
+
+    .p-champ {
+        order: calc(var(--row) * 10 + 1);
+    }
+
+    .p-cadre {
+        order: 55;
+    }
+
+    /* Sur mobile : l'image vient après les longueurs (ordre 90) et avant les prix (ordre 100) */
+    .p-image {
+        order: 95;
+    }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 991.98px) {
+
+        /* Le panneau s'ouvre juste sous sa caractéristique */
+        .p-cadre {
+            display: contents;
+        }
+
+        .p-vide {
+            display: none;
+        }
+
+        .panneau {
+            order: calc(var(--row) * 10 + 5);
+            margin-top: -.75rem;
+            padding: 1rem 1.25rem;
+            background: #fff;
+            border: 1px solid #222;
+            border-top: 0;
+        }
+
+        .carac[aria-selected="true"] .carac-fleche {
+            transform: rotate(90deg);
+        }
+
+        /* Quantité, rayon, longueurs : libellé à gauche, champ à droite, sur une seule ligne */
+        .p-ligne-inline {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            order: calc(var(--row) * 10);
+        }
+
+        .p-ligne-inline .p-lab {
+            flex: 1 1 auto;
+            order: 0;
+            min-width: 0;
+            min-height: 2.4rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .p-ligne-inline .p-champ {
+            flex: 0 0 40%;
+            order: 0;
+            min-width: 0;
+        }
+
+        .p-ligne-inline .error-message {
+            font-size: .8rem;
+            line-height: 1.2;
+        }
+    }
+
+    /* Sur ordinateur : disposition de la maquette */
+    @media (min-width: 992px) {
+        .param {
+            display: grid;
+            grid-template-columns: minmax(250px, 1.05fr) minmax(170px, .75fr) minmax(0, 1.7fr);
+            grid-template-rows: repeat(11, minmax(3.1rem, auto));
+            column-gap: 1rem;
+            row-gap: 0;
+            padding: 1rem 1.25rem;
+        }
+
+        .param-fond {
+            display: block;
+            grid-column: 1;
+            grid-row: 1 / 12;
+            background: #f2f2f2;
+            border: 1px solid #222;
+        }
+
+        .carac,
+        .p-lab {
+            grid-column: 1;
+            grid-row: var(--row);
+            order: 0;
+            z-index: 1;
+            background: transparent;
+            border: 0;
+        }
+
+        .p-lab {
+            align-self: center;
+        }
+
+        .carac[aria-selected="true"] {
+            background: #ffc000;
+        }
+
+        .carac:hover {
+            background: #fff0b8;
+        }
+
+        .carac[aria-selected="true"]:hover {
+            background: #ffc000;
+        }
+
+        .p-champ {
+            grid-column: 2;
+            grid-row: var(--row);
+            align-self: center;
+            order: 0;
+        }
+
+        .p-cadre {
+            grid-column: 2 / 4;
+            grid-row: 1 / 6;
+            order: 0;
+            margin-bottom: 1rem;
+        }
+
+        .p-image {
+            grid-column: 3;
+            grid-row: 6 / 12;
+            order: 0;
+            display: grid;
+            place-items: center;
+        }
+    }
+
+/* ===== Ajouts du gabarit universel ===== */
+.p-dessin { margin-top: 1rem; width: 100%; }
+.p-dessin svg { width: 100%; max-height: 22rem; background: #fafafa; border: 1px dashed #bbb; }
+.p-dessin .trait { fill: none; stroke: #222; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round;
+                   vector-effect: non-scaling-stroke; }
+.p-dessin .cote { font-size: 13px; fill: #b35c00; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+.calcul-erreur { margin: .5rem 1rem 0; color: #b00020; font-weight: 600; }
+.apercu-admin { margin: .5rem 1rem; padding: .5rem 1rem; background: #e7f1ff; border: 1px solid #0d6efd; }
+.dim-ligne + .dim-ligne { margin-top: .75rem; }
+.dim-ligne label { display: block; margin-bottom: .25rem; }
+.dim-aide { color: #6c757d; font-size: .85rem; }
+
+/* Erreur affichée sous le champ concerné */
+.erreur-champ { margin-top: .35rem; color: #b00020; font-size: .9rem; font-weight: 600; line-height: 1.25; }
+.p-champ .erreur-champ { font-size: .8rem; }
+
+/* Dessin : même style que l'image de référence (trait orange, coins arrondis) */
+.p-dessin .trait { stroke: #f2a900; stroke-width: 4; }
+.p-dessin .cote { fill: #7a5200; }
+
+/* Valeur des crochets (Ldf) sur le dessin : plus petite, en italique */
+.p-dessin .cote-ldf { fill: #9a6b00; font-style: italic; font-weight: 500; }

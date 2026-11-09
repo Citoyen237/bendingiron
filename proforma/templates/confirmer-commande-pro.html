@@ -1,0 +1,118 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+confirmer la commande
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<section class="content project-area">
+    {% if user.is_authenticated %}
+    <div class="container">
+        <div class="row"> 
+            <div class="col-md-12">
+                <div class="card bg-light m-4">
+                    <div class="card-header bg-warning">
+                          <div class="d-flex justify-content-between align-items-center">
+                            <!-- Checkbox -->
+                            <div class="form-check mb-0">
+                                <h6>Montant HT</h6>
+                            </div>
+                            <a class="text-dark">{{total_prix|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>TVA 19,25% </h6>
+                            </div>
+                            <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="form-check mb-0">
+                                <h6>Montant TTC</h6>
+                            </div>
+                            <b><a class="text-dark">{{net_payer|intcomma}} FCFA</a></b>
+                        </div>
+                    </div>
+                    <div class="card-body m-4">
+                        {% if paniers %}
+                        <h4 class="card-title">Informations de facturation</h4>
+                        <hr>
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            
+                            <div class="row m-4">
+                                <div class="col-md-6">
+                                    {{form.nom.label}}
+                                    {{form.nom}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.telephone.label}}
+                                    {{form.telephone}}
+                                </div>
+                            </div>
+                             <div class="row m-4">
+                                <div class="col-md-6">
+                                    {{form.adresse.label}}
+                                    {{form.adresse}}
+                                </div>
+                                <div class="col-md-6">
+                                    {{form.mode_livraison.label}}
+                                    {{form.mode_livraison}}
+                                </div>
+                            </div>
+            
+                            <br>
+                           <div class="row ml-4">
+                            <div class="col-md-12">                             
+                            <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte la <a class="text-primary" href="{% url 'politique' %}">politique de confidentialite</a> du site
+</div>
+                            <br>
+                            <div class="col-md-12">
+                            <input class="form-checkbox" required type="checkbox" name="" id=""> j'ai lu et j'accepte les <a class="text-primary" href="{% url 'cgv' %}">conditions generale de vente</a> du site
+
+                            </div>
+                            <div class="col-md-12 mt-2">
+                                <button type="submit" class="btn btn-primary form-control">
+                                                           confirmer
+                            </button>
+                            </div>
+                           </div>
+                    </div>
+                    </form>
+                    {% endif %}
+                    
+
+                </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    {% else %}
+    <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier
+    </h3>
+    {%endif%}
+
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+    // Fonction JavaScript pour confirmer la suppression
+    function confirmSuppression(event, link) {
+        // Demande de confirmation
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce produit de votre panier ?");
+
+        // Si l'utilisateur confirme, la suppression est effectuée
+        if (confirmation) {
+            return true;  // Lien est suivi et la suppression a lieu
+        } else {
+            event.preventDefault();  // Empêche la suppression si l'utilisateur annule
+            return false;
+        }
+    }
+</script>
+{% load static %}
+{%endblock%}

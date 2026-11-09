@@ -1,5 +1,6 @@
 from django import forms
 from .models import Archives
+from SiteDFmac.validators import verifier_pdf, verifier_image
 
 class BaseArchiveForm(forms.ModelForm):
     """Formulaire de base pour Archives avec bootstrap intégré"""
@@ -21,10 +22,7 @@ class ArchiveDocumentForm(BaseArchiveForm):
     def clean_file(self):
         file = self.cleaned_data.get('file')
         if file:
-            if file.size > 6 * 1024 * 1024:  # 6 Mo
-                raise forms.ValidationError("Le fichier ne doit pas dépasser 6 Mo.")
-            if not file.name.lower().endswith('.pdf'):
-                raise forms.ValidationError("Le fichier doit être au format PDF.")
+            verifier_pdf(file, 6)
         return file
 
     def save(self, commit=True):
@@ -44,6 +42,7 @@ class ArchiveImagesForm(BaseArchiveForm):
             valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
             if not any(file.name.lower().endswith(ext) for ext in valid_extensions):
                 raise forms.ValidationError("Le fichier doit être une image (JPG, JPEG, PNG ou GIF).")
+            verifier_image(file, 3)
         return file
 
     def save(self, commit=True):

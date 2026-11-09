@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from auth_app.models import CustomUser
 from produits.models import *
 from decimal import Decimal
@@ -16,14 +16,19 @@ class Cart(models.Model):
     @property
     def prix_revient_total(self):
         return sum(item.prix_revient for item in self.items.all())
-    
+
+    @property
+    def montant_ht_brut(self):
+        """Total HT avant remise."""
+        return Decimal(sum(item.prix_u * item.quantite for item in self.items.all()))
+
     def montant_remise(self):
-        return (self.prix_revient_total*self.remise)/100
+        """La remise du code promo s'applique sur le total HT de la facture."""
+        return (self.montant_ht_brut * Decimal(self.remise or 0)) / 100
 
     @property
     def get_prix_total(self):
-        total =sum(item.prix_u * item.quantite for item in self.items.all())
-        return round(Decimal(total) - self.montant_remise())
+        return round(self.montant_ht_brut - self.montant_remise())
 
     @property
     def montant_tva(self):
@@ -59,28 +64,47 @@ class CartItem(models.Model):
     def details_to_text(self):
         if not self.details:
             return ""
-        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
+        # « dessin_svg » : dessin 70 x 70 px du gabarit universel, affiché en image, pas en texte
+        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items()
+                          if key != "dessin_svg")
    
     def __str__(self):
         return f"{self.produit.nom} - Quantité: {self.quantite}"
 # # Create your models here.
+
+class CompteurFacture(models.Model):
+    annee = models.PositiveIntegerField(unique=True)
+    dernier = models.PositiveIntegerField(default=0)
+
+
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    remise = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    remise = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    # True : la remise porte sur le total HT de la facture (règle actuelle).
+    # False : ancienne règle (remise sur le prix de revient) — conservée pour
+    # les commandes existantes afin que leurs factures ne changent pas.
+    remise_sur_total = models.BooleanField(default=True)
+    annee = models.PositiveIntegerField(editable=False)
+    sequence = models.PositiveIntegerField(editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     @property
     def prix_revient_total(self):
         return sum(item.prix_revient for item in self.orderitem_set.all())
-    
+
+    @property
+    def montant_ht_brut(self):
+        """Total HT avant remise."""
+        return Decimal(sum(item.prix_u * item.quantite for item in self.orderitem_set.all()))
+
     def montant_remise(self):
-        return (self.prix_revient_total*self.remise)/100
+        base = self.montant_ht_brut if self.remise_sur_total else Decimal(self.prix_revient_total)
+        return (base * Decimal(self.remise or 0)) / 100
 
     @property
     def get_prix_total(self):
-        total =sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
-        return round(Decimal(total) - self.montant_remise())
+        return round(self.montant_ht_brut - self.montant_remise())
 
     @property
     def montant_tva(self):
@@ -122,6 +146,39 @@ class Order(models.Model):
             return self.orderuserinfo_set.first()  # si OneToOneField
         except OrderUserInfo.DoesNotExist:
             return None
+
+    @property
+    def paiment_recu(self):
+        pass
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["annee", "sequence"],
+                name="facture_numero_unique",
+            )
+        ]
+
+    @property
+    def numero(self):
+        return f"{self.sequence:05d}"   # ex. 00001
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            return super().save(*args, **kwargs)
+
+        with transaction.atomic():
+            annee = timezone.localdate().year
+            compteur, _ = (
+                CompteurFacture.objects.select_for_update()
+                .get_or_create(annee=annee)
+            )
+            compteur.dernier += 1
+            compteur.save(update_fields=["dernier"])
+
+            self.annee = annee
+            self.sequence = compteur.dernier
+            super().save(*args, **kwargs)
     
     def __str__(self):
         return f"{self.user} - {self.get_prix_total}"
@@ -137,7 +194,9 @@ class OrderItem(models.Model):
     def details_to_text(self):
         if not self.details:
             return ""
-        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
+        # « dessin_svg » : dessin 70 x 70 px du gabarit universel, affiché en image, pas en texte
+        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items()
+                          if key != "dessin_svg")
 
     @property
     def get_prix_total(self):
@@ -174,7 +233,8 @@ class OrderUserInfo(models.Model):
         return self.nom
 
 class Payment(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    # ForeignKey (et non OneToOne) : une commande peut recevoir un acompte PUIS le solde
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
     amount_paid = models.FloatField(help_text="Montant payé par l'utilisateur")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -231,11 +291,10 @@ class CodePromo(models.Model):
     # def user_uses(self, user):
     #     return self.codesuses.filter(user=user).count()
 
-
-
 class CodePromoUse(models.Model):
     promo_code = models.ForeignKey(CodePromo, on_delete=models.CASCADE, related_name="codesuses")
     used_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.promo_code.code}"
+

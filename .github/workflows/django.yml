@@ -1,63 +1,72 @@
-name: Test and Deploy to VPS  # Nom de l'action
+name: Test and Deploy to VPS
 
 on:
   pull_request:
-    branches: ['master', 'main']  # Déclenche lors de pull requests vers "master" ou "main"
-    paths-ignore: ['docs/**']  # Ignore les changements dans "docs"
-    
+    branches: ['master', 'main']
+    paths-ignore: ['docs/**']
   push:
-    branches: ['master', 'main']  # Déclenche lors des pushs vers "master" ou "main"
-    paths-ignore: ['docs/**']  # Ignore les changements dans "docs"
+    branches: ['master', 'main']
+    paths-ignore: ['docs/**']
 
 concurrency:
-  group: ${{ github.head_ref || github.run_id }}  # Gère la concurrence pour éviter les doublons
-  cancel-in-progress: true  # Annule les jobs en cours si un nouveau est déclenché
+  group: ${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Exécution sur Ubuntu
+    runs-on: ubuntu-latest
     strategy:
-      max-parallel: 2  # Limite à 2 jobs en parallèle
+      max-parallel: 2
       matrix:
-        python-version: [3.11,3.12]  # Test sur Python 3.10, 3.11
-
+        python-version: ['3.11', '3.12']
+    env:
+      # Réglages de test : base SQLite, clé jetable (aucun secret réel en CI)
+      DJANGO_SETTINGS_MODULE: SiteDFmac.settings
+      SECRET_KEY: ci-only-not-a-secret
+      DEBUG: 'False'
+      DB_ENGINE: sqlite
+      SECURE_SSL_REDIRECT: 'False'
     steps:
-      - name: Checkout Code Repository  # Étape pour récupérer le code du dépôt
-        uses: actions/checkout@v4
-
-      - name: Set up Python Version ${{ matrix.python-version }}  # Configure la version Python à tester
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}  # Utilise les versions Python du matrix
-
-      - name: Install Dependencies  # Installe les dépendances Python
+          python-version: ${{ matrix.python-version }}
+      - name: Install system libraries
+        run: sudo apt-get update && sudo apt-get install -y default-libmysqlclient-dev pkg-config
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-
-      - name: Run Tests  # Exécute les tests unitaires
+      - name: Django checks
         run: |
-          python manage.py test
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+      - name: Run Tests
+        run: python manage.py test
 
   deploy:
-    runs-on: ubuntu-latest  # Exécute sur Ubuntu
-    needs: build  # Le déploiement ne s'exécute que si tous les tests de build sont réussis
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push'
     steps:
-      - name: Checkout Code Repository  # Récupère à nouveau le code source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install SSH Client  # Installe le client SSH
-        run: sudo apt-get install -y sshpass
-
-      - name: Copy files to VPS  # Copie les fichiers du projet vers le VPS
-        env:
-          SSH_PASS: ${{ secrets.VPS_SSH_PASS }}  # Mot de passe SSH depuis les secrets
+      # Connexion par clé SSH avec un utilisateur dédié "deploy" (pas root),
+      # et vérification de l'empreinte du serveur (secret VPS_KNOWN_HOSTS,
+      # obtenu avec : ssh-keyscan -H <IP_DU_VPS>).
+      - name: Configure SSH
         run: |
-          sshpass -p "$SSH_PASS"  scp -o StrictHostKeyChecking=no -r ./* root@${{ secrets.VPS_IP }}:/var/www/bendingiron/
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.VPS_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
 
-      - name: Run deployment script on VPS  # Exécute le script de déploiement sur le VPS
-        env:
-          SSH_PASS: ${{ secrets.VPS_SSH_PASS }}  # Mot de passe SSH depuis les secrets
+      - name: Copy files to VPS
         run: |
-          sshpass -p "$SSH_PASS"  ssh -o StrictHostKeyChecking=no root@${{ secrets.VPS_IP }} 'bash -s' < ./deploy.sh
+          rsync -az --delete \
+            --exclude '.git' --exclude '.env' --exclude 'medias/' \
+            --exclude 'data/' --exclude 'staticfiles/' --exclude '*.sqlite3' \
+            ./ ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }}:/var/www/bendingiron/
 
+      - name: Run deployment script on VPS
+        run: ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_IP }} 'bash -s' < ./deploy.sh

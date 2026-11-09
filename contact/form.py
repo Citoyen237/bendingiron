@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from SiteDFmac.validators import verifier_pdf
 
 # class MultiFileInput(forms.ClearableFileInput):
 #     allow_multiple_selected = True
@@ -16,10 +17,7 @@ class ContactForm(forms.ModelForm):
     def clean_file(self):
         file = self.cleaned_data.get('file')
         if file:
-            if file.size > 3 * 1024 * 1024:
-                raise forms.ValidationError("Le fichier ne doit pas dépasser 3 Mo.")
-            if not file.name.lower().endswith('.pdf'):
-                raise forms.ValidationError("Le fichier doit être au format PDF.")
+            verifier_pdf(file, 3)
         return file
 
  
@@ -57,11 +55,10 @@ class ReponseForm(forms.ModelForm):
             'file_response': forms.ClearableFileInput(attrs={'accept': '.pdf'}),
         }
 
-        def clean_file(self):
-            file_response = self.cleaned_data.get('file_response')
-            if file_response:
-                if file_response.size > 3 * 1024 * 1024:
-                    raise forms.ValidationError("Le fichier ne doit pas dépasser 3 Mo.")
-                if not file_response.name.lower().endswith('.pdf'):
-                    raise forms.ValidationError("Le fichier doit être au format PDF.")
-            return file_response
+
+    # Placé au bon niveau (il était dans Meta, donc jamais exécuté)
+    def clean_file_response(self):
+        file_response = self.cleaned_data.get('file_response')
+        if file_response and hasattr(file_response, 'read') and not getattr(file_response, '_committed', False):
+            verifier_pdf(file_response, 3)
+        return file_response

@@ -1,0 +1,344 @@
+=====================================================================
+  BENDING IRON - LOGIQUE DU CALCUL DU PRIX DES PRODUITS
+  Gabarit produit universel
+=====================================================================
+Version : 08/11/2026 - étapes 1 à 4 réalisées, cadre carré basculé (base de développement)
+
+Objectif
+--------
+Remplacer les 30 pages produit actuelles (chacune avec son propre
+JavaScript et ses propres formules) par UN gabarit universel, réglé depuis
+l'administration :
+  - on coche, pour chaque produit, ce qu'on affiche (diamètres, angles,
+    dimensions, R, Ld) ;
+  - on saisit la formule de la longueur de la forme ;
+  - le serveur calcule la longueur, le poids et le prix ;
+  - la forme est dessinée à l'échelle selon les dimensions saisies.
+
+Périmètre : 4 familles, 15 produits.
+  - Cintrage de cadre ........ cadre carré, rectangle, triangulaire, hexagonal
+  - Cintrage de forme ........ U, U ouvert, U fermé, T, T économique, pince,
+                               crochet, étrier
+  - Cintrage d'extrémité ..... barre coudée à une extrémité, aux deux extrémités
+  - Redressage et découpage .. barre droite
+
+NE SONT PAS TOUCHÉES (pages et calculs actuels conservés) :
+  - Quincaillerie
+  - Étrier pour bardage et toiture
+  - Boulon d'ancrage à béton
+L'exclusion se fait par la sous-catégorie du produit : le gabarit et le
+nouveau calcul refusent ces familles, même configurées dans l'admin.
+
+
+---------------------------------------------------------------------
+1. UNITÉS
+---------------------------------------------------------------------
+  - Longueurs (dimensions, R, Ld, Ltp, Lt) : centimètres (cm)
+  - Poids : kilogrammes (kg)
+  - Diamètre d : numéro du fer en mm (HA6, HA8, HA10...) ; il sert de
+    choix et de paramètre dans les formules
+  - Prix : FCFA
+
+
+---------------------------------------------------------------------
+2. DONNÉES SAISIES PAR L'ADMIN (communes à tous les produits)
+---------------------------------------------------------------------
+2.1 Prix du fer - selon la MARQUE, le TYPE et le DIAMÈTRE
+    (le HA6 a ses propres prix, différents des autres diamètres)
+    Admin > Boutique > Prix du fer à la tonne
+
+      PaT : prix d'achat par tonne
+      PvT : prix de vente par tonne
+
+2.1 bis PrT - selon la MARQUE et le DIAMÈTRE (pas le type)
+    Admin > Boutique > PrT (poids réel d'une tonne)
+
+      PrT : poids réel d'une tonne, en kg (ex. 950) ; il remplace le
+            « 1000 ». Renseigné par l'admin ; le même PrT sert pour
+            tous les types (FE400, FE500) d'une marque et d'un diamètre.
+
+    Prix au kg calculés automatiquement :
+      Pak = PaT / PrT     (prix d'achat au kg)
+      Pvk = PvT / PrT     (prix de vente au kg)
+    PrT manquant pour une marque et un diamètre : le calcul est refusé
+    (« PrT prometal HA8 non renseigné dans l'admin »).
+
+2.2 Poids au cm - selon le DIAMÈTRE
+      kg/cm   (ex. HA8 = 0,00395 kg/cm)
+
+2.3 Coefficient de façonnage - selon la MARQUE et le DIAMÈTRE
+    Une seule table pour TOUS les produits.
+      ex. Prometal HA8 = 51 ; Autre fer HA8 = 47
+
+2.4 Constante de soudure - selon le DIAMÈTRE
+    Appliquée à TOUS les produits du périmètre (les 15 produits).
+
+2.4 bis Angles de pliage (table gérée dans l'admin)
+    Pour chaque angle : valeur en degrés (90, 135, -135, 180...), libellé
+    affiché au client, coefficient « ka » utilisable dans les formules,
+    actif oui / non. Les 4 angles utilisés aujourd'hui sont déjà créés
+    (coefficient 1).
+
+2.5 Constantes de longueur de départ et fin (Ldf), identiques pour
+    toutes les familles :
+      seuil                      = 100 cm
+      constante si Ltp <= seuil  (ex. 0,13)
+      constante si Ltp >  seuil  (ex. 0,10)
+
+2.6 Constantes déjà existantes (gestion_prix_fer > Constantes)
+      tolérance, taxe, taux
+
+
+---------------------------------------------------------------------
+3. RÉGLAGES DE CHAQUE PRODUIT (dans l'admin)
+---------------------------------------------------------------------
+  - Diamètres proposés ............. cases à cocher (6, 8, 10, 12...)
+  - Angles proposés ................ cases à cocher, parmi les angles
+                                     actifs de la table des angles
+  - Dimensions (descriptif) ........ on coche les éléments ; pour chacun :
+        libellé, abréviation, minimum, maximum (propres au produit)
+        ex. « Longueur du côté » - Lc - 8 à 100 cm
+  - Afficher R (rayon de courbure) .. oui / non
+  - Afficher Ld (départ et fin) ..... oui / non
+  - Formule de Ltp ................. formule de la forme, avec les
+                                     abréviations (ex. 4*Lc)
+  - Formule de R ................... formule selon d, modifiable
+  - Forme (pour le dessin) ......... suite de segments et d'angles
+                                     (ex. Lc, 90°, Lc, 90°, Lc, 90°, Lc)
+
+Le client choisit en plus, comme aujourd'hui :
+  - qui fournit le fer : Bending Iron ou le client
+  - la marque : Prometal ou autre fer
+  - le type : FE400, FE500...
+  - le diamètre, l'angle, les dimensions, la quantité
+
+
+---------------------------------------------------------------------
+3 bis. LA PAGE PRODUIT (gabarit universel)
+---------------------------------------------------------------------
+Modèle : la page actuelle du cadre carré.
+  - Image 3D : boutique et liste des sous-catégories (comme aujourd'hui)
+  - Image 2D : page de détail du produit (comme aujourd'hui)
+  - À gauche, les boutons : Qui fournit le fer / Marque & type /
+    Choix du fer (diamètre) / Angle / Dimensions
+  - À droite, le cadre qui affiche les options du bouton choisi ; le
+    panneau « Dimensions » affiche automatiquement les dimensions
+    cochées pour le produit (libellé, abréviation, min, max)
+  - En dessous : quantité, R et Ldf (seulement s'ils sont cochés),
+    longueur totale, prix unitaire, prix total
+  - NOUVEL ESPACE « DESSIN » à côté de l'image 2D : la forme dessinée à
+    l'échelle selon les dimensions saisies, avec les cotes, redessinée à
+    chaque saisie
+
+
+---------------------------------------------------------------------
+4. CHAÎNE DE CALCUL (dans cet ordre)
+---------------------------------------------------------------------
+  1) Contrôle des saisies : chaque dimension doit être entre son minimum
+     et son maximum ; le diamètre et l'angle doivent faire partie des
+     choix cochés pour le produit.
+
+  2) Ltp   = formule du produit                 (longueur totale partielle)
+
+  3) Ldf   = Ltp x constante Ldf                (= Ld, longueur départ et fin)
+             constante « <= 100 cm » si Ltp <= 100
+             constante « > 100 cm »  si Ltp >  100
+
+  4) Lt    = ARRONDI SUPÉRIEUR (Ltp + Ldf)      (cm)
+
+  5) R     = formule selon d                    (affichage et dessin)
+
+  6) Poids = Lt x poids au cm (d)               (kg)
+
+  7) Pv (prix du fer)
+       Bending Iron fournit le fer :  Pv = Poids x Pvk
+       Le client fournit le fer :     Pv = Poids x (Pvk - Pak)
+
+  8) Ps (prix de revient = prix de façonnage)
+             Ps = coef(marque, d) x Lt / 100
+
+  9) Pd (prix de soudure)
+             Pd = constante de soudure (d) x Lt
+
+ 10) Pu (prix unitaire)
+             Pu = ARRONDI SUPÉRIEUR [ (Pv + Ps + tolérance + taxe + Pd) x (1 + taux) ]
+
+ 11) Total HT = Pu x quantité
+     (puis remise du code promo, TVA 19,25 %, tranches : inchangés)
+
+
+---------------------------------------------------------------------
+5. EXEMPLE CHIFFRÉ (valeurs d'exemple, à remplacer par les vraies)
+---------------------------------------------------------------------
+Produit : cadre carré - Lc = 20 cm - HA8 - Prometal FE500
+
+Hypothèses :
+  PaT = 650 000   PvT = 750 000   PrT = 950
+     -> Pak = 684,21   Pvk = 789,47
+  poids au cm HA8 = 0,00395 kg/cm
+  coef façonnage Prometal HA8 = 51
+  constante soudure HA8 = 0,5
+  constante Ldf (<= 100 cm) = 0,13
+  tolérance = 10   taxe = 5   taux = 10 %
+
+Calcul :
+  Ltp   = 4 x 20                        = 80 cm   (<= 100 -> constante 0,13)
+  Ldf   = 80 x 0,13                     = 10,4 cm
+  Lt    = arrondi sup. (80 + 10,4)      = 91 cm
+  Poids = 91 x 0,00395                  = 0,35945 kg
+  Ps    = 51 x 91 / 100                 = 46,41
+  Pd    = 0,5 x 91                      = 45,50
+
+  a) Bending Iron fournit le fer
+     Pv = 0,35945 x 789,47              = 283,77
+     Pu = (283,77 + 46,41 + 10 + 5 + 45,50) x 1,1 = 429,75 -> 430 FCFA
+
+  b) Le client fournit le fer
+     Pv = 0,35945 x (789,47 - 684,21)   = 37,84
+     Pu = (37,84 + 46,41 + 10 + 5 + 45,50) x 1,1  = 159,22 -> 160 FCFA
+
+  Grand cadre : Lc = 30 cm
+     Ltp = 120 cm (> 100 -> constante 0,10) ; Ldf = 12 ; Lt = 132 cm
+
+
+---------------------------------------------------------------------
+6. LES FORMULES SAISIES DANS L'ADMIN
+---------------------------------------------------------------------
+Variables utilisables :
+  - les abréviations des dimensions du produit (Lc, Ld...)
+  - d (diamètre)
+  - angle (valeur de l'angle choisi, en degrés) et ka (son coefficient)
+  - R, Ldf (Ld), Ltp, Lt selon l'étape (on n'utilise que ce qui est
+    déjà calculé : Ltp ne peut pas utiliser Lt)
+
+Opérations et fonctions autorisées :
+  nombres, + - * / ( ), ceil, floor, round, min, max, sqrt,
+  sin, cos (angles en degrés)
+
+Sécurité : la formule n'est JAMAIS exécutée comme du code Python
+(pas d'eval). Elle est découpée par le module « ast » et seuls les
+éléments ci-dessus sont acceptés ; tout le reste est refusé.
+
+Contrôles à l'enregistrement d'un produit :
+  - formule bien écrite (parenthèses, opérateurs) ;
+  - uniquement des abréviations connues (« Abréviation inconnue : Lx ») ;
+  - résultat valable avec les valeurs minimum ET maximum, pour chaque
+    diamètre et chaque angle cochés (pas de division par zéro, pas de
+    longueur négative) ;
+  - aperçu affiché : « avec Lc = 20 et d = 8 -> Ltp = 80, Lt = 91 cm ».
+
+
+---------------------------------------------------------------------
+7. DESSIN DE LA FORME
+---------------------------------------------------------------------
+La forme est décrite comme une suite de segments et d'angles. Le
+serveur calcule les points et les cotes ; le navigateur la dessine (SVG)
+à l'échelle et la redessine à chaque saisie du client.
+La formule de Ltp sert au calcul ; la description de la forme sert au
+dessin.
+
+Format (admin > Configurations produit > champ « forme ») :
+une liste de segments, parcourue comme une « tortue » qui avance puis
+tourne :
+  - « longueur » : une formule (abréviations, d, angle, ka, R, Ltp, Ldf,
+                   Lt) ;
+  - « angle »    : le virage APRÈS le segment, en degrés (positif = à
+                   gauche), ou une formule (ex. "angle" = angle choisi par
+                   le client) ; inutile sur le dernier segment ;
+  - « crochet »  : true pour un crochet (Ldf). Au début et à la fin du
+                   pliage, le crochet suit l'arrondi du coin avec le rayon
+                   de courbure R EN ENTIER, continue de plier jusqu'à son
+                   angle (ex. 135°), puis va en ligne droite sur sa
+                   longueur (ex. Ldf/2). Sa valeur est écrite sur le dessin ;
+  - « cote »     : false pour ne pas écrire la valeur d'un segment.
+  Un segment de longueur 0 sert seulement à orienter le départ.
+
+Tous les coins sont arrondis avec le rayon de courbure R, à l'échelle.
+La miniature 70 x 70 px (facture) reprend le même tracé, sans texte.
+
+Exemple - cadre carré fermé, crochets à 135° dans le coin en haut à droite :
+  [{"longueur": 0, "angle": 45, "cote": false},
+   {"longueur": "Ldf/2", "angle": -135, "crochet": true},
+   {"longueur": "Lc", "angle": -90}, {"longueur": "Lc", "angle": -90},
+   {"longueur": "Lc", "angle": -90}, {"longueur": "Lc", "angle": -135},
+   {"longueur": "Ldf/2", "crochet": true}]
+
+Exemple - carré simple, sans crochet :
+  [{"longueur": "Lc", "angle": 90}, {"longueur": "Lc", "angle": 90},
+   {"longueur": "Lc", "angle": 90}, {"longueur": "Lc"}]
+
+Exemple - rectangle (dimensions La et Lb) :
+  [{"longueur": "La", "angle": 90}, {"longueur": "Lb", "angle": 90},
+   {"longueur": "La", "angle": 90}, {"longueur": "Lb"}]
+
+Champ vide = pas de dessin (l'image 2D reste affichée).
+La forme est contrôlée à l'enregistrement avec les mêmes valeurs que la
+formule de Ltp (abréviations connues, longueurs jamais négatives).
+
+
+---------------------------------------------------------------------
+8. RÉALISATION TECHNIQUE (prévue)
+---------------------------------------------------------------------
+Une NOUVELLE application Django, « boutique », qui contient :
+  - models.py : prix du fer à la tonne (PaT, PvT, PrT), poids au cm,
+    coefficients de façonnage, constantes de soudure, paramètres Ldf,
+    configuration des produits et de leurs dimensions ;
+  - admin.py : TOUS les écrans d'administration de ces éléments
+    (listes, filtres par marque / type / diamètre, aperçu des formules) ;
+  - calcul.py : le moteur de calcul unique (étapes 1 à 11) et
+    l'évaluateur de formules sûr ;
+  - tests.py : tests de chaque étape :
+      calculs (dont l'exemple chiffré ci-dessus), formules refusées,
+      affichage des seules dimensions cochées, contrôle des min / max,
+      dessin, familles exclues jamais touchées.
+  - templates/boutique/gabarit/ : le gabarit universel (sous-dossier à
+    part, pour ne pas se mélanger avec les gabarits « boutique/ »
+    existants de l'application produits).
+
+Réutilisation : les marques et types de fer existants
+(gestion_prix_fer : Fournisseur, TypeFer) et les constantes tolérance,
+taxe et taux sont repris, pas recopiés.
+
+Étapes :
+  1. Tables et admin (sans changer les prix actuels)
+  2. Moteur de calcul côté serveur + tests
+  3. Configuration des produits dans l'admin
+  4. Gabarit universel (formulaire automatique, dessin, prix recalculé
+     par le serveur pendant la saisie)
+  5. Bascule produit par produit (en commençant par le cadre carré) ;
+     les pages actuelles restent en place jusqu'à la bascule de chaque
+     produit.
+
+Chaque étape : tests, sauvegarde de la base avant migration, accord
+avant de commencer.
+
+
+---------------------------------------------------------------------
+9. UTILISATION ET BASCULE D'UN PRODUIT
+---------------------------------------------------------------------
+Où se trouve quoi :
+  - Admin Django ............ /larue/  > rubrique « Boutique »
+  - Aperçu administrateur ... /boutique/<numéro du produit>/apercu/
+        même page que celle du client, avec un bandeau bleu ; l'ajout au
+        panier y est désactivé. Visible avant la bascule.
+  - Calcul en direct ........ /boutique/<numéro du produit>/calcul.json
+        appelé par la page à chaque saisie (aucune formule dans la page).
+
+Basculer un produit :
+  1. Admin > Configurations produit : créer la configuration (diamètres,
+     angles, dimensions avec min / max, formule de Ltp, forme).
+  2. Vérifier la page dans l'aperçu administrateur.
+  3. Cocher « utiliser le gabarit universel » : la page /produits/<n°>/
+     detail_produit utilise aussitôt le gabarit universel.
+  Revenir en arrière : décocher la case (l'ancienne page revient).
+
+Familles exclues : même si la case est cochée par erreur, elles gardent
+leur ancienne page.
+
+En production : lancer « python manage.py collectstatic » pour publier
+le fichier de style du gabarit (boutique/static/boutique/gabarit.css).
+
+État au 08/11/2026 (base de développement) :
+  - cadre carré : BASCULÉ (valeurs de TEST dans l'admin, à remplacer
+    par les vraies valeurs avant la mise en production) ;
+  - les 14 autres produits du périmètre : ancienne page.

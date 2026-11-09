@@ -12,270 +12,735 @@ detail
         text-transform: initial;
         font-weight: normal;
     }
+
+    /* ===== Mise en page : liste des caractéristiques, cadre, champs, image ===== */
+    .param {
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        padding: 1rem;
+    }
+
+    .param-fond {
+        display: none;
+    }
+
+    /* Caractéristiques cliquables (texte noir) */
+    .carac {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        width: 100%;
+        min-height: 3rem;
+        padding: .4rem 1rem;
+        background: #f2f2f2;
+        border: 1px solid #222;
+        color: #000;
+        font-size: 1.1rem;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .carac:hover {
+        background: #fff0b8;
+    }
+
+    .carac[aria-selected="true"] {
+        background: #ffc000;
+        font-weight: 600;
+    }
+
+    .carac:focus-visible {
+        outline: 3px solid #0d6efd;
+        outline-offset: 2px;
+    }
+
+    .carac-texte {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .carac-valeur {
+        color: #5a5a5a;
+        font-size: .8rem;
+        font-weight: normal;
+    }
+
+    .carac[aria-selected="true"] .carac-valeur {
+        color: #000;
+    }
+
+    .carac-fleche {
+        font-size: 1.2rem;
+        transition: transform .2s;
+    }
+
+    /* Cadre de droite */
+    .p-cadre {
+        min-height: 12rem;
+        padding: 1rem 1.25rem;
+        background: #fff;
+        border: 1px solid #222;
+    }
+
+    .p-vide {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        min-height: 10rem;
+        color: #8a8a8a;
+        text-align: center;
+    }
+
+    .panneau[hidden],
+    .p-vide[hidden] {
+        display: none;
+    }
+
+    .groupe+.groupe {
+        margin-top: 1.25rem;
+    }
+
+    .groupe-titre {
+        margin: 0 0 .5rem;
+        font-size: 1.05rem;
+        font-weight: 600;
+    }
+
+    .options ul,
+    .options>div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .5rem 1.75rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .options label {
+        margin: 0 .35rem 0 0;
+        font-size: 1.05rem;
+    }
+
+    .options input[type="radio"],
+    .options input[type="checkbox"] {
+        margin-right: .35rem;
+    }
+
+    .options select,
+    .options input[type="number"],
+    .options input[type="text"] {
+        max-width: 16rem;
+    }
+
+    /* Libellés et champs du bas */
+    .p-lab {
+        padding: .35rem 1rem;
+        background: #f2f2f2;
+        border: 1px solid #222;
+        font-size: 1.1rem;
+    }
+
+    .p-lab-gris {
+        color: #8c8c8c;
+    }
+
+    .p-champ input {
+        width: 100%;
+        height: 2.4rem;
+        padding: 0 .6rem;
+        border: 1px solid #222;
+        border-radius: 0;
+    }
+
+    .p-gris input {
+        background: #d9d9d9;
+        border-color: #d9d9d9;
+    }
+
+    .p-prix input {
+        background: #fff5c2;
+        border-color: #fff5c2;
+        font-weight: 600;
+    }
+
+    .p-image {
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid #222;
+        text-align: center;
+    }
+
+    .p-boutons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Une ligne = un libellé + son champ. Le conteneur est transparent :
+       le libellé et le champ se placent directement dans la grille / la colonne. */
+    .p-ligne {
+        display: contents;
+    }
+
+    /* Ordre sur téléphone : chaque caractéristique est suivie de son panneau,
+       puis les lignes une à une, puis l'image */
+    .carac,
+    .p-lab {
+        order: calc(var(--row) * 10);
+    }
+
+    .p-champ {
+        order: calc(var(--row) * 10 + 1);
+    }
+
+    .p-cadre {
+        order: 55;
+    }
+
+    /* Sur mobile : l'image vient après les longueurs (ordre 90) et avant les prix (ordre 100) */
+    .p-image {
+        order: 95;
+    }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 991.98px) {
+
+        /* Le panneau s'ouvre juste sous sa caractéristique */
+        .p-cadre {
+            display: contents;
+        }
+
+        .p-vide {
+            display: none;
+        }
+
+        .panneau {
+            order: calc(var(--row) * 10 + 5);
+            margin-top: -.75rem;
+            padding: 1rem 1.25rem;
+            background: #fff;
+            border: 1px solid #222;
+            border-top: 0;
+        }
+
+        .carac[aria-selected="true"] .carac-fleche {
+            transform: rotate(90deg);
+        }
+
+        /* Quantité, rayon, longueurs : libellé à gauche, champ à droite, sur une seule ligne */
+        .p-ligne-inline {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            order: calc(var(--row) * 10);
+        }
+
+        .p-ligne-inline .p-lab {
+            flex: 1 1 auto;
+            order: 0;
+            min-width: 0;
+            min-height: 2.4rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .p-ligne-inline .p-champ {
+            flex: 0 0 40%;
+            order: 0;
+            min-width: 0;
+        }
+
+        .p-ligne-inline .error-message {
+            font-size: .8rem;
+            line-height: 1.2;
+        }
+    }
+
+    /* Sur ordinateur : disposition de la maquette */
+    @media (min-width: 992px) {
+        .param {
+            display: grid;
+            grid-template-columns: minmax(250px, 1.05fr) minmax(170px, .75fr) minmax(0, 1.7fr);
+            grid-template-rows: repeat(11, minmax(3.1rem, auto));
+            column-gap: 1rem;
+            row-gap: 0;
+            padding: 1rem 1.25rem;
+        }
+
+        .param-fond {
+            display: block;
+            grid-column: 1;
+            grid-row: 1 / 12;
+            background: #f2f2f2;
+            border: 1px solid #222;
+        }
+
+        .carac,
+        .p-lab {
+            grid-column: 1;
+            grid-row: var(--row);
+            order: 0;
+            z-index: 1;
+            background: transparent;
+            border: 0;
+        }
+
+        .p-lab {
+            align-self: center;
+        }
+
+        .carac[aria-selected="true"] {
+            background: #ffc000;
+        }
+
+        .carac:hover {
+            background: #fff0b8;
+        }
+
+        .carac[aria-selected="true"]:hover {
+            background: #ffc000;
+        }
+
+        .p-champ {
+            grid-column: 2;
+            grid-row: var(--row);
+            align-self: center;
+            order: 0;
+        }
+
+        .p-cadre {
+            grid-column: 2 / 4;
+            grid-row: 1 / 6;
+            order: 0;
+            margin-bottom: 1rem;
+        }
+
+        .p-image {
+            grid-column: 3;
+            grid-row: 6 / 12;
+            order: 0;
+            display: grid;
+            place-items: center;
+        }
+    }
 </style>
+
 <section class="content project-area solid-bg">
     <div class="container border shadow py-2 my-2">
         <div class="row">
             <div class="col-lg-12"><br>
-                <h3 class="column-title bg-warning p-3 text-center">Parametre du {{product.nom}}
+                <h3 class="column-title bg-warning p-3 text-center">Parametres du {{product.nom}}
                 </h3>
             </div><!-- Col end -->
         </div>
-        <!-- parametre -->
-        <div class="row">
-            <!-- label et input -->
-            <div class="col-lg-7 ml-5">
-                <form action="" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" id="val" value={{val}}>
-                    {{form.prix_revient}}
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="">{{form.fer.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.fer }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class=""><b>M.</b>{{form.Diametre_fer.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.Diametre_fer }}
-                        </div>
-                    </div>
-                    </br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class=""><b>Ang. </b>{{form.Angle_pliage.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.Angle_pliage }}
-                        </div>
-                    </div>
-                    </br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="text-secondary"><b>R. </b>{{form.rayon_Courbure.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.rayon_Courbure }}
-                            <div id="rayonCourbure-error" class="error-message" style="color: red; display: none;"></div>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="text-secondary"><b>Ldf. </b>{{form.longueur_Depart_et_Fin.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.longueur_Depart_et_Fin}}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class=""><b>A. </b>{{form.longueur_Cote.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{form.longueur_Cote}}
-                            <div id="longueurCote-error" class="error-message" style="color: red; display: none;"></div>
 
+        <form action="" method="post" id="form-parametres">
+            {% csrf_token %}
+            <input type="hidden" id="val" value="{{val}}">
+            {{form.prix_revient}}
+
+            <div class="param">
+                <div class="param-fond" aria-hidden="true"></div>
+
+                <!-- ===== 1) Les caractéristiques : un clic ouvre son champ dans le cadre ===== -->
+                <button type="button" class="carac" style="--row: 1" data-panneau="p-fer" id="onglet-p-fer"
+                    aria-controls="p-fer" aria-selected="false">
+                    <span class="carac-texte">Qui fournit le fer<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: 2" data-panneau="p-marque" id="onglet-p-marque"
+                    aria-controls="p-marque" aria-selected="false">
+                    <span class="carac-texte">Marque &amp; Type de fer<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: 3" data-panneau="p-diametre" id="onglet-p-diametre"
+                    aria-controls="p-diametre" aria-selected="false">
+                    <span class="carac-texte">Choix du fer (M)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: 4" data-panneau="p-angle" id="onglet-p-angle"
+                    aria-controls="p-angle" aria-selected="false">
+                    <span class="carac-texte">Choix de l’angle (°)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: 5" data-panneau="p-dimension" id="onglet-p-dimension"
+                    aria-controls="p-dimension" aria-selected="false">
+                    <span class="carac-texte">Dimension (cm)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+
+                <!-- ===== 2) Le cadre de droite : son contenu change selon la caractéristique ===== -->
+                <div class="p-cadre" aria-live="polite">
+                    <div class="p-vide" id="p-vide">
+                        <span>Clique sur une caractéristique, à gauche,<br>pour choisir ses options.</span>
+                    </div>
+
+                    <div class="panneau" id="p-fer" style="--row: 1" role="region" aria-labelledby="onglet-p-fer"
+                        hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Qui fournit le fer :</p>
+                            <div class="options">{{ form.fer }}</div>
                         </div>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="text-secondary">{{form.longueur_Total.label}}</h4>
+
+                    <div class="panneau" id="p-marque" style="--row: 2" role="region" aria-labelledby="onglet-p-marque"
+                        hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Marque de fer :</p>
+                            <div class="options">{{ form.marque_fer }}</div>
                         </div>
-                        <div class="col">
-                            {{ form.longueur_Total }}
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col">
-                            <h4 class="">{{form.quantite.label}}</h4>
-                        </div>
-                        <div class="col">
-                            {{ form.quantite }}
+                        <div class="groupe">
+                            <p class="groupe-titre">Type de fer :</p>
+                            <div class="options">{{ form.type_fer }}</div>
                         </div>
                     </div>
-            </div><!-- Col end -->
-            <!-- image2d et pu et prix total -->
-            <div class="col-lg-4">
-                <div class="latest-post-media">
-                    <a href="" class="latest-post-img">
-                        <img loading="lazy" class="img-fluid border" src="{{product.imageshop2d.url}}" alt="img">
-                    </a>
+
+                    <div class="panneau" id="p-diametre" style="--row: 3" role="region"
+                        aria-labelledby="onglet-p-diametre" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Diamètre du fer :</p>
+                            <div class="options">{{ form.diametre }}</div>
+                        </div>
+                    </div>
+
+                    <div class="panneau" id="p-angle" style="--row: 4" role="region" aria-labelledby="onglet-p-angle"
+                        hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Angle de cintrage de fin :</p>
+                            <div class="options">{{ form.angle_pliage }}</div>
+                        </div>
+                    </div>
+
+                    <div class="panneau" id="p-dimension" style="--row: 5" role="region"
+                        aria-labelledby="onglet-p-dimension" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Dimension (cm) :</p>
+                            <label for="longueurCote" class="mb-1">Longueur du côté A (cm)</label>
+                            <div class="options">{{form.longueurCote}}</div>
+                            <div id="longueurCote-error" class="error-message" style="color: red; display: none;"></div>
+                        </div>
+                    </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col">
-                        <h4 class="">{{form.prix.label}} (fcfa)</h4>
-                    </div>
-                    <div class="col">
-                        {{ form.prix }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4 class="">{{form.prix_Total.label}} (fcfa)</h4>
-                    </div>
-                    <br>
-                    <div class="col">
-                        {{ form.prix_Total }}
+
+                <!-- ===== 3) Quantité et valeurs calculées (sous le cadre) ===== -->
+                <!-- Sur mobile, les 4 premières lignes affichent le libellé et le champ côte à côte -->
+                <div class="p-ligne p-ligne-inline" style="--row: 6">
+                    <label class="p-lab" for="quantite">Quantité de pièce (u)</label>
+                    <div class="p-champ">
+                        {{ form.quantite }}
+                        <div id="quantite-error" class="error-message" style="color: red; display: none;"></div>
                     </div>
                 </div>
-            </div><!-- Col end -->
-        </div>
-        <!-- bouton  -->
-        <div class="row mb-3">
-            <div class="col-lg-6 text-center "><br>
+
+                <div class="p-ligne p-ligne-inline" style="--row: 7">
+                    <label class="p-lab p-lab-gris" for="rayonCourbure">Rayon de courbure R (cm)</label>
+                    <div class="p-champ p-gris">
+                        {{ form.rayon_Courbure }}
+                        <div id="rayonCourbure-error" class="error-message" style="color: red; display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="p-ligne p-ligne-inline" style="--row: 8">
+                    <label class="p-lab p-lab-gris" for="longueurDepart">Longueur départ &amp; fin  Ldf (cm)</label>
+                    <div class="p-champ p-gris">{{ form.longueur_Depart_et_Fin }}</div>
+                </div>
+
+                <div class="p-ligne p-ligne-inline" style="--row: 9">
+                    <label class="p-lab p-lab-gris" for="longueurTotal">Longueur totale (cm)</label>
+                    <div class="p-champ p-gris">{{ form.longueur_Total }}</div>
+                </div>
+
+                <div class="p-ligne p-ligne-inline" style="--row: 10">
+                    <label class="p-lab p-lab-gris" for="prix-id"><b>Prix Unitaire (FCFA)</b></label>
+                    <div class="p-champ p-prix">{{ form.prix }}</div>
+                </div>
+
+                <div class="p-ligne p-ligne-inline" style="--row: 11">
+                    <label class="p-lab p-lab-gris" for="prix-total"><b>Prix Total (FCFA)</b></label>
+                    <div class="p-champ p-prix"><b class="bg-warning">{{ form.prix_Total }}</b></div>
+                </div>
+
+                <!-- ===== 4) Image du produit ===== -->
+                <div class="p-image">
+                    <img loading="lazy" class="img-fluid" src="{{product.imageshop2d.url}}"
+                        alt="Schéma du {{product.nom}}">
+                </div>
+            </div>
+
+            <!-- bouton  -->
+            <div class="p-boutons mb-3">
                 <a class="btn btn-secondary" href="{% url 'produit.detail' product.id%}">
-                    reinitialiser
+                    Annuler
                 </a>
-            </div><!-- Col end -->
-            <div class="col-lg-6 text-center"><br>
-                {% comment %} {% if user.is_authenticated %}
-                <button class="btn btn-warning ">
+                {% if user.is_authenticated %}
+                <button type="submit" class="btn btn-warning">
                     Ajouter au panier
                 </button>
                 {% else %}
                 <a class="btn btn-danger" href="{% url 'login' %}">Connecter vous pour ajouter au panier</a>
-                {% endif %} {% endcomment %}
-            </div><!-- Col end -->
-        </div>
+                {% endif %}
+            </div>
         </form>
         <!--/ Content row end -->
+        {{ tarifs|json_script:"tarifs-data" }}
+        {{ constantes|json_script:"constantes-data" }}
     </div>
     <!--/ Container end -->
 </section><!-- Content end -->
+
+<!-- ===== Affichage du champ dans le cadre quand on clique sur une caractéristique ===== -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Récupérer les éléments du formulaire
-        let diametereField = document.getElementById('diametre')
-        let angeField = document.getElementById('angle')
-        let rayonField = document.getElementById('rayonCourbure')
-        let longueurdptField = document.getElementById('longueurDepart')
-        let longueurCoteError = document.getElementById('longueurCote-error');  // Élément pour afficher l'erreur
-        let longueurCoteField = document.getElementById('longueurCote');
-        let longueurTotalField = document.getElementById('longueurTotal');
-        let prixField = document.getElementById('prix-id');
-        let prixTotalField = document.getElementById('prix-total');
-        let quantiteField = document.getElementById('quantite'); // Quantité de cadre
-        let val = document.getElementById('val');
-        //add
-        let prix_revientField =document.getElementById('prix_revient')
-       
-        // Fonction pour effectuer les calculs
-        const updateFields = () => {
-            //fer
-            let fer =document.querySelector('input[name="fer"]:checked')?.value
-            // Récupérer les valeurs des champs
-            let longueurCote = parseFloat(longueurCoteField.value);
-            let diametre = parseInt(diametereField.value)
-            let ange = parseFloat(angeField.value || 90)
-            let quantite = parseFloat(quantiteField.value || 1);
-            //add
-            let prix_revient = parseFloat(prix_revientField.value || 1);
+        const boutons = document.querySelectorAll(".carac");
+        const panneaux = document.querySelectorAll(".panneau");
+        const vide = document.getElementById("p-vide");
+        const mobile = window.matchMedia("(max-width: 991.98px)");
 
-           //calcule rayon, longueur de depart
-            rayonField.value = (5*diametre)/10
-            longueurdptField.value = (5*diametre)/10
-            diametereField.value = diametre
-            angeField.value = ange
-           
-            // Vérification de la valeur minimale pour longueurCote
-            if (longueurCote < 8 || longueurCote > 100) {
-                // Afficher le message d'erreur
-                longueurCoteError.textContent = "comprise entre 8-100";
-                longueurCoteError.style.display = "block"; // Afficher le message
-                // longueurCote = 80;  // Fixer la valeur à 8 si elle est inférieure
-                longueurCoteField.value = longueurCote;  // Mettre à jour le champ avec la valeur corrigée
-                
+        function ouvrir(id) {
+            panneaux.forEach(p => { p.hidden = (p.id !== id); });
+            boutons.forEach(b => b.setAttribute("aria-selected", b.dataset.panneau === id ? "true" : "false"));
+            vide.hidden = true;
+        }
+
+        // Sur mobile : un second clic referme le panneau (accordéon)
+        function fermerTout() {
+            panneaux.forEach(p => { p.hidden = true; });
+            boutons.forEach(b => b.setAttribute("aria-selected", "false"));
+        }
+
+        // Petit résumé de la valeur choisie sous le nom de la caractéristique
+        function libelle(champ) {
+            if (champ.type === "radio" || champ.type === "checkbox") {
+                const etiquette = champ.id ? document.querySelector('label[for="' + champ.id + '"]') : null;
+                return (etiquette ? etiquette.textContent : champ.value).trim();
+            }
+            if (champ.tagName === "SELECT") {
+                const o = champ.options[champ.selectedIndex];
+                return o ? o.text.trim() : "";
+            }
+            return champ.value ? champ.value.trim() : "";
+        }
+        function resume(panneau) {
+            const valeurs = [];
+            panneau.querySelectorAll("input, select").forEach(c => {
+                if ((c.type === "radio" || c.type === "checkbox") && !c.checked) return;
+                const v = libelle(c);
+                if (v) valeurs.push(v);
+            });
+            const cible = document.querySelector('.carac[data-panneau="' + panneau.id + '"] .carac-valeur');
+            if (cible) cible.textContent = valeurs.join(" · ");
+        }
+
+        boutons.forEach(b => b.addEventListener("click", () => {
+            if (mobile.matches && b.getAttribute("aria-selected") === "true") {
+                fermerTout();
             } else {
-                // Cacher le message d'erreur si la valeur est valide
-                longueurCoteError.style.display = "none";
+                ouvrir(b.dataset.panneau);
             }
-            // Calcul de la longueur totale du cadre
-            let longueurTotal = 0
-            longueurTotal = (4*longueurCote) + (1.3*diametre)
-            
-              // Exemple de calcul, modifiez-le selon votre logique
-            longueurTotalField.value = Math.ceil(longueurTotal);
-             // Afficher la longueur totale dans le champ --> -->
+        }));
 
-            
-            const donnees = JSON.parse('{{constantes|safe|escapejs}}');
-            let taxe = donnees.taxe;
-            let taux = donnees.taux;
-            let prixferCon = "m" + diametre
-            //coeficient fonction du fer
-            let prixfer = donnees[prixferCon]
-
-            //add
-            prix_revient=0;
-
-            switch (diametre) {
-                case 6:
-                    prix_revient=30
-                    break
-                case 8:
-                    prix_revient=32
-                    break
-                case 10:
-                    prix_revient=34
-                    break
-                case 12:
-                    prix_revient=36
-                    break
-            }
-            let prixUnitaire = 0
-
-            let cal2=prix_revient+(prixfer*longueurTotal)
-            let  cal3=prixfer*2
-            if (fer === 'bending iron') {
-                cal4=cal2+cal3
-                cal5=cal4 + (cal4*taux)
-                prixUnitaire=cal5
-            } 
-            if (fer === 'le client') {
-                prixUnitaire=8+prix_revient + (cal2+cal3)*taux; // Exemple de calcul
-            }
-
-            prixField.value = Math.ceil(prixUnitaire); // Afficher le prix unitaire dans le champ
-
-            let prixTotal = (prixUnitaire*quantite);
-            prixTotalField.value = Math.ceil(prixTotal); // Afficher le prix total dans le champ -->*/
-
-            //add
-            prix_revientField.value=prix_revient*quantite
-        };
-
-        
-        // Mettre à jour les valeurs dès qu'un champ change
-        const fieldsToWatch = [
-            longueurCoteField,
-            quantiteField,
-            fer,
-            rayonField,
-            longueurdptField,
-            diametereField,
-            angeField,
-            prixField,
-            prixTotalField,
-            prix_revientField
-        ];
-
-        fieldsToWatch.forEach(field => {
-            field.addEventListener('input', updateFields); // Recalcule lorsque l'utilisateur modifie la valeur d'un champ
+        panneaux.forEach(p => {
+            ["input", "change"].forEach(evt => p.addEventListener(evt, () => resume(p)));
+            resume(p);
         });
 
-        // Mettre à jour les champs lors de l'initialisation
-        updateFields();
+        // Si un champ obligatoire est vide dans un cadre masqué, on ouvre ce cadre
+        document.getElementById("form-parametres").addEventListener("invalid", function (e) {
+            const p = e.target.closest(".panneau");
+            if (p && p.hidden) ouvrir(p.id);
+        }, true);
     });
+</script>
 
+<!-- ===== Calculs : longueur totale, prix de revient, prix de vente, prix unitaire et total ===== -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("script chargé");
+
+        // --- Champs ---
+        const longueurCoteField = document.getElementById('longueurCote');
+        const longueurCoteError = document.getElementById('longueurCote-error');
+        const longueurTotalField = document.getElementById('longueurTotal');
+        const longueurdptField = document.getElementById('longueurDepart');
+        const rayonField = document.getElementById('rayonCourbure');
+        const prix_revientField = document.getElementById('prix_revient');
+        const prixField = document.getElementById('prix-id');
+        const prixTotalField = document.getElementById('prix-total');
+        const quantiteField = document.getElementById('quantite');
+        const quantiteError = document.getElementById('quantite-error');
+
+        const QUANTITE_MAX = 10000;
+
+        // Garde-fou côté navigateur sur le champ quantité
+        if (quantiteField) {
+            quantiteField.min = 1;
+            quantiteField.max = QUANTITE_MAX;
+            quantiteField.step = 1;
+        }
+
+        // Les champs de prix passent en texte pour pouvoir afficher les séparateurs de milliers
+        [prixField, prixTotalField].forEach(f => { if (f) f.type = 'text'; });
+
+        // 12500 -> "12 500"
+        const formaterMilliers = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+
+        // Données envoyées par Django
+        const TARIFS = JSON.parse(document.getElementById('tarifs-data')?.textContent || '{}');
+        const CONST = JSON.parse(document.getElementById('constantes-data')?.textContent || '{}');
+        const TOLERANCE = CONST.tolerance;
+        const TAXE = CONST.taxe;
+        const TAUX = CONST.taux;
+
+        // Coefficients du prix du service : Ps = coef * Lt / 100
+        const COEF_PS = {
+            'autre fer': { 6: 22, 8: 47, 10: 73, 12: 105 },
+            'prometal': { 6: 24, 8: 51, 10: 80, 12: 138 },
+        };
+
+        // Dernier état de validité, utilisé à l'envoi du formulaire
+        let quantiteValideActuelle = true;
+
+        function lireFormulaire() {
+            // ===== Lecture =====
+            const fer = document.querySelector('input[name="fer"]:checked')?.value ?? null;
+            const marque_fer = document.querySelector('input[name="marque_fer"]:checked')?.value ?? null;
+            const type_fer = document.querySelector('input[name="type_fer"]:checked')?.value ?? null;
+            const angle_pliage = document.querySelector('input[name="angle_pliage"]:checked')?.value ?? null;
+
+            const diametre = parseInt(document.getElementById('diametre')?.value) || 0;
+
+            // ===== Contrôle de la quantité (entier entre 1 et 10000) =====
+            const saisieQte = quantiteField.value.trim();
+            const quantite = parseInt(saisieQte) || 1;
+            const quantiteValide = Number.isInteger(parseFloat(saisieQte)) && quantite >= 1 && quantite <= QUANTITE_MAX;
+            quantiteValideActuelle = (saisieQte === "") || quantiteValide;
+
+            if (quantiteError) {
+                if (saisieQte !== "" && !quantiteValide) {
+                    quantiteError.textContent = "comprise entre 1 et " + QUANTITE_MAX;
+                    quantiteError.style.display = "block";
+                } else {
+                    quantiteError.style.display = "none";
+                }
+            }
+
+            // ===== Étape 2 : validation de la longueur du côté =====
+            const saisie = longueurCoteField.value.trim();
+            const longueurCote = parseFloat(saisie);
+            const longueurValide = !Number.isNaN(longueurCote) && longueurCote >= 8 && longueurCote <= 100;
+
+            if (longueurCoteError) {
+                if (saisie !== "" && !longueurValide) {
+                    longueurCoteError.textContent = "comprise entre 8-100";
+                    longueurCoteError.style.display = "block";
+                } else {
+                    longueurCoteError.style.display = "none";
+                }
+            }
+
+            // ===== Étape 3 : longueur totale (Lt) =====
+            let longueurTotal = 0;
+            if (longueurValide) {
+                longueurTotal = Math.ceil((4 * longueurCote) + (1.3 * diametre));
+            }
+            if (longueurTotalField) longueurTotalField.value = longueurTotal;
+
+            // ===== Étape 3b : longueur de départ/fin et rayon de courbure =====
+            const longueurDepart = (5 * diametre) / 10;
+            const rayon = (5 * diametre) / 10;
+            if (longueurdptField) longueurdptField.value = longueurDepart;
+            if (rayonField) rayonField.value = rayon;
+
+            // ===== Étape 4 : prix de revient (Ps) =====
+            const coef = COEF_PS[marque_fer]?.[diametre];
+            let prix_revient = 0;
+            if (coef !== undefined) {
+                prix_revient = (coef * longueurTotal) / 100;
+            }
+            if (prix_revientField) prix_revientField.value = prix_revient;
+
+            // ===== Étape 5 : prix de vente (Pv) =====
+            const tarif = TARIFS[marque_fer]?.[type_fer]?.[String(diametre)];
+            const pvf = tarif?.pvf ?? null;
+            const pa = tarif?.pa ?? null;
+
+            let prix_vente = 0;
+            if (tarif) {
+                if (fer === 'bending iron') {
+                    prix_vente = (pvf / 1200) * longueurTotal;
+                } else if (fer === 'le client') {
+                    prix_vente = ((pvf - pa) / 1200) * longueurTotal;
+                }
+            }
+
+            // ===== Étape 6 : prix unitaire (Pu) et prix total =====
+            // Pu = (Pv + Ps + tolérance + taxe) + (Pv + Ps + tolérance + taxe) * taux
+            let prixUnitaire = 0;
+            const constantesOk = [TOLERANCE, TAXE, TAUX].every(v => typeof v === 'number');
+
+            if (longueurValide && tarif && constantesOk) {
+                const base = prix_vente + prix_revient + TOLERANCE + TAXE;
+                prixUnitaire = base + base * TAUX;
+            }
+
+            const prixUnitaireArrondi = Math.ceil(prixUnitaire);
+            // Prix total à 0 tant que la quantité saisie est hors limites
+            const prixTotalArrondi = quantiteValideActuelle ? prixUnitaireArrondi * quantite : 0;
+
+            // Affichage avec séparateur de milliers ; la valeur brute est gardée dans data-brut
+            if (prixField) {
+                prixField.value = formaterMilliers(prixUnitaireArrondi);
+                prixField.dataset.brut = prixUnitaireArrondi;
+            }
+            if (prixTotalField) {
+                prixTotalField.value = formaterMilliers(prixTotalArrondi);
+                prixTotalField.dataset.brut = prixTotalArrondi;
+            }
+
+            console.log({
+                fer, marque_fer, type_fer, angle_pliage,
+                diametre, longueurCote, longueurValide,
+                quantite, quantiteValide,
+                longueurTotal, longueurDepart, rayon,
+                coef, prix_revient,
+                pvf, pa, prix_vente,
+                TOLERANCE, TAXE, TAUX, constantesOk,
+                prixUnitaire: prixUnitaireArrondi, prixTotal: prixTotalArrondi
+            });
+
+            return {
+                fer, marque_fer, type_fer, angle_pliage, diametre, longueurCote, longueurValide,
+                quantite, quantiteValide, longueurTotal, longueurDepart, rayon, coef, prix_revient,
+                pvf, pa, prix_vente, prixUnitaire: prixUnitaireArrondi, prixTotal: prixTotalArrondi
+            };
+        }
+
+        const form = longueurCoteField.closest('form') || document;
+        form.addEventListener('input', lireFormulaire);
+        form.addEventListener('change', lireFormulaire);
+
+        // À l'envoi : on bloque une quantité invalide, puis on remet les nombres bruts
+        // (Django ne comprend pas "12 500")
+        form.addEventListener('submit', function (e) {
+            lireFormulaire();
+            if (!quantiteValideActuelle || quantiteField.value.trim() === "") {
+                e.preventDefault();
+                quantiteField.focus();
+                return;
+            }
+            [prixField, prixTotalField].forEach(f => {
+                if (f && f.dataset.brut !== undefined) f.value = f.dataset.brut;
+            });
+        });
+
+        lireFormulaire();
+    });
 </script>
 {% endblock%}

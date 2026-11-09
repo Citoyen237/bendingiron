@@ -26,12 +26,12 @@ class Produit(models.Model):
     categorie=models.ForeignKey(Categorie, related_name='categorie',on_delete=models.CASCADE)
     nom = models.CharField(max_length=255)
     sous_categorie = models.CharField(max_length=255,choices=SOUS_CATEGORIE,null=True,blank=True)#valeur facultative
-    imageshop3d=models.ImageField(upload_to='produits/images')
+    
     imageshop2d=models.ImageField(upload_to='produits/images')
     image_sous_categorie = models.ImageField(upload_to='produits/images',null=True,blank=True)
     name_page = models.CharField(max_length=255)
     Description = models.TextField(max_length=400,null=True,blank=True)#valeur facultative
-    
+    imageshop3d=models.ImageField(upload_to='produits/images')
     #
     class Meta:
         constraints = [

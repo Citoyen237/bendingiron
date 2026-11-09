@@ -32,19 +32,18 @@ import string
 from django.utils import timezone
 from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
+from django.contrib.auth.decorators import login_required
+from proforma.models import *
+from django.views.decorators.http import require_POST
+from proforma.form import *
 
 
-# Create your views here.
-# Mixin personnalisé pour vérifier si l'utilisateur appartient aux groupes 'admin' ou 'superadmin'
-class AdminOrSuperAdminRequiredMixin(LoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if not (request.user.groups.filter(name='admin').exists() or request.user.groups.filter(name='superadmin').exists()):
-            return HttpResponseForbidden("Vous n'avez pas accès à cette page.")
-        return super().dispatch(request, *args, **kwargs)
-
-# Fonction pour vérifier si l'utilisateur appartient au groupe 'admin'
-def is_admin(user):
-   return user.groups.filter(name='admin').exists() or user.groups.filter(name='superadmin').exists()
+# Les règles d'accès sont centralisées dans auth_app/permissions.py
+from auth_app.permissions import (
+    AdminOrSuperAdminRequiredMixin, AdminRequiredMixin, admin_required,
+    superadmin_required, is_admin, is_superadmin,
+)
+from django.db import transaction
 
 from decimal import Decimal
 from django.db.models import OuterRef, Subquery
@@ -73,7 +72,7 @@ def montant_total_revenue():
     ).filter(dernier_statut="termine")
      # Calcul du montant total
     return sum(order.prix_revient_total for order in orders_terminees)
-@user_passes_test(is_admin)
+@admin_required
 def indexA(request):
     total_vente_client = montant_total_ventes_terminees()
     montant_total_revenue_client = montant_total_revenue() 
@@ -115,17 +114,17 @@ def indexA(request):
 
 
 # produits en stock
-class ListProduits(ListView):
+class ListProduits(AdminRequiredMixin, ListView):
     model=Produit
     context_object_name = 'produits'
     template_name = "stocks/list.html"
 # stock gestion du fer
-class ListFer(ListView):
+class ListFer(AdminRequiredMixin, ListView):
     model=Fer
     context_object_name = 'fers'
     template_name = "fer/list.html"
 
-class CreateFer(CreateView):
+class CreateFer(AdminRequiredMixin, CreateView):
    model = Fer
    form_class = FerForm
    template_name = "fer/create.html"
@@ -137,7 +136,7 @@ class CreateFer(CreateView):
         messages.success(self.request, "Fer ajouté avec succès !")
         return response
  
-@user_passes_test(is_admin)
+@admin_required
 def get_suivis(request, fer_id):
     fer=get_object_or_404(Fer, id=fer_id)
     mouvements = Mouvement.objects.filter(fer=fer_id).order_by('-date')
@@ -147,12 +146,12 @@ def get_suivis(request, fer_id):
      }
     return render(request, "fer/suivis.html", context)
 
-class ListMouvement(ListView):
+class ListMouvement(AdminRequiredMixin, ListView):
     model=Mouvement
     context_object_name = 'mouvements'
     template_name = "fer/mouvement.html"
    
-class CreateMouvement(CreateView):
+class CreateMouvement(AdminRequiredMixin, CreateView):
    model = Mouvement
    form_class = MouvementForm
    template_name = "fer/new-entrer.html"
@@ -175,14 +174,14 @@ class ListMessage(AdminOrSuperAdminRequiredMixin,ListView):
       return Contact.objects.order_by('-created_at')
 
 # contact
-@user_passes_test(is_admin)
+@admin_required
 def mark_message_as_read(request, message_id):
     message = get_object_or_404(Contact, id=message_id)
     message.is_read = 1
     message.save()
     return redirect('contact.list')
 
-@user_passes_test(is_admin)
+@admin_required
 def send_response(request, message_id):
    message=get_object_or_404(Contact, id=message_id)
    message.is_read = True
@@ -227,8 +226,6 @@ def send_response(request, message_id):
          'message':message,
          'form':form,
           }
-         for field in form.errors:
-            print(field)
          return render(request, 'contact/reponse.html', context)
    else:
       form = ReponseForm()
@@ -239,7 +236,7 @@ def send_response(request, message_id):
          }
       return render(request, 'contact/reponse.html', context)
 
-class DeleteMessage(DeleteView):
+class DeleteMessage(AdminRequiredMixin, DeleteView):
    model = Contact
    template_name = "contact/delete.html"
    success_url="../../contact"
@@ -250,27 +247,25 @@ class DeleteMessage(DeleteView):
       reponses = [response,message]
       return reponses
 
-@user_passes_test(is_admin)
+def _servir_pdf(fichier):
+    if not fichier:
+        raise Http404("Aucun fichier.")
+    try:
+        return FileResponse(fichier.open('rb'), content_type='application/pdf',
+                            filename=fichier.name.rsplit('/', 1)[-1])
+    except FileNotFoundError:
+        raise Http404("Fichier introuvable sur le serveur.")
+
+@admin_required
 def read_devis(request, message_id):
-    message=Contact.objects.filter(id=message_id).first()
-    file_path=os.path.join('medias/' ,message.file.path)
-    # print(file_path)
-    try:
-        # file_path = message.file.url  # Chemin absolu du fichier
-        return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
-    except FileNotFoundError:
-        raise Http404("Fichier introuvable sur le serveur.")
-    
-@user_passes_test(is_admin)  
+    message = get_object_or_404(Contact, id=message_id)
+    return _servir_pdf(message.file)
+
+@admin_required
 def read_devis_response(request, message_id):
-    message=Contact.objects.filter(id=message_id).first()
-    file_path=os.path.join('medias/' ,message.file_response.path)
-    # print(file_path)
-    try:
-        # file_path = message.file.url  # Chemin absolu du fichier
-        return FileResponse(open(file_path, 'rb'), content_type='application/pdf')
-    except FileNotFoundError:
-        raise Http404("Fichier introuvable sur le serveur.")
+    message = get_object_or_404(Contact, id=message_id)
+    return _servir_pdf(message.file_response)
+
 # users
 
 # Mixin pour vérifier si l'utilisateur est un superadmin
@@ -284,10 +279,17 @@ class ListUser(AdminOrSuperAdminRequiredMixin,ListView):
     template_name = "users/list.html"
 
 # Vérifier si l'utilisateur connecté est superadmin
-@user_passes_test(is_admin)
+@require_POST
+@admin_required
 def toggle_user_status(request, user_id):
     try:
         user = CustomUser.objects.get(id=user_id)
+        if user.pk == request.user.pk:
+            messages.error(request, "Vous ne pouvez pas bloquer votre propre compte.")
+            return redirect('user.list')
+        if is_superadmin(user) and not is_superadmin(request.user):
+            messages.error(request, "Seul un superadmin peut bloquer un autre superadmin.")
+            return redirect('user.list')
         objet = ""
         template = ""
         if user.is_active:
@@ -295,14 +297,14 @@ def toggle_user_status(request, user_id):
             user.is_active = 0
             # status_message = "Votre compte chez a été bloqué."
             admin_message = f"L'utilisateur {user.first_name} a été bloqué."
-            template = 'users/mail_bloque.html',
+            template = 'users/mail_bloque.html'
             objet = "Votre compte a été temporairement bloqué."
         else:
             # Débloquer l'utilisateur
             user.is_active = 1
             # status_message = "Votre compte a été réactivé."
             admin_message = f"L'utilisateur {user.first_name} a été débloqué."
-            template = 'users/mail_debloque.html',
+            template = 'users/mail_debloque.html'
             objet = "Votre compte a été réactivé"
         
         # Sauvegarder le changement
@@ -327,11 +329,24 @@ def toggle_user_status(request, user_id):
         messages.error(request, "Utilisateur introuvable.")
     return redirect('user.list')  # Redirigez vers la liste des utilisateurs
 
-@user_passes_test(is_admin)
+ROLES_AUTORISES = ('simple', 'partenaire', 'admin', 'superadmin')
+
+@require_POST
+@admin_required
 def change_user_role(request, user_id, group_name):
+    if group_name not in ROLES_AUTORISES:
+        messages.error(request, "Rôle inconnu.")
+        return redirect('user.list')
+    if user_id == request.user.id:
+        messages.error(request, "Vous ne pouvez pas modifier votre propre rôle.")
+        return redirect('user.list')
     try:
-# Trouver l'utilisateur par ID
+        # Trouver l'utilisateur par ID
         user = CustomUser.objects.get(id=user_id)
+        touche_un_role_admin = group_name in ('admin', 'superadmin') or is_admin(user)
+        if touche_un_role_admin and not is_superadmin(request.user):
+            messages.error(request, "Seul un superadmin peut attribuer ou retirer un rôle d'administrateur.")
+            return redirect('user.list')
         if group_name == 'partenaire' : 
             user.is_partenaire = 1
         else :
@@ -375,7 +390,7 @@ class ListOrder(AdminOrSuperAdminRequiredMixin,ListView):
         # Récupérer les commandes de l'utilisateur connecté, triées par date de création décroissante
         return Order.objects.order_by('-created_at')
 
-@user_passes_test(is_admin)
+@admin_required
 def detail_commande(request, order_id):
      # Récupérer la commande avec son ID
     commande = get_object_or_404(Order, id=order_id)
@@ -403,7 +418,7 @@ def detail_commande(request, order_id):
     }
     return render(request, 'order/detail.html',context)
 
-@user_passes_test(is_admin)
+@admin_required
 def suivis_commande(request, order_id):
     commande = get_object_or_404(Order, id=order_id)
     traitements = Traiment.objects.filter(order=order_id).order_by('-created_at')
@@ -413,7 +428,8 @@ def suivis_commande(request, order_id):
     }
     return render(request, 'order/suivis.html',context)
 
-@user_passes_test(is_admin)
+@require_POST
+@admin_required
 def change_statut(request, order_id):
    user=request.user
     #   Récupérer l'objet
@@ -452,7 +468,7 @@ def change_statut(request, order_id):
 
 
 # partenariats
-class ListPartenariats(ListView):
+class ListPartenariats(AdminRequiredMixin, ListView):
     model=Partenariats
     context_object_name = 'partenariats'
     template_name = "partenaires/partenariats.html"
@@ -479,7 +495,7 @@ class ListProjets(AdminOrSuperAdminRequiredMixin, ListView):
     context_object_name = 'projets'
     template_name = "partenaires/projet.html"
 
-@user_passes_test(is_admin)
+@admin_required
 def get_detail_partenariat(request, partenariat_id):
     partenariat = get_object_or_404(Partenariats, id=partenariat_id)
     projets=Projet.objects.filter(partenariat=partenariat_id)
@@ -490,7 +506,7 @@ def get_detail_partenariat(request, partenariat_id):
     }
     return render(request, 'partenaires/detail-partenariat.html',context)
 
-@user_passes_test(is_admin)
+@admin_required
 def get_detail_projet(request, projet_id):
      # Récupérer la commande avec son ID
     projet = get_object_or_404(Projet, id=projet_id)
@@ -505,8 +521,11 @@ def get_detail_projet(request, projet_id):
             paiement = form.save(commit=False)
             paiement.user = request.user  # on attribue l'admin qui enregistre
             paiement.save()
+            messages.success(request, f"Tranche {paiement.tranche} enregistrée : {paiement.montant} FCFA.")
+            # Redirection : un rafraîchissement de la page ne renvoie pas le paiement
+            return redirect(request.path)
     else :
-        form = PaiementProjetForm(request.POST, projet=projet)
+        form = PaiementProjetForm(projet=projet)
 
      # Ajouter un champ 'prix_total' calculé pour chaque produit
     produits_details = []
@@ -524,21 +543,21 @@ def get_detail_projet(request, projet_id):
 
     context = {
     'produits':produits_details,
-    'form':PaiementProjetForm(request.POST, projet=projet),
+    'form':form,
     # 'status':commande.get_statut_actuel,
     'projet':projet
     }
     return render(request,'partenaires/detail-projet.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def get_commandes(request):
-    orders = ProjetOrder.objects.order_by('created_at')
+    orders = ProjetOrder.objects.order_by('-created_at')
     context = {
         'orders': orders
     }
     return render(request, "partenaires/order.html", context)
 
-@user_passes_test(is_admin)
+@admin_required
 def get_detail_order(request, order_id):
       # Récupérer la commande avec son ID
     commande = get_object_or_404(ProjetOrder, id=order_id)
@@ -563,13 +582,13 @@ def get_detail_order(request, order_id):
     }
     return render(request, "partenaires/detail-order.html", context)
 
-@user_passes_test(is_admin)
+@require_POST
+@admin_required
 def change_statut_order(request, order_id):
     user=request.user
     #   Récupérer l'objet
     order = get_object_or_404(ProjetOrder, id=order_id)
     new_status=order.get_statut_actuel
-    print(new_status)
  
     if (order.get_statut_actuel == "en_attente" ):
       new_status = "en_production"
@@ -601,7 +620,7 @@ def change_statut_order(request, order_id):
     #   Rediriger (par exemple, vers la page des commandes)
     return redirect('partenariat.orders')  # Modifie selon le nom de ta vue cible 
 
-@user_passes_test(is_admin)
+@admin_required
 def suivis_order(request, order_id):
     commande = get_object_or_404(ProjetOrder, id=order_id)
     traitements = TraimentOrder.objects.filter(projet_order=order_id).order_by('-created_at')
@@ -611,7 +630,7 @@ def suivis_order(request, order_id):
     }
     return render(request, 'partenaires/suivis-order.html',context)
 
-@user_passes_test(is_admin)
+@admin_required
 def historique_projet(request, projet_id):
     projet = get_object_or_404(Projet, id=projet_id)
     orders = ProjetOrder.objects.filter(projet=projet_id).order_by('-created_at')
@@ -623,16 +642,80 @@ def historique_projet(request, projet_id):
     }
     return render(request, 'partenaires/historique.html',context)
 
-class ListCodeRevendeur(ListView):
+SUIVANT_ADD = {
+    "en_attente": "en_production",
+    "en_production": "pret_pour_livraison",
+    "pret_pour_livraison": "termine",
+    "termine": "termine",
+}
+
+@require_POST
+@admin_required
+def change_statut_order_add(request, order_id):
+    order = get_object_or_404(OrderAdd, id=order_id)
+    nouveau = SUIVANT_ADD.get(order.get_statut_actuel, "en_attente")
+    TraimentAdd.objects.create(order=order, user=request.user, statut=nouveau)
+    messages.success(request, "Statut mis à jour.")
+    return redirect('partenariat.detail.order.additional', order.id)
+
+@admin_required
+def get_detail_order_additional(request, order_id):
+     # Récupérer la commande avec son ID
+    commande = get_object_or_404(OrderAdd, id=order_id)
+
+    # Récupérer les produits associés à cette commande
+    produits = OrderItemAdd.objects.filter(order=commande)
+
+    with transaction.atomic():
+        order = get_object_or_404(OrderAdd.objects.select_for_update(), id=order_id)
+        form = PaymentAddForm(request.POST or None, order=order)
+
+        if request.method == "POST" and form.is_valid():
+            paiement = form.save(commit=False)
+            paiement.order = order
+            paiement.user = request.user
+            paiement.mode_paid = form.cleaned_data["mode_paid"]
+            paiement.save()
+            messages.success(request, "Paiement enregistré.")
+            return redirect(request.path)
+            #return redirect("detail.proforma", order=order_id)
+
+     # Ajouter un champ 'prix_total' calculé pour chaque produit
+    produits_details = []
+    for item in produits:
+        produits_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+    context = {
+        'produits':produits_details,
+        'totals':commande.get_prix_total,
+        'status':commande.get_statut_actuel,
+        'orderId':commande.id,
+        'order':commande,
+        'form':form
+    }
+    return render(request, 'partenaires/detail-commande-additional.html',context)
+
+class ListCodeRevendeur(AdminRequiredMixin, ListView):
     model=CodePromo
     context_object_name = 'codes'
     template_name = "codepromo/list.html"
 
-def generate_random_code(length=6):
-    characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for i in range(length))
+def generate_random_code(length=8):
+    """Code distributeur imprévisible (module secrets, et non random)."""
+    import secrets
+    characters = string.ascii_uppercase + string.digits
+    while True:
+        code = ''.join(secrets.choice(characters) for _ in range(length))
+        if not CodePromo.objects.filter(code=code).exists():
+            return code
 
-@user_passes_test(is_admin)
+@admin_required
 def add_distributeur(request):
     if request.method == "POST":
         form=DistributeurForm(request.POST)
@@ -649,15 +732,13 @@ def add_distributeur(request):
             )
             messages.success(request, f'le code ce distributeur est {code}!')
             return redirect('code.revendeur')
-        else :
-            print(form.errors)
     else :
         form=DistributeurForm()
 
     return render(request, "codepromo/create.html", {'form':form})
 
 
-@user_passes_test(is_admin)
+@admin_required
 def get_portefeuille_client(request):
     users=CustomUser.objects.all()
     context = {
@@ -665,7 +746,7 @@ def get_portefeuille_client(request):
     }
     return render(request, 'order/porte-feuille-client.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def get_order_user(request, id_user):
     orders=Order.objects.filter(user=id_user).all()
     user=get_object_or_404(CustomUser, id=id_user)
@@ -675,10 +756,137 @@ def get_order_user(request, id_user):
     }
     return render(request, 'order/order-client.html', context)
 
-@user_passes_test(is_admin)
+@admin_required
 def get_portefeuille_partenaire(request):
     partenariats = Partenariats.objects.all()
     context = {
        'partenariats':partenariats,
     }
     return render(request, 'partenaires/portefeuille.html', context)
+
+
+@admin_required
+def get_order_additional(request):
+    orders = OrderAdd.objects.order_by('created_at')
+    context = {
+        'orders': orders
+    }
+    return render(request, "partenaires/list-order-additional.html", context)
+
+@admin_required
+def  get_order_additional_projet(request, projet_id):
+    orders = OrderAdd.objects.filter(id=projet_id).order_by('created_at')
+    projet= get_object_or_404(Projet, id=projet_id)
+    context = {
+        'orders': orders,
+        'projet':projet
+    }
+    return render(request, "partenaires/travaux-add-projet.html", context)
+#proforma
+@admin_required
+def get_order_pro(request):
+    commandes = OrderPro.objects.filter(user=request.user).order_by('-created_at')
+    current_url = request.get_full_path()
+    context = {
+        'orders': commandes,
+        'current_url':current_url,
+    }
+    return render(request, 'proforma/liste-commande-pro.html',context)
+
+@admin_required
+def detail_order_pro(request, order_id):
+     # Récupérer la commande avec son ID
+    commande = get_object_or_404(OrderPro, id=order_id)
+
+    # Récupérer les produits associés à cette commande
+    produits = OrderItemPro.objects.filter(order=commande)
+
+    with transaction.atomic():
+        order = get_object_or_404(OrderPro.objects.select_for_update(), id=order_id)
+        form = PaymentProForm(request.POST or None, order=order)
+
+        if request.method == "POST" and form.is_valid():
+            paiement = form.save(commit=False)
+            paiement.order = order
+            paiement.user = request.user
+            paiement.mode_paid = form.cleaned_data["mode_paid"]
+            paiement.save()
+            messages.success(request, "Paiement enregistré.")
+            return redirect(request.path)
+            #return redirect("detail.proforma", order=order_id)
+
+     # Ajouter un champ 'prix_total' calculé pour chaque produit
+    produits_details = []
+    for item in produits:
+        produits_details.append({
+                'id':item.id,
+                'produit': item.produit,
+                'details': item.details_to_text(),
+                'quantite': item.quantite,
+                'prix': item.prix_u,
+                'total': item.get_prix_total,
+            })
+    context = {
+        'produits':produits_details,
+        'totals':commande.get_prix_total,
+        'status':commande.get_statut_actuel,
+        'orderId':commande.id,
+        'order':commande,
+        'form':form
+    }
+    return render(request, 'proforma/detail-commande-pro.html',context)
+
+@admin_required
+def suivis_commande_pro(request, order_id):
+    commande = get_object_or_404(OrderPro, id=order_id)
+    traitements = TraimentPro.objects.filter(order=order_id).order_by('-created_at')
+    context = {
+        'traitements':traitements,
+        'order':commande
+    }
+    return render(request, 'proforma/suivis-pro.html',context)
+
+@require_POST
+@admin_required
+def change_statut_pro(request, order_id):
+   user=request.user
+    #   Récupérer l'objet
+   order = get_object_or_404(OrderPro, id=order_id)
+   new_status=order.get_statut_actuel
+  
+   if (order.get_statut_actuel == "en_attente" ):
+      new_status = "en_production"
+   elif (order.get_statut_actuel == "en_production" ):
+      new_status = "pret_pour_livraison"
+   if (order.get_statut_actuel == "pret_pour_livraison" ):
+      new_status = "termine"
+   elif (order.get_statut_actuel == "termine" ):
+      new_status = "termine"
+   TraimentPro.objects.create(
+        order=order,
+        user=user,
+        statut=new_status
+    )
+  
+    #   Rediriger (par exemple, vers la page des commandes)
+   return redirect('detail.proforma', order_id)  # Modifie selon le nom de ta vue cible
+
+@require_POST
+@admin_required
+def supprimer_order_pro(request, pk):
+    order = get_object_or_404(OrderPro, pk=pk, user=request.user)
+    date=order.created_at.strftime("%y%m%d")
+    numero = f'{order.numero}BI{date}'
+    order.delete()
+    messages.success(request, f"La commande n° {numero} a été supprimée.")
+    return redirect("liste-order-pro")
+
+@admin_required
+def get_historique_paiement_pro(request, order_id):
+    commande = get_object_or_404(OrderPro, id=order_id)
+    paiements = PaymentPro.objects.filter(order=order_id).order_by('-created_at')
+    context = {
+        'paiements':paiements,
+        'order':commande
+    }
+    return render(request, 'proforma/historique-paiement-pro.html',context)

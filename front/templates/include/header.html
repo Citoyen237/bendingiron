@@ -1,4 +1,5 @@
 {% load static %}
+
 <header id="header" class="header-one">
   <div class="bg-white">
     <div class="container">
@@ -6,18 +7,17 @@
         <div class="row align-items-center">
           <div class="logo col-lg-3 text-center text-lg-left mb-3 mb-md-5 mb-lg-0">
             <a class="d-block" href="#">
-              <img loading="lazy" style="height: 200px; width:200px" src="{% static 'front/images/logoiron.png' %}"
+              <img loading="lazy" style="height: 125px; width:200px" src="{% static 'front/images/logoiron.PNG' %}"
                 alt="bending iron">
             </a>
           </div><!-- logo end -->
-
           <div class="col-lg-9 header-right">
             <ul class="top-info-box">
               <li>
                 <div class="info-box">
                   <div class="info-box-content">
                     <p class="info-box-title">Contactez-nous </p>
-                    <p class="info-box-subtitle">(+237) 686 088 869 / (+237) 681 951 410</p>
+                    <p class="info-box-subtitle">(+237) 698 365 156 / (+237) 676 868 367</p>
                   </div>
                 </div>
               </li>
@@ -29,16 +29,6 @@
                   </div>
                 </div>
               </li>
-              {% if user.is_authenticated %}
-              <li class="header-get-a-quote">
-                <a class="btn btn-primary" href="{% url 'logout' %}">Se deconnecter</a><br>
-                <span style="font-size: smaller;" class="text-success">{{user.last_name}} connecté !</span>
-              </li>
-              {% else %}
-              <li class="header-get-a-quote">
-                <a class="btn btn-primary" href="{% url 'login' %}">Se connecter</a>
-              </li>
-              {% endif %}
             </ul><!-- Ul end -->
           </div><!-- header right end -->
         </div><!-- logo area end -->
@@ -46,7 +36,6 @@
       </div><!-- Row end -->
     </div><!-- Container end -->
   </div>
-
   <div class="site-navigation">
     <div class="container">
       <div class="row">
@@ -93,16 +82,6 @@
                     <!-- <li><a href="pricing.html">Pricing</a></li> -->
                   </ul>
                 </li>
-                {% if user.is_authenticated %}
-                <li class="nav-item dropdown
-                       {% if current_url == '/mes-commandes/' %}
-                            active
-                         {% endif %}  
-                      ">
-                  <a href="{% url 'mes_commande' %}" class="nav-link dropdown-toggle">Mes commandes</a>
-
-                </li>
-                {% endif %}
                  {% if user.is_partenaire %}
                   <li class="nav-item dropdown
                        {% if current_url == '/partenaire/' %}
@@ -120,6 +99,7 @@
                   <a href="{% url 'admin.index' %}" class="nav-link dropdown-toggle">Dashboard</a>
 
                 </li>
+
                 {% endif %}
                 <li class="nav-item
                        {% if current_url == '/a-propos/' %}
@@ -145,11 +125,26 @@
           <span class="badge bg-warning text-white ms-1 rounded-pill">{{ panier_count }}</span>
           <i class="fa fa-shopping-cart"></i>
         </a>
+
+          
+
+
+          <button type="button" class="btn btn-warning ml-4" data-bs-toggle="modal" data-bs-target="#modalCompte">
+    <span class="badge bg-warning text-white ms-1 rounded-pill"></span>
+          <i class="fa fa-user"></i>
+  </button>
+        
         {% else %}
                 <a class="btn btn-outline-warning" href="{% url 'login' %}">
           <span class="badge bg-warning text-white ms-1 rounded-pill">{{ panier_count }}</span>
           <i class="fa fa-shopping-cart"></i>
         </a>
+
+        <a class="btn btn-warning ml-4"  href="{% url 'login' %}">
+        <i class="fas fa-sign-in-alt"></i>   <span class="badge bg-warning text-white ms-1 rounded-pill"></span>
+         
+        </a>
+  
         {% endif %}
 
       </div><!-- Search end -->

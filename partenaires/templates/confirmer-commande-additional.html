@@ -1,0 +1,137 @@
+{% extends 'appf.html' %}
+
+{% block 'title' %}
+confirmation de la commande
+{% endblock %}
+
+
+{% block 'content' %}
+{% load static %}
+{% load humanize %}
+<section class="content project-area">
+    {% if user.is_authenticated %}
+    <div class="container-fluid border shadow">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table table-responsive mt-2">
+                    <thead class='bg-warning'>
+                        <th>Produits</th>
+                        <th>Description</th>
+                        <th>Quantite</th>
+                        <th>Retirer</th>
+                    </thead>
+                    <tbody>
+
+                        {% for item in paniers %}
+
+                        <tr>
+                            <td>{{item.produit}}</td>
+                            <td>{{item.details}}
+                            <td>{{item.quantite}}</td>
+                            <td><a href="{% url 'supprimer_du_panier' item_id=item.id %}" class="btn btn-danger"
+                                    onclick="return confirmSuppression(event, this);"><i class='fas fa-trash'></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <img src="{% static 'nodata.png'%}" alt="" height="100px">
+                                <br>
+                                <span> Votre panier est vide</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-light m-2">
+                    <div class="card-body">
+                        <h4 class="card-title">Information sur la commande additionnel</h4>
+                        <hr>
+                        <form action="" method="post" enctype="multipart/form-data" id="orderadd-form">
+                            {% csrf_token %}
+                            {{form.as_p}}
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-2 mt-2">
+                                <!-- Checkbox -->
+                                <div class="form-check mb-0">
+                                    <h6>Total</h6>
+                                </div>
+                                <a class="text-dark">{{total_prix}} FCFA</a>
+                            </div>
+                            {% if paniers %}
+                            <div class="input mb-3">
+                                <button type="submit" class="btn btn-primary form-control">
+                                    Confirmer
+                                </button>
+                            </div>
+                            {% endif %}
+                        </form>
+
+                    </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h3><a class=" text-warning text-center" href="{% url 'login' %}">Connecter vous</a> pour voir votre panier panier
+    </h3>
+    {%endif%}
+    {{ projets_data|json_script:"projets-data" }}
+<script>
+   
+</script>
+    <!--/ Container end -->
+</section><!-- Content end -->
+
+<script>
+
+     // Partenaire -> Projet : la liste des projets est filtrée selon le partenaire choisi
+    (function () {
+        const sPart = document.getElementById("id_partenaire");
+        const sProj = document.getElementById("id_projet_order");
+        const dataEl = document.getElementById("projets-data");
+        if (!sPart || !sProj || !dataEl) {
+            console.error("OrderAdd : #id_partenaire, #id_projet_order ou #projets-data introuvable.");
+            return;
+        }
+        const projets = JSON.parse(dataEl.textContent);
+
+        function remplirProjets() {
+            const partId = String(sPart.value);
+            sProj.innerHTML = "";
+            sProj.add(new Option("-- Choisir un projet --", ""));
+            if (!partId) return;
+            const liste = projets.filter(function (p) {
+                return String(p.partenariat_id) === partId;
+            });
+            liste.forEach(function (p) { sProj.add(new Option(p.name, p.id)); });
+            if (!liste.length) sProj.options[0].text = "Aucun projet pour ce partenaire";
+            if (window.jQuery && window.jQuery(sProj).data("select2")) {
+                window.jQuery(sProj).trigger("change.select2");
+            }
+        }
+
+        if (window.jQuery) { window.jQuery(sPart).on("change", remplirProjets); }
+        else { sPart.addEventListener("change", remplirProjets); }
+    })();
+    // Fonction JavaScript pour confirmer la suppression
+    function confirmSuppression(event, link) {
+        // Demande de confirmation
+        const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce produit de votre panier ?");
+
+        // Si l'utilisateur confirme, la suppression est effectuée
+        if (confirmation) {
+            return true;  // Lien est suivi et la suppression a lieu
+        } else {
+            event.preventDefault();  // Empêche la suppression si l'utilisateur annule
+            return false;
+        }
+    }
+</script>
+{% load static %}
+{%endblock%}

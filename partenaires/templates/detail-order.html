@@ -142,7 +142,7 @@ detail
             </div>
         </div>
         <div class="row">
-            <div class='col-md-7'>
+            <div class='col-md-12'>
                 <table class="table table-responsive">
                     <thead class='bg-warning'>
                         <th>Produit</th>
@@ -160,7 +160,7 @@ detail
                         <tr>
                             <td colspan="3"><b>
                                     <button id="downloadBtn" class="btn btn-warning download_btn"
-                                        data-url="{% url 'download-bon' order.id %}">
+                                        data-url="{% url 'download-bon-livraion' order.id %}">
                                         <i class="fas fa-download"></i>
                                         <span id="btnText" class="btn_text"></span>
                                         <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"

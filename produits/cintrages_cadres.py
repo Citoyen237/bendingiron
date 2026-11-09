@@ -8,6 +8,7 @@ class CarreForm(forms.Form):
             'id': 'prix_revient'  # Attribut id
         })
     )
+
     choix_fer = [
         ('bending iron','Bending Iron'),
         ('le client','le client'),
@@ -28,8 +29,8 @@ class CarreForm(forms.Form):
     )
     
     choix_fer = [
-        ('bending iron','Bending Iron'),
-        ('le client','le client'),
+        ('bending iron','L’entreprise (Bending Iron SARL) '),
+        ('le client','le client (Moi)'),
     ]
 
     fer=forms.ChoiceField(
@@ -46,7 +47,39 @@ class CarreForm(forms.Form):
         })
     )
 
-    longueur_Cote = forms.FloatField(
+    choix_marque_fer = [
+        ('prometal','Fer Prometal'),
+        ('autre fer','Autre fer (Metafrique,...)'),
+    ]
+
+    marque_fer=forms.ChoiceField(
+        choices=choix_marque_fer,
+        # widget=forms.RadioSelect,
+        label = "Marque de fer ",
+        required=True,
+         widget=forms.RadioSelect(attrs={
+            'id': 'marque_fer' , # Attribut id
+            'initial':'fer prometal',
+        })
+    )
+
+    choix_type_fer = [
+        ('fe400','FE400'),
+        ('fe500','FE500'),
+    ]
+
+    type_fer=forms.ChoiceField(
+        choices=choix_type_fer,
+        # widget=forms.RadioSelect,
+        label = "Type de fer ",
+        required=True,
+         widget=forms.RadioSelect(attrs={
+            'id': 'type_fer' , # Attribut id
+            'initial':'fe400',
+        })
+    )
+
+    longueurCote = forms.FloatField(
         label=" Longueur du cote (cm)",
         required=True,  # Champ requis
         # initial,  # Valeur par défaut
@@ -104,7 +137,7 @@ class CarreForm(forms.Form):
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',  # Classe CSS
+            'class': 'form-control font-weight-bold',  # Classe CSS
             'readonly': 'readonly',  # Attribut readonly
             'value': '0',  # Valeur initiale
             'id': 'prix-id'  # Attribut id
@@ -115,7 +148,7 @@ class CarreForm(forms.Form):
         # required=True,  # Champ requis
         # initial=0,  # Valeur par défaut
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',  # Classe CSS
+            'class': 'form-control font-weight-bold',  # Classe CSS
             'readonly': 'readonly',  # Attribut readonly
             'value': '0',  # Valeur initiale
             'id': 'prix-total'  # Attribut id
@@ -134,31 +167,33 @@ class CarreForm(forms.Form):
             'id': 'quantite'  # Attribut id
         })
     )
+
     CHOICES = [
-        ('90', '90'),
-        ('135', '135'),
+        ('90', '90°'),
+        ('135', '135°'),
     ]
 
-    Angle_pliage = forms.ChoiceField(
+    angle_pliage=forms.ChoiceField(
         choices=CHOICES,
-        label="Choix de l’angle (degre)",
-        required=True,  # Champ requis
-        initial='135',  # Valeur par défaut
-        widget=forms.Select(attrs={
-            'class':{ 'form-select','mt-4'},  # Classe CSS
-            'id': 'angle',  # Attribut id
-            # 'readonly': 'readonly',  # Attribut readonly (facultatif)
+        # widget=forms.RadioSelect,
+        label = "Type de fer ",
+        required=True,
+         widget=forms.RadioSelect(attrs={
+            'id': 'angle_pliage' , # Attribut id
+            'initial':'90',
         })
     )
+
+   
     
     CHOICES2 = [
-        ('6', 'Fer 6'),
-        ('8', 'Fer 8'),
-        ('10', 'Fer 10'),
-        ('12', 'Fer 12'),
+        ('6', 'HA6'),
+        ('8', 'HA8'),
+        ('10', 'HA10'),
+        ('12', 'HA12'),    
     ]
     
-    Diametre_fer = forms.ChoiceField(
+    diametre = forms.ChoiceField(
         choices=CHOICES2,
         label="Choix du fer",
         required=True,  # Champ requis

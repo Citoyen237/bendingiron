@@ -1,0 +1,108 @@
+{% extends 'appf.html' %}
+{% load humanize %}
+
+{% block 'title' %}
+Paiement en cours
+{% endblock %}
+
+{% block 'content' %}
+<style>
+    #ecran-paiement [hidden] { display: none !important; }
+    #ecran-paiement .icone { font-size: 4rem; line-height: 1; }
+</style>
+<section class="main-container" id="ecran-paiement">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+
+                <!-- Pendant le paiement -->
+                <div id="bloc-attente">
+                    <h2 class="mb-3">Paiement en cours</h2>
+                    <p>Montant : <b>{{ demande.montant|intcomma }} FCFA</b> ({{ demande.get_provider_display }})</p>
+                    <p>Validez la demande sur votre téléphone (numéro se terminant par
+                        <b>{{ demande.subscriber_msisdn_last4 }}</b>) avec votre code secret.</p>
+                    <div class="spinner-border text-primary my-3" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <p class="fw-bold" id="statut-message">En attente de confirmation…</p>
+                    <p class="text-muted small">Ne fermez pas cette page.</p>
+                </div>
+
+                <!-- Succès -->
+                <div id="bloc-succes" hidden>
+                    <div class="icone text-success mb-2">&#10004;</div>
+                    <h2 class="text-success mb-3">Paiement réussi</h2>
+                    <p><b>{{ demande.montant|intcomma }} FCFA</b> payés par {{ demande.get_provider_display }}.</p>
+                    <p id="motif-succes"></p>
+                    {% if demande.est_nouvelle_commande %}<p class="text-muted">Votre commande est enregistrée et votre panier a été vidé.</p>{% endif %}
+                    <a href="{% url 'mes_commande' %}" class="btn btn-primary">Voir mes commandes</a>
+                </div>
+
+                <!-- Échec -->
+                <div id="bloc-echec" hidden>
+                    <div class="icone text-danger mb-2">&#10008;</div>
+                    <h2 class="text-danger mb-3" id="titre-echec">Paiement échoué</h2>
+                    <p><b>Motif :</b> <span id="motif-echec"></span></p>
+                    <p class="text-muted">Aucun montant n'a été enregistré.
+                        {% if demande.est_nouvelle_commande %}Votre panier est conservé.{% endif %}</p>
+                    {% if demande.est_nouvelle_commande %}
+                    <a href="{% url 'confirmer-commande' %}#paiement" class="btn btn-primary">Réessayer le paiement</a>
+                    <a href="{% url 'panier' %}" class="btn btn-secondary">Retour au panier</a>
+                    {% else %}
+                    <a href="{% url 'payer-solde' demande.order_id %}" class="btn btn-primary">Réessayer le paiement</a>
+                    <a href="{% url 'mes_commande' %}" class="btn btn-secondary">Mes commandes</a>
+                    {% endif %}
+                </div>
+
+                <!-- Toujours en attente après 5 minutes -->
+                <div id="bloc-delai" hidden>
+                    <h2 class="mb-3">Paiement toujours en attente</h2>
+                    <p>Nous n'avons pas encore reçu la confirmation de l'opérateur.
+                        Vous pouvez suivre le statut dans « Mes commandes ».</p>
+                    <a href="{% url 'mes_commande' %}" class="btn btn-primary">Mes commandes</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+(function () {
+    const url = "{% url 'statut-paiement-json' demande.provider_reference %}";
+    const blocs = {
+        attente: document.getElementById("bloc-attente"),
+        succes: document.getElementById("bloc-succes"),
+        echec: document.getElementById("bloc-echec"),
+        delai: document.getElementById("bloc-delai"),
+    };
+    let essais = 0;
+
+    function montrer(nom) {
+        Object.entries(blocs).forEach(([cle, bloc]) => { bloc.hidden = cle !== nom; });
+    }
+
+    function verifier() {
+        essais += 1;
+        fetch(url, {credentials: "same-origin"})
+            .then(r => r.json())
+            .then(data => {
+                if (!data.is_final) {
+                    document.getElementById("statut-message").textContent = data.message;
+                    if (essais < 60) { setTimeout(verifier, 5000); }   // toutes les 5 s, 5 min maximum
+                    else { montrer("delai"); }
+                    return;
+                }
+                if (data.succes) {
+                    document.getElementById("motif-succes").textContent = data.motif || "";
+                    montrer("succes");
+                } else {
+                    document.getElementById("titre-echec").textContent = data.message;
+                    document.getElementById("motif-echec").textContent = data.motif || "Non précisé.";
+                    montrer("echec");
+                }
+            })
+            .catch(() => setTimeout(verifier, 5000));
+    }
+    setTimeout(verifier, 2000);
+})();
+</script>
+{% endblock %}

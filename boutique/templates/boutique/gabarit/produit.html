@@ -1,0 +1,359 @@
+{% extends 'appf.html' %}
+{% load static %}
+
+{% block 'title' %}
+{{ product.nom }}
+{% endblock %}
+
+{% block 'content' %}
+{# Gabarit universel (application boutique) : même disposition que la page du cadre carré. #}
+<link rel="stylesheet" href="{% static 'boutique/gabarit.css' %}">
+
+<section class="content project-area solid-bg">
+    <div class="container border shadow py-2 my-2">
+        <div class="row">
+            <div class="col-lg-12"><br>
+                <h3 class="column-title bg-warning p-3 text-center">Parametres du {{ product.nom }}</h3>
+            </div>
+        </div>
+
+        {% if apercu %}
+        <div class="apercu-admin" id="apercu-admin">
+            <b>Aperçu administrateur</b> : la case « utiliser le gabarit universel » n'est pas encore cochée.
+            Les clients voient toujours l'ancienne page.
+        </div>
+        {% endif %}
+
+        {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}info{% endif %} mx-3">{{ message }}</div>
+        {% endfor %}
+
+        <form action="" method="post" id="form-parametres" novalidate
+              data-url-calcul="{% url 'boutique.calcul' product.id %}">
+            {% csrf_token %}
+
+            <div class="param" style="grid-template-rows: repeat({{ derniere_ligne|add:'-1' }}, minmax(3.1rem, auto));">
+                <div class="param-fond" aria-hidden="true" style="grid-row: 1 / {{ derniere_ligne }};"></div>
+
+                <!-- ===== 1) Les caractéristiques ===== -->
+                <button type="button" class="carac" style="--row: {{ rows.fer }}" data-panneau="p-fer"
+                        aria-controls="p-fer" aria-selected="false">
+                    <span class="carac-texte">Qui fournit le fer<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: {{ rows.marque }}" data-panneau="p-marque"
+                        aria-controls="p-marque" aria-selected="false">
+                    <span class="carac-texte">Marque &amp; Type de fer<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <button type="button" class="carac" style="--row: {{ rows.diametre }}" data-panneau="p-diametre"
+                        aria-controls="p-diametre" aria-selected="false">
+                    <span class="carac-texte">Choix du fer (M)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                {% if angles %}
+                <button type="button" class="carac" style="--row: {{ rows.angle }}" data-panneau="p-angle"
+                        aria-controls="p-angle" aria-selected="false">
+                    <span class="carac-texte">Choix de l’angle (°)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+                {% endif %}
+                <button type="button" class="carac" style="--row: {{ rows.dimension }}" data-panneau="p-dimension"
+                        aria-controls="p-dimension" aria-selected="false">
+                    <span class="carac-texte">Dimension (cm)<span class="carac-valeur"></span></span>
+                    <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
+                </button>
+
+                <!-- ===== 2) Le cadre de droite ===== -->
+                <div class="p-cadre" aria-live="polite" style="grid-row: 1 / {{ rows.dimension|add:'1' }};">
+                    <div class="p-vide" id="p-vide">
+                        <span>Clique sur une caractéristique, à gauche,<br>pour choisir ses options.</span>
+                    </div>
+
+                    <div class="panneau" id="p-fer" style="--row: {{ rows.fer }}" role="region" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Qui fournit le fer :</p>
+                            <div class="options"><div>
+                                {% for valeur, libelle in choix_fer %}
+                                <label><input type="radio" name="fer" value="{{ valeur }}" id="fer-{{ forloop.counter }}"
+                                              required {% if choisis.fer == valeur %}checked{% endif %}>{{ libelle }}</label>
+                                {% endfor %}
+                            </div></div>
+                            <div class="erreur-champ" data-champ="fer" role="alert" {% if erreur_champ != "fer" %}hidden{% endif %}>{% if erreur_champ == "fer" %}{{ erreur_message }}{% endif %}</div>
+                        </div>
+                    </div>
+
+                    <div class="panneau" id="p-marque" style="--row: {{ rows.marque }}" role="region" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Marque de fer :</p>
+                            <div class="options"><div>
+                                {% for marque in marques %}
+                                <label><input type="radio" name="marque_fer" value="{{ marque }}" required
+                                              {% if choisis.marque == marque %}checked{% endif %}>{{ marque|capfirst }}</label>
+                                {% empty %}
+                                <span class="text-danger">Aucun prix du fer n'est encore renseigné pour ce produit.</span>
+                                {% endfor %}
+                            </div></div>
+                            <div class="erreur-champ" data-champ="marque_fer" role="alert" {% if erreur_champ != "marque_fer" %}hidden{% endif %}>{% if erreur_champ == "marque_fer" %}{{ erreur_message }}{% endif %}</div>
+                        </div>
+                        <div class="groupe">
+                            <p class="groupe-titre">Type de fer :</p>
+                            <div class="options"><div>
+                                {% for type in types %}
+                                <label><input type="radio" name="type_fer" value="{{ type|lower }}" required
+                                              {% if choisis.type == type|lower %}checked{% endif %}>{{ type }}</label>
+                                {% endfor %}
+                            </div></div>
+                            <div class="erreur-champ" data-champ="type_fer" role="alert" {% if erreur_champ != "type_fer" %}hidden{% endif %}>{% if erreur_champ == "type_fer" %}{{ erreur_message }}{% endif %}</div>
+                        </div>
+                    </div>
+
+                    <div class="panneau" id="p-diametre" style="--row: {{ rows.diametre }}" role="region" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Diamètre du fer :</p>
+                            <div class="options"><div>
+                                {% for d in diametres %}
+                                <label><input type="radio" name="diametre" value="{{ d }}" required
+                                              {% if choisis.diametre == d|stringformat:'s' %}checked{% endif %}>HA{{ d }}</label>
+                                {% endfor %}
+                            </div></div>
+                            <div class="erreur-champ" data-champ="diametre" role="alert" {% if erreur_champ != "diametre" %}hidden{% endif %}>{% if erreur_champ == "diametre" %}{{ erreur_message }}{% endif %}</div>
+                        </div>
+                    </div>
+
+                    {% if angles %}
+                    <div class="panneau" id="p-angle" style="--row: {{ rows.angle }}" role="region" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Angle de cintrage :</p>
+                            <div class="options"><div>
+                                {% for angle in angles %}
+                                <label><input type="radio" name="angle" value="{{ angle.valeur }}" required
+                                              {% if choisis.angle == angle.valeur|stringformat:'s' %}checked{% endif %}>{{ angle.libelle }}</label>
+                                {% endfor %}
+                            </div></div>
+                            <div class="erreur-champ" data-champ="angle" role="alert" {% if erreur_champ != "angle" %}hidden{% endif %}>{% if erreur_champ == "angle" %}{{ erreur_message }}{% endif %}</div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="panneau" id="p-dimension" style="--row: {{ rows.dimension }}" role="region" hidden>
+                        <div class="groupe">
+                            <p class="groupe-titre">Dimension (cm) :</p>
+                            {% for ligne in dimensions %}
+                            <div class="dim-ligne">
+                                <label for="dim_{{ ligne.dim.abreviation }}">{{ ligne.dim.libelle }} {{ ligne.dim.abreviation }} (cm)</label>
+                                <div class="options">
+                                    <input type="number" class="form-control" name="dim_{{ ligne.dim.abreviation }}"
+                                           id="dim_{{ ligne.dim.abreviation }}" step="0.1" required
+                                           min="{{ ligne.dim.minimum|stringformat:'g' }}" max="{{ ligne.dim.maximum|stringformat:'g' }}"
+                                           value="{{ ligne.valeur }}">
+                                </div>
+                                <span class="dim-aide">entre {{ ligne.dim.minimum|floatformat:'-2' }} et {{ ligne.dim.maximum|floatformat:'-2' }} cm</span>
+                                <div class="erreur-champ" data-champ="dim_{{ ligne.dim.abreviation }}" role="alert"
+                                     {% if erreur_champ != ligne.champ %}hidden{% endif %}>{% if erreur_champ == ligne.champ %}{{ erreur_message }}{% endif %}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== 3) Quantité et valeurs calculées par le serveur ===== -->
+                {% for ligne in lignes %}
+                <div class="p-ligne p-ligne-inline" style="--row: {{ ligne.row }}">
+                    <label class="p-lab {% if ligne.cle != 'quantite' %}p-lab-gris{% endif %}" for="calc-{{ ligne.cle }}">
+                        {% if ligne.cle == 'pu' or ligne.cle == 'total' %}<b>{{ ligne.libelle }}</b>{% else %}{{ ligne.libelle }}{% endif %}
+                    </label>
+                    {% if ligne.cle == 'quantite' %}
+                    <div class="p-champ">
+                        <input type="number" name="quantite" id="calc-quantite" min="1" max="{{ quantite_max }}" step="1"
+                               value="{{ choisis.quantite }}" required>
+                        <div class="erreur-champ" data-champ="quantite" role="alert" {% if erreur_champ != "quantite" %}hidden{% endif %}>{% if erreur_champ == "quantite" %}{{ erreur_message }}{% endif %}</div>
+                    </div>
+                    {% else %}
+                    <div class="p-champ {% if ligne.cle == 'pu' or ligne.cle == 'total' %}p-prix{% else %}p-gris{% endif %}">
+                        <input type="text" id="calc-{{ ligne.cle }}" readonly tabindex="-1" value="">
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <!-- ===== 4) Image du produit + dessin à l'échelle ===== -->
+                <div class="p-image" style="grid-row: {{ rows.dimension|add:'1' }} / {{ derniere_ligne }};">
+                    <img loading="lazy" class="img-fluid" src="{{ product.imageshop2d.url }}" alt="Schéma du {{ product.nom }}">
+                    {% if config.forme %}
+                    <div class="p-dessin">
+                        <svg id="dessin" role="img" aria-label="Dessin du {{ product.nom }} à l'échelle"
+                             viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet"></svg>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="calcul-erreur" id="calcul-erreur" role="alert"
+                 {% if not erreur_message or erreur_champ %}hidden{% endif %}>{% if erreur_message and not erreur_champ %}{{ erreur_message }}{% endif %}</div>
+
+            <div class="p-boutons mb-3">
+                <a class="btn btn-secondary" href="{% url 'produit' product.id %}">Annuler</a>
+                {% if apercu %}
+                <span class="text-muted">Aperçu : ajout au panier désactivé.</span>
+                {% elif user.is_authenticated %}
+                <button type="submit" class="btn btn-warning" id="bouton-panier">Ajouter au panier</button>
+                {% else %}
+                <a class="btn btn-danger" href="{% url 'login' %}?next={{ request.path|urlencode }}">Connecter vous pour ajouter au panier</a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ===== Ouverture des panneaux (même comportement que le cadre carré) ===== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const boutons = document.querySelectorAll(".carac");
+    const panneaux = document.querySelectorAll(".panneau");
+    const vide = document.getElementById("p-vide");
+    const mobile = window.matchMedia("(max-width: 991.98px)");
+
+    function ouvrir(id) {
+        panneaux.forEach(p => { p.hidden = (p.id !== id); });
+        boutons.forEach(b => b.setAttribute("aria-selected", b.dataset.panneau === id ? "true" : "false"));
+        vide.hidden = true;
+    }
+    function fermerTout() {
+        panneaux.forEach(p => { p.hidden = true; });
+        boutons.forEach(b => b.setAttribute("aria-selected", "false"));
+    }
+    function resume(panneau) {
+        const valeurs = [];
+        panneau.querySelectorAll("input").forEach(c => {
+            if (c.type === "radio" && !c.checked) return;
+            const v = c.type === "radio" ? c.parentElement.textContent.trim() : c.value.trim();
+            if (v) valeurs.push(v);
+        });
+        const cible = document.querySelector('.carac[data-panneau="' + panneau.id + '"] .carac-valeur');
+        if (cible) cible.textContent = valeurs.join(" · ");
+    }
+    boutons.forEach(b => b.addEventListener("click", () => {
+        if (mobile.matches && b.getAttribute("aria-selected") === "true") { fermerTout(); } else { ouvrir(b.dataset.panneau); }
+    }));
+    panneaux.forEach(p => {
+        ["input", "change"].forEach(evt => p.addEventListener(evt, () => resume(p)));
+        resume(p);
+    });
+    // Erreur renvoyée par le serveur dans un panneau : on ouvre ce panneau
+    const enErreur = document.querySelector(".panneau .erreur-champ:not([hidden])");
+    if (enErreur) ouvrir(enErreur.closest(".panneau").id);
+
+    // Champ obligatoire vide dans un panneau fermé : on ouvre ce panneau
+    document.getElementById("form-parametres").addEventListener("invalid", e => {
+        const p = e.target.closest(".panneau");
+        if (p && p.hidden) ouvrir(p.id);
+    }, true);
+});
+</script>
+
+<!-- ===== Calcul en direct : c'est le SERVEUR qui calcule (aucune formule ici) ===== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("form-parametres");
+    const erreurGenerale = document.getElementById("calcul-erreur");
+    const bouton = document.getElementById("bouton-panier");
+    const svg = document.getElementById("dessin");
+    const milliers = n => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    const champ = cle => document.getElementById("calc-" + cle);
+    const ns = "http://www.w3.org/2000/svg";
+    let minuterie = null, numero = 0;
+
+    // Champs déjà touchés par le client : on n'affiche une erreur que sous ceux-là
+    // (pas de « Précisez qui fournit le fer » à l'ouverture de la page).
+    const touches = new Set();
+    document.querySelectorAll(".erreur-champ:not([hidden])").forEach(e => touches.add(e.dataset.champ));
+
+    function afficher(cle, valeur) { const c = champ(cle); if (c) c.value = valeur; }
+    function vider() { ["r", "ldf", "lt", "poids", "poids_total", "pu", "total"].forEach(c => afficher(c, "")); if (svg) svg.innerHTML = ""; }
+    const decimal = (n, chiffres) => Number(n).toFixed(chiffres).replace(".", ",");   // 0.367 -> "0,367"
+
+    function effacerErreurs() {
+        document.querySelectorAll(".erreur-champ").forEach(e => { e.hidden = true; e.textContent = ""; });
+        erreurGenerale.hidden = true;
+    }
+
+    function montrerErreur(nomChamp, message) {
+        if (!nomChamp) {                                  // donnée manquante dans l'admin
+            erreurGenerale.textContent = message;
+            erreurGenerale.hidden = false;
+            return;
+        }
+        if (!touches.has(nomChamp)) return;               // champ pas encore rempli : on attend
+        const zone = document.querySelector('.erreur-champ[data-champ="' + nomChamp + '"]');
+        if (zone) { zone.textContent = message; zone.hidden = false; }
+    }
+
+    // Dessin : tracé calculé par le serveur (coins arrondis au rayon R) ; cotes sauf crochets Ldf
+    function dessiner(dessin) {
+        if (!svg) return;
+        svg.innerHTML = "";
+        if (!dessin || !dessin.chemin) return;
+        const [x, y, l, h] = dessin.cadre;
+        const taille = Math.max(l, h, 1), marge = taille * 0.18;
+        svg.setAttribute("viewBox", [x - marge, y - marge, l + 2 * marge, h + 2 * marge].join(" "));
+        const trait = document.createElementNS(ns, "path");
+        trait.setAttribute("d", dessin.chemin);
+        trait.setAttribute("class", "trait");
+        svg.appendChild(trait);
+        const ecart = taille * 0.08, police = taille * 0.07;
+        (dessin.cotes || []).forEach(c => {
+            const t = document.createElementNS(ns, "text");
+            t.setAttribute("x", c.x + c.dx * ecart);
+            t.setAttribute("y", -(c.y + c.dy * ecart));
+            t.setAttribute("class", c.type === "ldf" ? "cote cote-ldf" : "cote");
+            t.setAttribute("style", "font-size:" + police + "px");
+            t.textContent = c.texte;
+            svg.appendChild(t);
+        });
+    }
+
+    function calculer() {
+        const ce = ++numero;   // seule la réponse la plus récente compte
+        fetch(form.dataset.urlCalcul, {
+            method: "POST",
+            headers: { "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value },
+            body: new FormData(form),
+            credentials: "same-origin",
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (ce !== numero) return;
+            effacerErreurs();
+            if (!data.ok) {
+                vider();
+                montrerErreur(data.champ, data.erreur);
+                return;
+            }
+            afficher("r", data.r);
+            afficher("ldf", data.ldf);
+            afficher("lt", data.lt);
+            afficher("poids", decimal(data.poids, 3));
+            afficher("poids_total", decimal(data.poids_total, 2));
+            afficher("pu", milliers(data.pu));
+            afficher("total", milliers(data.total));
+            dessiner(data.dessin);
+        })
+        .catch(() => {
+            if (ce === numero) { erreurGenerale.textContent = "Calcul indisponible, réessayez."; erreurGenerale.hidden = false; }
+        });
+    }
+
+    function saisie(e, delai) {
+        if (e.target.name) touches.add(e.target.name);
+        clearTimeout(minuterie);
+        minuterie = setTimeout(calculer, delai);
+    }
+    form.addEventListener("input", e => saisie(e, 300));
+    form.addEventListener("change", e => saisie(e, 100));
+    // À l'envoi, le serveur vérifie tout et affiche l'erreur sous le champ concerné
+    if (bouton) form.addEventListener("submit", () => { bouton.disabled = true; });
+    calculer();
+});
+</script>
+{% endblock %}

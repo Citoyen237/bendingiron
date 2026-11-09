@@ -1,0 +1,119 @@
+paiements
+
+'''class OrderPro(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    remise = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def prix_revient_total(self):
+        return sum(item.prix_revient for item in self.orderitem_set.all())
+    
+    def montant_remise(self):
+        return (self.prix_revient_total*self.remise)/100
+
+    @property
+    def get_prix_total(self):
+        total =sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+        return round(Decimal(total) - self.montant_remise())
+
+    @property
+    def montant_tva(self):
+        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    
+    @property
+    def net_payer(self):
+        return round(self.montant_tva + self.get_prix_total)
+
+    # @property
+    # def get_prix_total(self):
+    #     total=sum(item.prix_u * item.quantite for item in self.orderitem_set.all())
+    #     return total
+    
+    # @property
+    # def montant_tva(self):
+    #     return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+    
+    # @property
+    # def net_payer(self):
+    #     return round(self.montant_tva + self.get_prix_total)
+    
+    @property
+    def get_tranche1(self):
+        return round((self.net_payer*30)/100)
+    
+    @property
+    def get_tranche2(self):
+        return round((self.net_payer*70)/100)
+    
+    @property
+    def get_statut_actuel(self):
+        dernier_traiment = self.traiment_set.order_by('-created_at').first()
+        return dernier_traiment.statut if dernier_traiment else "Aucun traitement"
+    
+    @property
+    def infoclient(self):
+        try:
+            return self.orderuserinfo_set.first()  # si OneToOneField
+        except OrderUserInfo.DoesNotExist:
+            return None
+    
+    def __str__(self):
+        return f"{self.user} - {self.get_prix_total}"
+
+class OrderItemPro(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    produit = models.ForeignKey(Produit, on_delete=models.CASCADE)
+    details = models.JSONField()  # Détails du produit (dimensions, choix d'angle, etc.)
+    quantite = models.PositiveIntegerField(default=1)
+    prix_revient=models.DecimalField(max_digits=10, decimal_places=2)
+    prix_u = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def details_to_text(self):
+        if not self.details:
+            return ""
+        return " | ".join(f"{key.capitalize()} : {value}" for key, value in self.details.items())
+
+    @property
+    def get_prix_total(self):
+        return self.prix_u*self.quantite
+    
+
+    def __str__(self):
+        return f"{self.produit.nom} - Quantité: {self.quantite}"
+
+class TraimentPro(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    statut = models.CharField(max_length=20, choices=[
+        ('en_attente', 'En attente'),
+        ('en_production', 'En production'),
+        ('pret_pour_livraison', 'Pret pour livraison'),
+        ('solde_facture', 'Solde ma facture'),
+        ('termine', 'Livraison termine'),
+    ], default='en_attente')
+    created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
+    
+    def __str__(self):
+        return f"{self.order}-{self.statut}"
+    
+class OrderUserInfoPro(models.Model):
+    '''retrait en usine, livraison sur chantier'''
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    nom = models.CharField(max_length=255)
+    telephone = models.CharField(max_length=255)
+    mode_livraison= models.CharField(max_length=255, default="livraison sur chantier")
+    adresse = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.nom
+
+class PaymentPro(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    amount_paid = models.FloatField(help_text="Montant payé par l'utilisateur")
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Paiement - Commande {self.order.id} : {self.amount_paid} fcfa"
