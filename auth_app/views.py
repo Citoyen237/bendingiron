@@ -23,6 +23,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.views.decorators.csrf import ensure_csrf_cookie
+# Masque les champs du formulaire (mots de passe) dans les e-mails d'erreur 500
+from django.views.decorators.debug import sensitive_post_parameters
 
 
 token_generator = PasswordResetTokenGenerator()
@@ -97,6 +99,7 @@ def _cle_echecs(request, email):
     return f"login-echecs:{_ip(request)}:{(email or '').lower()}"
 
 
+@sensitive_post_parameters()
 @ensure_csrf_cookie
 def loginPage(request):
     if request.method == "POST":
@@ -130,6 +133,7 @@ def loginPage(request):
         form = LoginForm()
     return render(request, 'login.html', {'form':form})
 
+@sensitive_post_parameters()
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
@@ -216,6 +220,7 @@ def _erreurs_mot_de_passe(motdepasse, user):
         return list(e.messages)
 
 
+@sensitive_post_parameters()
 @login_required
 def change_password(request):
     if request.method == "POST":

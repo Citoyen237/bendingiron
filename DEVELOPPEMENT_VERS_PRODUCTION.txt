@@ -1,0 +1,126 @@
+=====================================================================
+  BENDING IRON - DU DÉVELOPPEMENT À LA PRODUCTION, PAS À PAS
+=====================================================================
+Rédigé le 10/11/2026.
+
+ Votre PC (développement)        GitHub (public)              VPS (production)
+ SiteDFmac + WAMP/MariaDB  push  Citoyen237/bendingiron copie /var/www/bendingiron
+ .env de développement    ---->  tests automatiques    ---->  Docker : web + MySQL 8
+ DEBUG=True                      (GitHub Actions)     si OK   .env de production
+                                                              DEBUG=False
+
+Le CODE voyage PC -> GitHub -> serveur.
+Les SECRETS (.env) et les DONNÉES (base, photos medias/) ne voyagent
+JAMAIS par ce chemin : chaque endroit a les siens.
+
+
+---------------------------------------------------------------------
+ÉTAPE 1 - DÉVELOPPER EN LOCAL
+---------------------------------------------------------------------
+Dans C:\Users\citoyen\Desktop\SiteDFmac, WAMP allumé :
+    conda activate bending
+    python manage.py runserver
+
+  - manage.py utilise SiteDFmac/local.py et le .env local :
+    DEBUG=True, base MariaDB de WAMP, paiements sandbox/simulation.
+  - Les erreurs s'affichent en détail dans le navigateur.
+
+
+---------------------------------------------------------------------
+ÉTAPE 2 - SI UN MODÈLE CHANGE (models.py) : CRÉER LA MIGRATION
+---------------------------------------------------------------------
+    python manage.py makemigrations
+    python manage.py migrate
+
+  Les fichiers créés dans */migrations/ DOIVENT être commités.
+  Le serveur ne fait que les appliquer, il n'en crée jamais.
+  C'est ainsi que la base de production évolue, SANS réimporter de .sql
+  (l'import complet du 09/11/2026 était exceptionnel).
+
+
+---------------------------------------------------------------------
+ÉTAPE 3 - VÉRIFIER AVANT D'ENVOYER
+---------------------------------------------------------------------
+    python manage.py check
+    python manage.py makemigrations --check --dry-run
+    python manage.py test
+    git status
+
+  - Les 3 premières commandes sont celles que GitHub relancera.
+  - git status : ni .env, ni .sql, ni mot de passe, ni adresse
+    personnelle. LE DÉPÔT EST PUBLIC.
+  - Pièges Linux : majuscules/minuscules dans les noms de fichiers
+    (logoiron.PNG) et de tables (usesorders_cart).
+
+
+---------------------------------------------------------------------
+ÉTAPE 4 - COMMIT PUIS PUSH
+---------------------------------------------------------------------
+    git add <fichiers>
+    git commit -m "Ce que fait la modification"
+    git push origin main
+
+  Grosse modification : pousser plutôt sur une BRANCHE (ex. mise-a-jour).
+  GitHub lance les tests SANS déployer ; on fusionne dans main quand
+  on est prêt.
+
+
+---------------------------------------------------------------------
+ÉTAPE 5 - GITHUB TESTE PUIS DÉPLOIE (automatique)
+---------------------------------------------------------------------
+Fichier .github/workflows/django.yml :
+  1. tests Python 3.11 et 3.12 ; s'ils échouent, RIEN n'est déployé ;
+  2. copie du code sur le VPS (rsync), sans toucher à .env, medias/,
+     data/ (la base) ni staticfiles/ ;
+  3. deploy.sh sur le VPS : docker-compose up -d --build ;
+  4. au démarrage, run.sh : migrate -> collectstatic -> Gunicorn.
+
+  Durée : 3 à 5 minutes (onglet « Actions » sur GitHub).
+  Pendant le redémarrage, le site est coupé quelques secondes.
+
+
+---------------------------------------------------------------------
+ÉTAPE 6 - VÉRIFIER EN LIGNE
+---------------------------------------------------------------------
+  - Recharger le site avec Ctrl+F5 et tester la modification.
+  - Erreur 500 : voir VOIR_LES_ERREURS_EN_LIGNE.txt
+        cd /var/www/bendingiron
+        docker-compose logs --tail 100 web
+
+
+---------------------------------------------------------------------
+CE QUI NE PASSE PAS PAR GITHUB (à la main, sur le VPS ou en ligne)
+---------------------------------------------------------------------
+  Nouveau réglage .env (ex. ERREURS_EMAIL)
+      -> /var/www/bendingiron/.env, puis : docker-compose up -d web
+  Données boutique (prix, coefficients...)
+      -> admin en ligne /larue/
+  Photos des produits
+      -> envoyées depuis l'admin en ligne (medias/ du serveur)
+  Import complet d'une base (rare)
+      -> sauvegarde, import, puis outils/corriger_casse_tables.py
+         (MISE_EN_PRODUCTION.txt, étape D6)
+
+
+---------------------------------------------------------------------
+CE QUI CHANGE AUTOMATIQUEMENT
+---------------------------------------------------------------------
+                 Développement (PC)          Production (VPS)
+  Réglages       SiteDFmac/local.py          SiteDFmac/production.py
+  DEBUG          True (erreurs détaillées)   toujours False (imposé)
+  Paiements      sandbox ou simulation       simulation impossible
+  Base           MariaDB WAMP, ignore        MySQL 8 Docker, SENSIBLE
+                 la casse                    à la casse
+  Erreurs        dans le navigateur          journaux Docker + e-mail
+                                             (si ERREURS_EMAIL rempli)
+
+
+---------------------------------------------------------------------
+EN CAS DE PROBLÈME APRÈS UN DÉPLOIEMENT
+---------------------------------------------------------------------
+Revenir à la version précédente sans toucher à l'historique :
+    git revert HEAD
+    git push origin main
+Le site est redéployé avec l'ancien code.
+Si une MIGRATION a modifié la base : ne pas faire seul, il faut parfois
+aussi revenir en arrière sur la base (faire une sauvegarde d'abord).
