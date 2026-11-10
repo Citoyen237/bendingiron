@@ -1,3 +1,4 @@
+from SiteDFmac.factures import images_facture
 from django.shortcuts import render,redirect,get_object_or_404
 from usesOrders.models import *
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -220,10 +221,7 @@ def genrate_bon(request, projet_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'bon_pdf.html'
@@ -269,10 +267,7 @@ def download_projet(request, projet_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'projet_pdf.html'
@@ -471,10 +466,7 @@ def generate_order_additional(request, order_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'invoice.html'
@@ -521,10 +513,7 @@ def genrate_bon_livraison(request, projet_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'bon_pdf.html'

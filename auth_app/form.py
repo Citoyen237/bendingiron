@@ -5,8 +5,9 @@ from django.contrib.auth import get_user_model
 
 
 class RegisterForm(forms.Form):
-    first_name=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control",'placeholder': 'nom'}))
-    last_name=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control",'placeholder': 'prenom'}))
+    # first_name = prénom, last_name = nom (les textes d'aide étaient inversés)
+    first_name=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control",'placeholder': 'Votre prénom', 'autocomplete': 'given-name'}))
+    last_name=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control",'placeholder': 'Votre nom', 'autocomplete': 'family-name'}))
     email=forms.EmailField(widget=forms.EmailInput(attrs={"class":"form-control",'placeholder': 'email'}))
     phone=forms.CharField(widget=forms.TextInput(attrs={"class":"form-control",'placeholder': 'numero de telephone'}))
     password=forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control','placeholder': 'mot de passe'}))

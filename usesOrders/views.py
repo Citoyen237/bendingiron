@@ -1,3 +1,4 @@
+from SiteDFmac.factures import images_facture
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
@@ -262,10 +263,7 @@ def generate_invoice_pdf(request, invoice_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'invoice.html'
@@ -316,10 +314,7 @@ def generate_invoice_pdf_solde(request, invoice_id):
     # from pathlib import Path
     # BASE_DIR = Path(__file__).resolve().parent.parent
     # os.path.join(BASE_DIR, "medias")
-    image_url = request.build_absolute_uri(settings.MEDIA_URL + 'logobon.png')
-    background_url = request.build_absolute_uri(settings.MEDIA_URL + 'filigramme.png')
-    cachet_url = request.build_absolute_uri(settings.MEDIA_URL + 'signaturebon.jpg')
-    footer_url = request.build_absolute_uri(settings.MEDIA_URL + 'page2.png')
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
     
     # Charger le template HTML 
     template_path = 'invoice2.html'

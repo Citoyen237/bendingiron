@@ -59,6 +59,7 @@
         color: #5a5a5a;
         font-size: .8rem;
         font-weight: normal;
+        white-space: pre-line;   /* dimensions : une ligne par dimension */
     }
 
     .carac[aria-selected="true"] .carac-valeur {
