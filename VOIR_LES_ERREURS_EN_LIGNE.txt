@@ -1,0 +1,109 @@
+=====================================================================
+  BENDING IRON - VOIR UNE ERREUR QUAND LE SITE EST EN LIGNE
+=====================================================================
+Rédigé le 10/11/2026.
+
+En ligne, le site n'affiche jamais le détail d'une erreur aux visiteurs
+(DEBUG=False, voulu) : ils voient seulement « Server Error (500) ».
+Le détail est écrit dans les JOURNAUX du conteneur « web ».
+On les lit depuis la console du VPS (console web de l'hébergeur ou SSH).
+
+Toutes les commandes se lancent depuis le dossier du site :
+    cd /var/www/bendingiron
+
+Rappel : sur ce serveur, la commande est « docker-compose » (avec un
+tiret), pas « docker compose ».
+
+
+---------------------------------------------------------------------
+1. VOIR LES DERNIÈRES ERREURS
+---------------------------------------------------------------------
+    docker-compose logs --tail 100 web
+
+Comment lire le résultat :
+  - chercher le bloc qui commence par « Traceback » ;
+  - sa DERNIÈRE ligne donne la cause, par exemple :
+        Table 'bendingiron_db.usesOrders_cart' doesn't exist
+  - la ligne « File "/bendingiron/..." » la plus basse indique le
+    fichier du projet concerné, par exemple :
+        File "/bendingiron/usesOrders/context_proccessor.py", line 8
+
+
+---------------------------------------------------------------------
+2. REGARDER EN DIRECT PENDANT UN TEST (le plus pratique)
+---------------------------------------------------------------------
+    docker-compose logs -f --tail 20 web
+
+Laisser la fenêtre ouverte, refaire l'action sur le site : l'erreur
+s'affiche tout de suite. Ctrl+C pour arrêter (le site continue de
+tourner).
+
+
+---------------------------------------------------------------------
+3. NE GARDER QUE LES ERREURS
+---------------------------------------------------------------------
+Les erreurs avec quelques lignes autour :
+    docker-compose logs --tail 2000 web | grep -n -A 3 -E "Traceback|Error|Exception"
+
+Seulement les pages en erreur 500 (date et adresse de la page) :
+    docker-compose logs --tail 2000 web | grep '" 500 '
+
+
+---------------------------------------------------------------------
+4. LE SITE NE RÉPOND PAS DU TOUT (erreur 502 / 504)
+---------------------------------------------------------------------
+Le problème est alors avant Django :
+
+  Le conteneur web tourne-t-il ? (colonne State : « Up »)
+    docker-compose ps
+
+  Journaux du serveur web Nginx :
+    sudo tail -n 50 /var/log/nginx/error.log
+
+  Redémarrer seulement le site :
+    docker-compose up -d web
+
+
+---------------------------------------------------------------------
+5. AVANT D'ENVOYER LES JOURNAUX À QUELQU'UN
+---------------------------------------------------------------------
+Les journaux ne contiennent normalement pas de mot de passe, mais
+vérifier quand même et masquer toute ligne qui en contiendrait un.
+Envoyer de préférence le bloc « Traceback » complet et l'adresse de la
+page qui a planté.
+
+
+---------------------------------------------------------------------
+6. RECEVOIR UN E-MAIL À CHAQUE ERREUR 500 (ajouté le 10/11/2026)
+---------------------------------------------------------------------
+Le site envoie le détail de chaque erreur 500 (Traceback, adresse de
+la page) depuis contact@bending-iron.com, sujet commençant par
+« [Bending Iron - ERREUR] ».
+
+L'adresse qui reçoit se règle dans le .env du VPS (jamais sur GitHub) :
+    ERREURS_EMAIL=votre.adresse@exemple.com
+  (plusieurs adresses : séparer par des virgules ; vide = aucun e-mail)
+
+Après une modification du .env, relancer le site :
+    docker-compose up -d web
+
+Attention : ces e-mails décrivent la requête (adresse, paramètres) :
+ne les envoyer qu'à une adresse personnelle. Une même panne peut
+envoyer beaucoup d'e-mails si de nombreux visiteurs tombent dessus.
+Les journaux (sections 1 à 3) restent la référence.
+
+
+---------------------------------------------------------------------
+7. ERREURS DÉJÀ RENCONTRÉES
+---------------------------------------------------------------------
+10/11/2026 - Erreur 500 dès qu'on se connecte :
+    Table 'bendingiron_db.usesOrders_cart' doesn't exist
+  Cause : base importée depuis Windows, noms de tables en minuscules.
+  Solution : outils/corriger_casse_tables.py
+             (voir MISE_EN_PRODUCTION.txt, étape D6).
+
+09/11/2026 - Logo introuvable :
+  Cause : logoiron.PNG au lieu de logoiron.png (Linux distingue les
+  majuscules dans les noms de fichiers).
+
+

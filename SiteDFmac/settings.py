@@ -273,12 +273,33 @@ OM_NOTIF_URL = config("OM_NOTIF_URL", default="")
 # Ignoré si DEBUG=False : impossible de l'activer en production par erreur.
 PAIEMENT_SIMULATION = DEBUG and config("PAIEMENT_SIMULATION", default=False, cast=bool)
 
+# --- Alertes par e-mail : détail de chaque erreur 500 ---
+# Adresse(s) dans le .env, séparées par des virgules : ERREURS_EMAIL=moi@exemple.com
+# Vide = aucune alerte. Envoyé seulement quand DEBUG=False (donc en ligne).
+ADMINS = [("Admin", adresse) for adresse in config('ERREURS_EMAIL', default='', cast=_liste)]
+SERVER_EMAIL = DEFAULT_FROM_EMAIL   # Hostinger refuse un expéditeur autre que la boîte du site
+EMAIL_SUBJECT_PREFIX = '[Bending Iron - ERREUR] '
+
 # --- Journalisation : erreurs dans la console (récupérées par Docker) ---
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
-    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "filters": {
+        "require_debug_false": {"()": "django.utils.log.RequireDebugFalse"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
+        },
+    },
     "root": {"handlers": ["console"], "level": config("LOG_LEVEL", default="INFO")},
+    "loggers": {
+        # Erreurs 500 : console + e-mail ; propagate=False évite de recevoir l'e-mail en double
+        "django.request": {"handlers": ["console", "mail_admins"], "level": "ERROR", "propagate": False},
+    },
 }
 
 
