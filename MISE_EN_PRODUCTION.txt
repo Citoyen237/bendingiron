@@ -53,13 +53,12 @@ le port SSH 22 ne répondant pas depuis le partage de connexion) :
   [x] mot de passe MySQL root changé (connu de l'administrateur seul)
       -> le jour de la mise en ligne, le mettre dans le .env du serveur :
          MYSQL_ROOT_PASSWORD=<nouveau mot de passe root>
-  [ ] mot de passe de la messagerie (Hostinger) + EMAIL_HOST_PASSWORD
-      -> reporté au jour de la mise en ligne (choix du 09/11/2026) ;
-         d'ici là, surveiller le dossier « Envoyés » du webmail
+  [x] mot de passe de la messagerie (Hostinger) + EMAIL_HOST_PASSWORD
+      -> changé (confirmé le 10/11/2026)
   [x] mot de passe du serveur changé (passwd)
-  [ ] port 8000 encore ouvert : fermé à la mise en ligne (nouveau
-      docker-compose.yml)
-  [ ] phase 2 : mot de passe MySQL de l'application + SECRET_KEY
+  [x] port 8000 fermé (vérifié depuis le PC le 10/11/2026)
+  [x] phase 2 : mot de passe MySQL de l'application + SECRET_KEY
+      -> changés (confirmé le 10/11/2026)
 
 PHASE 1 - MAINTENANT (le site n'est pas redémarré)
   Script sur le Bureau : securiser_vps_phase1.sh

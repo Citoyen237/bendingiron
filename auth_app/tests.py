@@ -271,3 +271,35 @@ class CodePromoTests(BaseTest):
         self.assertFalse(r.json()["success"])
         cart.refresh_from_db()
         self.assertEqual(cart.remise, 0)
+
+
+# --- Ajoutés le 10/11/2026 : admin limité, alertes e-mail ---
+@override_settings(ADMINS=[("Admin", "alerte@exemple.com")], ALLOWED_HOSTS=["testserver"])
+class AdminEtAlertesTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        self.admin = creer_user("chef@exemple.com", groupe="superadmin", is_staff=True)
+
+    def _essai(self, mot_de_passe):
+        return self.client.post("/larue/login/", {"username": "chef@exemple.com", "password": mot_de_passe})
+
+    def test_admin_bloque_apres_5_echecs(self):
+        for _ in range(5):
+            self.assertEqual(self._essai("mauvais").status_code, 200)
+        # 6e essai bloqué, même avec le BON mot de passe
+        self.assertEqual(self._essai("MotDePasse-Solide-2026").status_code, 429)
+
+    def test_admin_connexion_reussie_remet_le_compteur_a_zero(self):
+        for _ in range(4):
+            self._essai("mauvais")
+        self.assertEqual(self._essai("MotDePasse-Solide-2026").status_code, 302)
+        self.client.logout()
+        for _ in range(4):
+            self.assertEqual(self._essai("mauvais").status_code, 200)
+
+    def test_robot_par_adresse_ip_sans_email(self):
+        mail.outbox = []
+        with override_settings(DEBUG=False):
+            reponse = self.client.get("/.git/config", HTTP_HOST="5.182.18.177")
+        self.assertEqual(reponse.status_code, 400)
+        self.assertEqual(len(mail.outbox), 0)

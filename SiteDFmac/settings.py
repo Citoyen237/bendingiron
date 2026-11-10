@@ -299,6 +299,9 @@ LOGGING = {
     "loggers": {
         # Erreurs 500 : console + e-mail ; propagate=False évite de recevoir l'e-mail en double
         "django.request": {"handlers": ["console", "mail_admins"], "level": "ERROR", "propagate": False},
+        # Robots qui visitent le serveur par son adresse IP (DisallowedHost) :
+        # refus normal, écrit dans les journaux mais SANS e-mail (sinon des dizaines par jour)
+        "django.security.DisallowedHost": {"handlers": ["console"], "level": "ERROR", "propagate": False},
     },
 }
 

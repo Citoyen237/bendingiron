@@ -134,6 +134,30 @@ def loginPage(request):
     return render(request, 'login.html', {'form':form})
 
 @sensitive_post_parameters()
+@sensitive_post_parameters()
+def admin_login_limite(request, extra_context=None):
+    """Connexion de l'admin Django (/larue/login/) avec la même limite que le site :
+    MAX_ECHECS essais par identifiant et par IP, puis blocage DUREE_BLOCAGE."""
+    from django.contrib import admin
+
+    cle = None
+    if request.method == "POST":
+        cle = "admin-" + _cle_echecs(request, (request.POST.get("username") or "").strip())
+        if cache.get(cle, 0) >= MAX_ECHECS:
+            return HttpResponse("Trop de tentatives de connexion. Réessayez dans 15 minutes.",
+                                status=429, content_type="text/plain; charset=utf-8")
+
+    reponse = admin.site.login(request, extra_context=extra_context)
+
+    if cle:
+        if reponse.status_code in (301, 302):   # connexion réussie : redirection vers l'admin
+            cache.delete(cle)
+        else:                                   # page réaffichée avec l'erreur : échec
+            cache.set(cle, cache.get(cle, 0) + 1, DUREE_BLOCAGE)
+    return reponse
+
+
+@sensitive_post_parameters()
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
