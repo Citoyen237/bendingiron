@@ -139,6 +139,17 @@ class ConfigProduitForm(forms.ModelForm):
     def clean_forme(self):
         return self.cleaned_data.get("forme") or []   # champ vide = pas de dessin
 
+    def clean(self):
+        donnees = super().clean()
+        # Un produit qui propose des angles doit les dessiner : sinon le schéma
+        # (et l'angle écrit dessus) ne suivrait pas le choix du client.
+        from .dessin import forme_utilise_angle
+        if donnees.get("angles") and donnees.get("forme") and not forme_utilise_angle(donnees["forme"]):
+            self.add_error("forme", "Ce produit propose des angles, mais la forme ne les utilise pas : "
+                                    "le dessin ne suivrait pas le choix du client. Écrivez « angle » dans "
+                                    "l'angle des pliages concernés (ex. \"-angle\" pour un crochet).")
+        return donnees
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Seules les familles du gabarit universel sont proposées

@@ -346,3 +346,6 @@
 
 /* Valeur des crochets (Ldf) sur le dessin : plus petite, en italique */
 .p-dessin .cote-ldf { fill: #9a6b00; font-style: italic; font-weight: 500; }
+
+/* Angle choisi par le client (« 135° »), écrit au coin des pliages qui en dépendent */
+.p-dessin .cote-angle { fill: #000; font-weight: 700; }

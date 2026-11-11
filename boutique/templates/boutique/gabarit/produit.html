@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (zone) { zone.textContent = message; zone.hidden = false; }
     }
 
-    // Dessin : tracé calculé par le serveur (coins arrondis au rayon R) ; cotes sauf crochets Ldf
+    // Dessin : tracé calculé par le serveur (coins arrondis au rayon R) ; longueurs, Ldf et angle choisi
     function dessiner(dessin) {
         if (!svg) return;
         svg.innerHTML = "";
@@ -309,7 +309,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const t = document.createElementNS(ns, "text");
             t.setAttribute("x", c.x + c.dx * ecart);
             t.setAttribute("y", -(c.y + c.dy * ecart));
-            t.setAttribute("class", c.type === "ldf" ? "cote cote-ldf" : "cote");
+            t.setAttribute("class", c.type === "ldf" ? "cote cote-ldf" : c.type === "angle" ? "cote cote-angle" : "cote");
             t.setAttribute("style", "font-size:" + police + "px");
             t.textContent = c.texte;
             svg.appendChild(t);

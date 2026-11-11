@@ -1,4 +1,4 @@
-from SiteDFmac.factures import images_facture
+from SiteDFmac.factures import image_dessin, images_facture
 from django.shortcuts import render, redirect ,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.template.loader import get_template, render_to_string
@@ -116,6 +116,7 @@ def generate_invoice_pro(request, invoice_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
@@ -167,6 +168,7 @@ def generate_bon_livraison_pro(request, invoice_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,

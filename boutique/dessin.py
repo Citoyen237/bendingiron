@@ -15,6 +15,10 @@ parcourue comme une « tortue » qui avance puis tourne :
                entier) puis continue en ligne droite sur sa longueur ; sa valeur est
                écrite sur le dessin ;
 - "cote"     : false pour ne pas écrire la valeur d'un segment.
+
+Un pliage dont l'angle dépend de l'angle choisi par le client (formule qui
+utilise « angle », ex. "-angle") porte l'angle écrit sur le dessin de la page
+produit (« 135° »). La miniature des factures reste sans texte.
   (Ancienne écriture : « cote »: false sans « crochet » = crochet sans valeur.)
 
 Les coins sont arrondis avec le rayon de courbure R (à l'échelle).
@@ -22,7 +26,7 @@ Le serveur calcule le tracé ; la page et la miniature (facture) le reprennent.
 """
 import math
 
-from .formules import FormuleInvalide, evaluer
+from .formules import FormuleInvalide, evaluer, noms_utilises
 
 SEGMENTS_MAX = 40
 CLES_SEGMENT = {"longueur", "angle", "cote", "crochet"}
@@ -39,7 +43,7 @@ def _affiche_cote(segment):
     """Valeur écrite sur le dessin, sauf « cote »: false."""
     return segment.get("cote", True) is not False
 COULEUR = "#f2a900"        # orange de l'image de référence
-TAILLE_MINIATURE = 70      # pixels (facture)
+TAILLE_MINIATURE = 90      # pixels (facture, bon de livraison)
 
 
 def _valeur(expression, variables, quoi):
@@ -73,6 +77,16 @@ def verifier_structure(forme):
 
 def _n(valeur):
     return f"{round(valeur, 3):g}"
+
+
+def _depend_de_l_angle(expression):
+    """True si l'angle de ce segment dépend de l'angle choisi par le client."""
+    return isinstance(expression, str) and "angle" in noms_utilises(expression)
+
+
+def forme_utilise_angle(forme):
+    """True si au moins un pliage de la forme suit l'angle choisi par le client."""
+    return any(isinstance(s, dict) and _depend_de_l_angle(s.get("angle")) for s in (forme or []))
 
 
 def _virage(cap1, cap2):
@@ -124,16 +138,22 @@ def calculer_dessin(forme, variables):
     # 1) Segments réels (longueur > 0) avec leur cap ; un segment de longueur 0
     #    sert seulement à orienter le départ (pas de pliage sans matière avant).
     segments, cap = [], 0.0
+    angle_choisi = False   # le virage en cours (depuis le dernier segment réel) dépend de « angle »
     for i, segment in enumerate(forme or [], start=1):
         longueur = _valeur(segment["longueur"], variables, f"Segment {i}, longueur")
         if longueur < 0:
             raise FormuleInvalide(f"Segment {i} : longueur négative ({longueur:g}).")
         if longueur > 0:
+            if segments:   # pliage entre le segment réel précédent et celui-ci
+                segments[-1]["pli_angle_choisi"] = angle_choisi
             segments.append({"longueur": longueur, "cap": cap,
                              "cote": not _est_crochet(segment),          # côté « normal » (géométrie)
                              "crochet": _est_crochet(segment),
                              "afficher": _affiche_cote(segment)})       # valeur écrite sur le dessin
+            angle_choisi = False
         cap += _valeur(segment.get("angle", 0), variables, f"Segment {i}, angle")
+        if segments and _depend_de_l_angle(segment.get("angle")):
+            angle_choisi = True   # (avant le 1er segment réel : simple orientation, pas un pliage)
     if not segments:
         return {"points": [[0.0, 0.0]], "cotes": [], "chemin": "", "cadre": [0, 0, 0, 0]}
 
@@ -190,6 +210,30 @@ def calculer_dessin(forme, variables):
                 morceaux.append(f"A{_n(p['r'])} {_n(p['r'])} 0 0 {sens} {ecran(pos)}")
             cap = segments[i + 1]["cap"]
 
+    # 4) Angle choisi par le client, écrit au sommet de chaque pliage qui en dépend,
+    #    du côté extérieur du pli (là où il y a de la place)
+    for j in range(len(segments) - 1):
+        if not segments[j].get("pli_angle_choisi"):
+            continue
+        virage = pliages[j + 1]["virage"]
+        a_in, a_out = math.radians(segments[j]["cap"]), math.radians(segments[j + 1]["cap"])
+        dx, dy = math.cos(a_in) - math.cos(a_out), math.sin(a_in) - math.sin(a_out)
+        norme = math.hypot(dx, dy)
+        if norme < 1e-6:                        # demi-tour : on s'écarte perpendiculairement
+            dx, dy, norme = -math.sin(a_in), math.cos(a_in), 1.0
+        texte = f"{round(abs(virage)):g}°"
+        sommet = (round(points[j + 1][0], 1), round(points[j + 1][1], 1))
+        # Un cadre ferme ses deux crochets au même coin : un seul angle écrit par coin
+        if any(c["type"] == "angle" and c["texte"] == texte and (round(c["x"], 1), round(c["y"], 1)) == sommet
+               for c in cotes):
+            continue
+        cotes.append({
+            "x": points[j + 1][0], "y": points[j + 1][1],
+            "dx": round(dx / norme, 4), "dy": round(dy / norme, 4),
+            "texte": texte,
+            "type": "angle",
+        })
+
     xs = [e[0] for e in echantillons]
     ys = [-e[1] for e in echantillons]
     return {
@@ -201,8 +245,9 @@ def calculer_dessin(forme, variables):
 
 
 def svg_miniature(dessin, taille=TAILLE_MINIATURE, couleur=COULEUR):
-    """Image SVG carrée (taille × taille pixels), sans texte, comme l'image de
-    référence : à importer sur la facture."""
+    """Image SVG carrée (taille × taille pixels) pour la facture et le bon de
+    livraison : la forme seule, sans texte (longueurs et angle sont dans la
+    description). Format fixe : SiteDFmac.factures.image_dessin n'accepte que ce format."""
     if not dessin or not dessin.get("chemin"):
         return ""
     x, y, largeur, hauteur = dessin["cadre"]

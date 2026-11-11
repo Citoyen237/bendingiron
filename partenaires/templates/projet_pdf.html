@@ -171,7 +171,7 @@
             </tr>
             {% for item in produits %}
             <tr>
-                <td>{{item.produit}}</td>
+                <td>{{item.produit}}{% if item.dessin %}<br><img src="{{ item.dessin }}" alt="" style="width:90px;height:90px;margin-top:4px;">{% endif %}</td>
                 <td>{{item.details}}
                 <td>{{item.quantite}}</td>
                 <td>{{item.prix}}</td>

@@ -272,7 +272,8 @@ def detail_produit(request, product_id):
     if request.method == "POST" and form and form.is_valid():
         datas = form.cleaned_data
         quantite = int(datas.get('quantite', 1))
-        details = {k: v for k, v in datas.items() if k not in ['prix', 'quantite', 'prix_revient', 'prix_Total']}
+        # « dessin_svg » est réservé au dessin calculé par le serveur (gabarit universel)
+        details = {k: v for k, v in datas.items() if k not in ['prix', 'quantite', 'prix_revient', 'prix_Total', 'dessin_svg']}
 
         # Le prix est recalculé par le serveur : les valeurs envoyées par le navigateur sont ignorées
         prix = prix_revient = None

@@ -1,4 +1,4 @@
-from SiteDFmac.factures import images_facture
+from SiteDFmac.factures import image_dessin, images_facture
 from django.shortcuts import render,redirect,get_object_or_404
 from usesOrders.models import *
 from django.contrib.auth.decorators import login_required,user_passes_test
@@ -216,6 +216,7 @@ def genrate_bon(request, projet_id):
                 'id':item.id,
                 'produit': item.projet_item.produit,
                 'details': item.projet_item.details_to_text(),
+                'dessin': image_dessin(item.projet_item.details),
                 'quantite': item.quantite,
             })
     # from pathlib import Path
@@ -260,6 +261,7 @@ def download_projet(request, projet_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
@@ -459,6 +461,7 @@ def generate_order_additional(request, order_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
@@ -508,6 +511,7 @@ def genrate_bon_livraison(request, projet_id):
                 'id':item.id,
                 'produit': item.projet_item.produit,
                 'details': item.projet_item.details_to_text(),
+                'dessin': image_dessin(item.projet_item.details),
                 'quantite': item.quantite,
             })
     # from pathlib import Path

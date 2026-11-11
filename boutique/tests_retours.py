@@ -128,7 +128,7 @@ class DessinArrondiTests(TestCase):
 
     def test_miniature_70_pixels_sans_texte(self):
         svg = svg_miniature(calculer_dessin(CADRE_AVEC_CROCHETS, self.VARIABLES))
-        self.assertIn('width="70" height="70"', svg)
+        self.assertIn('width="90" height="90"', svg)
         self.assertIn("<path", svg)
         self.assertIn("#f2a900", svg)
         self.assertNotIn("<text", svg)
@@ -217,7 +217,7 @@ class RetoursPageTests(CalculBase):
         self.client.force_login(self.client_a)
         self.post()
         item = CartItem.objects.get()
-        self.assertIn('width="70" height="70"', item.details["dessin_svg"])
+        self.assertIn('width="90" height="90"', item.details["dessin_svg"])
         self.assertNotIn("dessin_svg", item.details_to_text())
         self.assertNotIn("<svg", item.details_to_text())
 

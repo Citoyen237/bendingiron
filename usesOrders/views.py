@@ -1,4 +1,4 @@
-from SiteDFmac.factures import images_facture
+from SiteDFmac.factures import image_dessin, images_facture
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import *
@@ -256,6 +256,7 @@ def generate_invoice_pdf(request, invoice_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
@@ -307,6 +308,7 @@ def generate_invoice_pdf_solde(request, invoice_id):
                 'id':item.id,
                 'produit': item.produit,
                 'details': item.details_to_text(),
+                'dessin': image_dessin(item.details),
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
