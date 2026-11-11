@@ -145,7 +145,7 @@
                                 <div class="options">
                                     <input type="number" class="form-control" name="dim_{{ ligne.dim.abreviation }}"
                                            id="dim_{{ ligne.dim.abreviation }}" step="0.1" required
-                                           data-libelle="{{ ligne.dim.libelle }} ({{ ligne.dim.abreviation }})"
+                                           data-libelle="{{ ligne.dim.abreviation }}"
                                            min="{{ ligne.dim.minimum|stringformat:'g' }}" max="{{ ligne.dim.maximum|stringformat:'g' }}"
                                            value="{{ ligne.valeur }}">
                                 </div>
@@ -229,12 +229,12 @@ document.addEventListener("DOMContentLoaded", function () {
         panneau.querySelectorAll("input").forEach(c => {
             if (c.type === "radio" && !c.checked) return;
             const v = c.type === "radio" ? c.parentElement.textContent.trim() : c.value.trim();
-            // Dimensions : « Longueur du côté (Lc) : 20 », une par ligne
+            // Dimensions : « Lg : 40 | La : 25 »
             if (v) valeurs.push(c.dataset.libelle ? c.dataset.libelle + " : " + v : v);
         });
         const parLigne = panneau.querySelector("[data-libelle]") !== null;
         const cible = document.querySelector('.carac[data-panneau="' + panneau.id + '"] .carac-valeur');
-        if (cible) cible.textContent = valeurs.join(parLigne ? "\n" : " · ");
+        if (cible) cible.textContent = valeurs.join(parLigne ? " | " : " · ");
     }
     boutons.forEach(b => b.addEventListener("click", () => {
         if (mobile.matches && b.getAttribute("aria-selected") === "true") { fermerTout(); } else { ouvrir(b.dataset.panneau); }
