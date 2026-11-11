@@ -202,3 +202,7 @@ class PageProjetGrandesQuantitesTests(TestCase):
         # apostrophe échappée pour le script : antislash + u0027 (antislash = chr(92))
         self.assertIn("Barre coudée à l" + chr(92) + "u0027extrémité", html)
         self.assertNotIn("'Barre coudée à l'extrémité'", html)
+        # panier propre au projet (plus de panier commun « panier » pour tous les projets)
+        self.assertIn('const CLE_PANIER = "panier_projet_" + projetId;', html)
+        self.assertIn(f'const projetId = {projet.id};', html)
+        self.assertNotIn('localStorage.getItem("panier")', html)

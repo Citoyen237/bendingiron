@@ -54,6 +54,7 @@ details sur le projet
                 </p>
                 <p>
                     <button class="btn btn-outline-warning" onclick="validerCommande()">Commander</button>
+                    <button class="btn btn-outline-secondary" onclick="viderPanier()">Vider le panier</button>
 
                     <a href="{% url 'historique-order' projet.id%}" class="btn btn-warning">Voir historique</a>
 
@@ -134,14 +135,40 @@ details sur le projet
     <!--/ Container end -->
 </section><!-- Content end -->
 <script>
-      // Lecture sécurisée : un panier corrompu ne bloque plus tout le script
+    // Panier propre à CE projet (avant : un seul panier « panier » pour tous les
+    // projets ; des restes d'un autre projet ou d'anciens essais bloquaient la commande).
+    const projetId = {{ projet.id|unlocalize }};
+    const CLE_PANIER = "panier_projet_" + projetId;
+    localStorage.removeItem("panier");   // ancien panier commun : abandonné
+
+    function enregistrerPanier() {
+        localStorage.setItem(CLE_PANIER, JSON.stringify(panier));
+    }
+
+    // Lecture sécurisée : un panier corrompu ne bloque plus tout le script
     let panier = {};
     try {
-        panier = JSON.parse(localStorage.getItem("panier")) || {};
+        panier = JSON.parse(localStorage.getItem(CLE_PANIER)) || {};
     } catch (e) {
-        localStorage.removeItem("panier");
         panier = {};
     }
+
+    // Nettoyage : seulement les articles de ce projet, et jamais plus que le restant
+    (function nettoyerPanier() {
+        const restants = {};
+        document.querySelectorAll("tr[data-id]").forEach(function (tr) {
+            restants[tr.getAttribute("data-id")] = parseInt(tr.dataset.restant) || 0;
+        });
+        Object.keys(panier).forEach(function (id) {
+            const q = parseInt(panier[id] && panier[id].quantite) || 0;
+            if (!(id in restants) || restants[id] <= 0 || q <= 0) {
+                delete panier[id];
+            } else if (q > restants[id]) {
+                panier[id].quantite = restants[id];
+            }
+        });
+        enregistrerPanier();
+    })();
 
     function getCookie(name) {
         let cookieValue = null;
@@ -184,14 +211,21 @@ details sur le projet
             panier[produitId] = { nom: produitNom, quantite: qty };
         }
 
-        localStorage.setItem("panier", JSON.stringify(panier));
+        enregistrerPanier();
         afficherPanier();
     };
 
     window.supprimerDuPanier = function (produitId) {
         delete panier[produitId];
-        localStorage.setItem("panier", JSON.stringify(panier));
+        enregistrerPanier();
         afficherPanier();
+    };
+
+    window.viderPanier = function () {
+        panier = {};
+        enregistrerPanier();
+        afficherPanier();
+        document.querySelectorAll(".error-message").forEach(function (d) { d.textContent = ""; });
     };
 
     function afficherPanier() {
@@ -222,8 +256,6 @@ details sur le projet
         if (window.__commandeEnCours) return;   // évite les doubles clics (commande en double)
         window.__commandeEnCours = true;
 
-        const projetId = {{ projet.id|unlocalize }};
-
         fetch("{% url 'valider_commande_partenaire' %}", {
             method: "POST",
             headers: {
@@ -242,7 +274,7 @@ details sur le projet
                             Commande enregistrée avec succès !
                         </div>`;
                 }
-                localStorage.removeItem("panier");
+                localStorage.removeItem(CLE_PANIER);
                 panier = {};
                 afficherPanier();
                 setTimeout(function () { location.reload(); }, 1000);
