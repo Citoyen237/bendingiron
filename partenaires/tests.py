@@ -175,3 +175,30 @@ class MigrationMontantsExistantsTests(TranchesBase):
         migration = import_module("partenaires.migrations.0006_paiementprojet_montant")
         migration.figer_montants_existants(django_apps, None)
         self.assertEqual(PaiementProjet.objects.get().montant, Decimal("4770"))
+
+# --- Ajouté le 11/11/2026 : quantités de 1 000 et plus dans la page projet ---
+class PageProjetGrandesQuantitesTests(TestCase):
+    """Le séparateur de milliers (« 2 500 ») faisait lire 2 au JavaScript :
+    le partenaire ne pouvait commander que 1 ou 2 pièces."""
+
+    def test_nombres_pour_le_javascript_sans_separateur(self):
+        partenaire = CustomUser.objects.create_user(username="p@x.cm", email="p@x.cm", password="MotDePasse-Solide-2026")
+        admin = CustomUser.objects.create_user(username="a@x.cm", email="a@x.cm", password="MotDePasse-Solide-2026")
+        cat = Categorie.objects.create(libelle="Barres")
+        produit = Produit.objects.create(categorie=cat, nom="Barre coudée à l'extrémité", name_page="p",
+                                         imageshop2d="a.png", imageshop3d="b.png")
+        part = Partenariats.objects.create(user=partenaire, name="Entreprise A", email="ea@x.cm", adresse="Douala",
+                                           telephone="6", date_debut="2026-01-01T00:00:00Z", date_fin="2027-01-01T00:00:00Z")
+        projet = Projet.objects.create(partenariat=part, user=admin, name="Grand projet")
+        PaiementProjet.objects.create(projet=projet, tranche=1)   # tranche 1 payée : commande possible
+        item = ProjetItem.objects.create(projet=projet, produit=produit, details={}, prix_revient=10,
+                                         quantite=2500, prix_u=100)
+        self.client.force_login(partenaire)
+
+        html = self.client.get(reverse("partenaire.detail", args=[projet.id]), secure=True).content.decode()
+
+        self.assertIn('data-restant="2500"', html)
+        self.assertIn(f'addToCart({item.id}, ', html)
+        # apostrophe échappée pour le script : antislash + u0027 (antislash = chr(92))
+        self.assertIn("Barre coudée à l" + chr(92) + "u0027extrémité", html)
+        self.assertNotIn("'Barre coudée à l'extrémité'", html)

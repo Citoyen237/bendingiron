@@ -1,4 +1,5 @@
 {% extends 'appf.html' %}
+{% load l10n %}{# unlocalize : nombres sans séparateur de milliers pour le JavaScript (1 000 -> 1000) #}
 {% block 'title' %}
 details sur le projet
 {% endblock %}
@@ -87,8 +88,8 @@ details sur le projet
                 <tbody>
                     {% for produit in produits %}
 
-                    <tr data-id="{{ produit.id }}" data-nom="{{ produit.produit }}"
-                        data-restant='{{produit.quantite_restant}}'>
+                    <tr data-id="{{ produit.id|unlocalize }}" data-nom="{{ produit.produit }}"
+                        data-restant="{{ produit.quantite_restant|unlocalize }}">
                         <td>{{ produit.produit }}</td>
                         <td>{{ produit.details }}</td>
                         <td>{{ produit.quantite }}</td>
@@ -104,7 +105,7 @@ details sur le projet
                         <td colspan="2">
                             <input type="number" min="1" value="1" class="form-control d-inline w-50 qty-input">
                             <button class="btn btn-primary"
-                                onclick="addToCart({{ produit.id }}, '{{ produit.produit }}', this)">
+                                onclick="addToCart({{ produit.id|unlocalize }}, '{{ produit.produit|escapejs }}', this)">
                                 <i class="fa fa-plus"></i>
                             </button>
                             <div class="text-danger mt-1 error-message small"></div>
@@ -221,7 +222,7 @@ details sur le projet
         if (window.__commandeEnCours) return;   // évite les doubles clics (commande en double)
         window.__commandeEnCours = true;
 
-        const projetId = {{ projet.id }};
+        const projetId = {{ projet.id|unlocalize }};
 
         fetch("{% url 'valider_commande_partenaire' %}", {
             method: "POST",
