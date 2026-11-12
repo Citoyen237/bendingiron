@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('', indexA, name='admin.index'),
+    path('statistiques/', statistiques_annuelles, name='admin.statistiques'),
 
     # gestion du stock
     path('stocks/',ListFer.as_view() ,name='admin.fer.list'),

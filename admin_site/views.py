@@ -890,3 +890,30 @@ def get_historique_paiement_pro(request, order_id):
         'order':commande
     }
     return render(request, 'proforma/historique-paiement-pro.html',context)
+
+
+# --- Statistiques annuelles (proposition D, 12/11/2026) ---
+@admin_required
+def statistiques_annuelles(request):
+    from .statistiques import annees_disponibles, statistiques
+    annees = annees_disponibles()
+    try:
+        annee = int(request.GET.get("annee") or annees[0])
+    except (TypeError, ValueError):
+        annee = annees[0]
+    if annee not in annees:
+        annee = annees[0]
+    stats = statistiques(annee)
+    graphiques = {   # données des graphiques (lues par Chart.js via json_script)
+        "mois": stats["mois"],
+        "ca_par_type": [{"libelle": lib, "valeurs": stats["ca"]["par_mois"][cle]} for cle, lib in stats["types"]],
+        "encaisse": stats["encaissements"]["par_mois"],
+        "commandes": [{"libelle": lib, "valeurs": stats["commandes"]["par_mois"][cle]} for cle, lib in stats["types"]],
+        "nouveaux_clients": stats["clients"]["nouveaux_par_mois"],
+        "modes": [{"libelle": m, "valeur": v} for m, v in stats["encaissements"]["modes"]],
+        "diametres": [{"libelle": d, "valeur": q} for d, q in stats["produits"]["diametres"]],
+    }
+    return render(request, "statistiques.html", {
+        "s": stats, "annees": annees, "graphiques": graphiques,
+        "current_url": request.get_full_path(),
+    })
