@@ -67,14 +67,15 @@ details sur le projet
         </div>
 
         <div class="col-md-12">
-            <div class="alert alert-info text-center text-dark" role="alert">
-                {{projet.message_etape_suivante}}
-            </div>
+            {# Étape suivante (tranche à payer…) : affichée seulement s'il y a un message #}
+            {% with etape=projet.message_etape_suivante %}
+            {% if etape %}
+            <div class="alert alert-info text-center text-dark" role="alert">{{ etape }}</div>
+            {% endif %}
+            {% endwith %}
 
             <div id="message"></div>
-            <div class="alert alert-info text-center text-dark" role="alert">
-                {{projet.message_etape_suivante}}
-            </div>
+            {% csrf_token %}{# jeton de sécurité lu par le script « Commander » (le cookie peut manquer) #}
 
             <table class="table mt-2 table-responsive">
                 <thead class='bg-warning'>
@@ -185,6 +186,11 @@ details sur le projet
         return cookieValue;
     }
 
+    function jetonCsrf() {
+        const champ = document.querySelector("[name=csrfmiddlewaretoken]");
+        return (champ && champ.value) || getCookie("csrftoken") || "";
+    }
+
     window.addToCart = function (produitId, produitNom, btn) {
         const tr = btn.closest("tr");
         const input = tr.querySelector(".qty-input");
@@ -260,11 +266,24 @@ details sur le projet
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": getCookie("csrftoken")
+                "X-CSRFToken": jetonCsrf()
             },
             body: JSON.stringify({ panier: panier, projet_id: projetId })
         })
-        .then(function (response) { return response.json(); })
+        .then(function (response) {
+            const type = response.headers.get("Content-Type") || "";
+            if (type.indexOf("application/json") === -1) {
+                // Page d'erreur HTML (sécurité, session expirée, erreur du serveur)
+                let message = "Erreur du serveur (" + response.status + "). Réessayez dans un instant.";
+                if (response.status === 403) {
+                    message = "Votre session a expiré ou la page est trop ancienne. Rechargez la page puis réessayez.";
+                } else if (response.redirected || response.status === 401) {
+                    message = "Vous n'êtes plus connecté. Reconnectez-vous puis réessayez.";
+                }
+                throw new Error(message);
+            }
+            return response.json();
+        })
         .then(function (data) {
             if (data.success) {
                 const messageDiv = document.getElementById("message");
@@ -286,7 +305,7 @@ details sur le projet
         .catch(function (error) {
             window.__commandeEnCours = false;
             console.error("Erreur :", error);
-            alert(error);
+            alert(error && error.message ? error.message : "La commande n'a pas pu être envoyée. Vérifiez votre connexion.");
         });
     };
 

@@ -206,3 +206,56 @@ class PageProjetGrandesQuantitesTests(TestCase):
         self.assertIn('const CLE_PANIER = "panier_projet_" + projetId;', html)
         self.assertIn(f'const projetId = {projet.id};', html)
         self.assertNotIn('localStorage.getItem("panier")', html)
+
+# --- Ajouté le 12/11/2026 : commande de projet sans cookie CSRF ---
+@override_settings(ALLOWED_HOSTS=["bending-iron.com", "testserver"])
+class CommandeProjetSansCookieCsrfTests(TestCase):
+    """Sur téléphone, le cookie csrftoken manquait : le serveur renvoyait une page
+    403 HTML et le script affichait « Unexpected token '<' … is not valid JSON »."""
+
+    def test_commande_avec_le_jeton_de_la_page(self):
+        import json, re
+        from django.test import Client
+        partenaire = CustomUser.objects.create_user(username="p@x.cm", email="p@x.cm", password="MotDePasse-Solide-2026")
+        admin = CustomUser.objects.create_user(username="a@x.cm", email="a@x.cm", password="MotDePasse-Solide-2026")
+        cat = Categorie.objects.create(libelle="Cadres")
+        produit = Produit.objects.create(categorie=cat, nom="cadre carre", name_page="p",
+                                         imageshop2d="a.png", imageshop3d="b.png")
+        part = Partenariats.objects.create(user=partenaire, name="Entreprise A", email="ea@x.cm", adresse="Douala",
+                                           telephone="6", date_debut="2026-01-01T00:00:00Z", date_fin="2027-01-01T00:00:00Z")
+        projet = Projet.objects.create(partenariat=part, user=admin, name="Projet téléphone")
+        PaiementProjet.objects.create(projet=projet, tranche=1)
+        item = ProjetItem.objects.create(projet=projet, produit=produit, details={}, prix_revient=10,
+                                         quantite=1000, prix_u=100)
+        hote = dict(secure=True, HTTP_HOST="bending-iron.com")
+
+        client = Client(enforce_csrf_checks=True)     # aucun cookie csrftoken au départ
+        client.force_login(partenaire)
+        html = client.get(reverse("partenaire.detail", args=[projet.id]), **hote).content.decode()
+        jeton = re.search(r'name="csrfmiddlewaretoken" value="([^"]+)"', html)
+        self.assertIsNotNone(jeton, "la page doit contenir le jeton de sécurité")
+
+        corps = json.dumps({"panier": {str(item.id): {"nom": "cadre", "quantite": 6}}, "projet_id": projet.id})
+        reponse = client.post(reverse("valider_commande_partenaire"), corps, content_type="application/json",
+                              HTTP_X_CSRFTOKEN=jeton.group(1),
+                              HTTP_REFERER="https://bending-iron.com/partenaire/", **hote)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse.json(), {"success": "Commande enregistrée"})
+        self.assertEqual(item.quantite_commande, 6)
+
+    def test_alerte_etape_cachee_sans_message(self):
+        """Projet commandable : pas de message d'étape, donc pas de cadre d'alerte vide."""
+        partenaire = CustomUser.objects.create_user(username="q@x.cm", email="q@x.cm", password="MotDePasse-Solide-2026")
+        cat = Categorie.objects.create(libelle="Cadres")
+        produit = Produit.objects.create(categorie=cat, nom="cadre", name_page="p", imageshop2d="a.png", imageshop3d="b.png")
+        part = Partenariats.objects.create(user=partenaire, name="B", email="b@x.cm", adresse="D", telephone="6",
+                                           date_debut="2026-01-01T00:00:00Z", date_fin="2027-01-01T00:00:00Z")
+        projet = Projet.objects.create(partenariat=part, user=partenaire, name="Projet B")
+        ProjetItem.objects.create(projet=projet, produit=produit, details={}, prix_revient=1, quantite=5, prix_u=10)
+        self.client.force_login(partenaire)
+        url = reverse("partenaire.detail", args=[projet.id])
+        html = self.client.get(url, secure=True).content.decode()
+        self.assertEqual(html.count("La 1er tranche"), 1)   # une seule fois
+        PaiementProjet.objects.create(projet=projet, tranche=1)
+        html = self.client.get(url, secure=True).content.decode()
+        self.assertNotIn('class="alert alert-info text-center text-dark"', html)
