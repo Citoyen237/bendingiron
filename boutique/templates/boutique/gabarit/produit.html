@@ -48,13 +48,13 @@
                 </button>
                 <button type="button" class="carac" style="--row: {{ rows.diametre }}" data-panneau="p-diametre"
                         aria-controls="p-diametre" aria-selected="false">
-                    <span class="carac-texte">Choix du fer (M)<span class="carac-valeur"></span></span>
+                    <span class="carac-texte">Choix du fer M (mm)<span class="carac-valeur"></span></span>
                     <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
                 </button>
                 {% if angles %}
                 <button type="button" class="carac" style="--row: {{ rows.angle }}" data-panneau="p-angle"
                         aria-controls="p-angle" aria-selected="false">
-                    <span class="carac-texte">Choix de l’angle (°)<span class="carac-valeur"></span></span>
+                    <span class="carac-texte">Choix de l’angle Ang (°)<span class="carac-valeur"></span></span>
                     <span class="carac-fleche" aria-hidden="true">&rsaquo;</span>
                 </button>
                 {% endif %}
@@ -113,7 +113,7 @@
                             <p class="groupe-titre">Diamètre du fer :</p>
                             <div class="options"><div>
                                 {% for d in diametres %}
-                                <label><input type="radio" name="diametre" value="{{ d }}" required
+                                <label><input type="radio" name="diametre" value="{{ d }}" data-libelle="M" required
                                               {% if choisis.diametre == d|stringformat:'s' %}checked{% endif %}>HA{{ d }}</label>
                                 {% endfor %}
                             </div></div>
@@ -127,7 +127,7 @@
                             <p class="groupe-titre">Angle de cintrage :</p>
                             <div class="options"><div>
                                 {% for angle in angles %}
-                                <label><input type="radio" name="angle" value="{{ angle.valeur }}" required
+                                <label><input type="radio" name="angle" value="{{ angle.valeur }}" data-libelle="Ang" required
                                               {% if choisis.angle == angle.valeur|stringformat:'s' %}checked{% endif %}>{{ angle.libelle }}</label>
                                 {% endfor %}
                             </div></div>
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
         panneau.querySelectorAll("input").forEach(c => {
             if (c.type === "radio" && !c.checked) return;
             const v = c.type === "radio" ? c.parentElement.textContent.trim() : c.value.trim();
-            // Dimensions : « Lg : 40 | La : 25 »
+            // Résumé : « M : HA6 », « Ang : 45° », « Lg : 40 | La : 25 »
             if (v) valeurs.push(c.dataset.libelle ? c.dataset.libelle + " : " + v : v);
         });
         const parLigne = panneau.querySelector("[data-libelle]") !== null;

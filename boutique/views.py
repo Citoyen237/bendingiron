@@ -77,7 +77,7 @@ def _lignes_du_bas(config):
     if config.afficher_ld:
         lignes.append(("ldf", "Longueur départ & fin Ldf (cm)"))
     lignes += [("lt", "Longueur totale (cm)"),
-               ("poids", "Poids d'une pièce (kg)"), ("poids_total", "Poids total (kg)"),
+               ("poids", "Poids unitaire (Kg)"), ("poids_total", "Poids total (Kg)"),
                ("pu", "Prix unitaire (FCFA)"), ("total", "Prix total (FCFA)")]
     return lignes
 

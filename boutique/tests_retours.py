@@ -312,7 +312,7 @@ class PoidsAfficheTests(CalculBase):
 
     def test_lignes_poids_sur_la_page(self):
         html = self.client.get(reverse("produit.detail", args=[self.produit.id])).content.decode()
-        self.assertIn("Poids d'une pièce (kg)", html.replace("&#x27;", "'"))
+        self.assertIn("Poids unitaire (Kg)", html)
         self.assertIn('id="calc-poids"', html)
         self.assertIn('id="calc-poids_total"', html)
         # les poids viennent après la longueur totale et avant les prix
