@@ -32,6 +32,8 @@ class CalculBase(TestCase):
                                         constante_ldf_long=Decimal("0.10"), formule_r="5*d/10")
         for cle, valeur in (("tolerance", 10), ("taxe", 5), ("taux", Decimal("0.1"))):
             Constante.objects.create(cle=cle, valeur=valeur)
+        # Tolérances provisoires de la migration 0007 retirées : ces tests utilisent la constante commune
+        ToleranceDiametre.objects.all().delete()
 
         cat = Categorie.objects.create(libelle="Cintrages")
         self.produit = Produit.objects.create(categorie=cat, nom="cadre carre", sous_categorie="Cintrage de cadre",
