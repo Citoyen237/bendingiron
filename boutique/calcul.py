@@ -13,6 +13,8 @@ Il suit exactement LOGIQUE_CALCUL_PRIX.txt (section 4) :
     Ps    = coef(marque, d) × Lt / 100
     Pd    = constante de soudure(d) × Lt
     Pu    = arrondi supérieur [ (Pv + Ps + tolérance + taxe + Pd) × (1 + taux) ]
+            tolérance = celle du diamètre (admin « Tolérances par diamètre »),
+                        sinon la constante commune « tolerance »
 
 Le serveur fait foi : les prix envoyés par le navigateur ne sont jamais lus.
 Rien ici n'est encore branché sur les pages produit (étape 4).
@@ -23,7 +25,7 @@ from decimal import Decimal, InvalidOperation
 
 from .formules import FormuleInvalide, evaluer
 from .models import (SOUS_CATEGORIES_AUTORISEES, CoefFaconnage, ConstanteSoudure, ParametresCalcul,
-                     PoidsFer, PrixFerTonne, PrtFer)
+                     PoidsFer, PrixFerTonne, PrtFer, ToleranceDiametre)
 
 FER_BENDING_IRON = "bending iron"
 FER_CLIENT = "le client"
@@ -87,9 +89,14 @@ def _arrondi_superieur(valeur):
     return int(math.ceil(valeur))
 
 
-def _constantes_prix():
+def _constantes_prix(diametre=None):
+    """taxe, taux et tolérance ; la tolérance du diamètre remplace la constante commune."""
     from gestion_prix_fer.models import Constante
     valeurs = {c.cle: c.valeur for c in Constante.objects.filter(cle__in=CONSTANTES_PRIX)}
+    if diametre is not None:
+        tolerance = ToleranceDiametre.objects.filter(diametre=diametre).first()
+        if tolerance is not None:
+            valeurs["tolerance"] = tolerance.valeur
     manquantes = [c for c in CONSTANTES_PRIX if c not in valeurs]
     if manquantes:
         raise CalculImpossible("Constantes manquantes dans l'admin : " + ", ".join(manquantes) + ".")
@@ -216,7 +223,7 @@ def calculer(config, saisies):
     pd = soudure.valeur * Decimal(lt)
 
     # --- 10) Prix unitaire ------------------------------------------------ #
-    c = _constantes_prix()
+    c = _constantes_prix(d)
     pu = _arrondi_superieur((pv + ps + c["tolerance"] + c["taxe"] + pd) * (1 + c["taux"]))
 
     details = {

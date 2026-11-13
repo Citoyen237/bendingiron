@@ -88,6 +88,11 @@ nouveau calcul refusent ces familles, même configurées dans l'admin.
 2.6 Constantes déjà existantes (gestion_prix_fer > Constantes)
       tolérance, taxe, taux
 
+2.7 Tolérance par diamètre (boutique > Tolérances par diamètre, 13/11/2026)
+      HA6, HA8, HA10... : une tolérance en FCFA par diamètre.
+      Elle remplace la constante commune « tolérance » pour ce diamètre ;
+      un diamètre sans ligne garde la constante commune.
+
 
 ---------------------------------------------------------------------
 3. RÉGLAGES DE CHAQUE PRODUIT (dans l'admin)
@@ -162,6 +167,7 @@ Modèle : la page actuelle du cadre carré.
 
  10) Pu (prix unitaire)
              Pu = ARRONDI SUPÉRIEUR [ (Pv + Ps + tolérance + taxe + Pd) x (1 + taux) ]
+             tolérance = celle du diamètre (2.7), sinon la constante commune
 
  11) Total HT = Pu x quantité
      (puis remise du code promo, TVA 19,25 %, tranches : inchangés)

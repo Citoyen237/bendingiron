@@ -10,7 +10,8 @@ from produits.models import Produit
 
 from .formules import FormuleInvalide
 from .models import (SOUS_CATEGORIES_AUTORISEES, Angle, CoefFaconnage, ConfigProduit,
-                     ConstanteSoudure, DimensionProduit, ParametresCalcul, PoidsFer, PrixFerTonne, PrtFer)
+                     ConstanteSoudure, DimensionProduit, ParametresCalcul, PoidsFer, PrixFerTonne, PrtFer,
+                     ToleranceDiametre)
 
 
 def _ha(diametre):
@@ -87,6 +88,17 @@ class CoefFaconnageAdmin(admin.ModelAdmin):
 
 @admin.register(ConstanteSoudure)
 class ConstanteSoudureAdmin(admin.ModelAdmin):
+    list_display = ("diametre_lib", "valeur")
+    list_display_links = ("diametre_lib",)
+    list_editable = ("valeur",)
+
+    @admin.display(description="Diamètre", ordering="diametre")
+    def diametre_lib(self, obj):
+        return _ha(obj.diametre)
+
+
+@admin.register(ToleranceDiametre)
+class ToleranceDiametreAdmin(admin.ModelAdmin):
     list_display = ("diametre_lib", "valeur")
     list_display_links = ("diametre_lib",)
     list_editable = ("valeur",)

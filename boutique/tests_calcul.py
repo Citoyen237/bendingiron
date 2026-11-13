@@ -16,7 +16,7 @@ from produits.models import Categorie, Produit
 
 from .calcul import CalculImpossible, calculer
 from .models import (Angle, CoefFaconnage, ConfigProduit, ConstanteSoudure, DimensionProduit,
-                     ParametresCalcul, PoidsFer, PrixFerTonne, PrtFer)
+                     ParametresCalcul, PoidsFer, PrixFerTonne, PrtFer, ToleranceDiametre)
 
 
 class CalculBase(TestCase):
@@ -254,3 +254,25 @@ class DonneesManquantesTests(CalculBase):
     def test_marque_inconnue(self):
         with self.assertRaisesMessage(CalculImpossible, "Prix du fer"):
             calculer(self.config, self.saisies(marque_fer="inconnue"))
+
+
+
+class ToleranceParDiametreTests(CalculBase):
+    """La tolérance fixée pour un diamètre remplace la constante commune (13/11/2026)."""
+
+    def test_tolerance_du_diametre(self):
+        ToleranceDiametre.objects.create(diametre=8, valeur=20)
+        # (283,78 + 46,41 + 20 + 5 + 45,5) × 1,1 = 440,76 -> 441 (au lieu de 430 avec 10)
+        self.assertEqual(calculer(self.config, self.saisies()).pu, 441)
+
+    def test_autre_diametre_garde_la_constante_commune(self):
+        ToleranceDiametre.objects.create(diametre=10, valeur=500)
+        self.assertEqual(calculer(self.config, self.saisies()).pu, 430)
+
+    def test_constante_commune_inutile_si_le_diametre_a_sa_tolerance(self):
+        Constante.objects.filter(cle="tolerance").delete()
+        ToleranceDiametre.objects.create(diametre=8, valeur=10)
+        self.assertEqual(calculer(self.config, self.saisies()).pu, 430)
+        ToleranceDiametre.objects.all().delete()
+        with self.assertRaises(CalculImpossible):
+            calculer(self.config, self.saisies())

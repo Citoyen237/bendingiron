@@ -157,6 +157,24 @@ class ConstanteSoudure(models.Model):
 
 
 # ---------------------------------------------------------------------------
+# 2.4 ter Tolérance du prix (diamètre) — 13/11/2026
+# ---------------------------------------------------------------------------
+class ToleranceDiametre(models.Model):
+    diametre = models.PositiveSmallIntegerField(choices=DIAMETRES, unique=True, verbose_name="diamètre")
+    valeur = models.DecimalField("tolérance (FCFA)", max_digits=10, decimal_places=4, validators=POSITIF,
+                                 help_text="Ajoutée au prix unitaire : Pu = (Pv + Ps + tolérance + taxe + Pd) × (1 + taux). "
+                                           "Sans ligne pour un diamètre, la constante commune « tolerance » s'applique.")
+
+    class Meta:
+        verbose_name = "tolérance par diamètre"
+        verbose_name_plural = "tolérances par diamètre"
+        ordering = ["diametre"]
+
+    def __str__(self):
+        return f"HA{self.diametre} : {self.valeur} FCFA"
+
+
+# ---------------------------------------------------------------------------
 # 2.4 bis Angles de pliage (gérés dans l'admin)
 # ---------------------------------------------------------------------------
 class Angle(models.Model):
