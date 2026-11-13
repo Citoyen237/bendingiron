@@ -240,7 +240,7 @@ class CommandeProjetSansCookieCsrfTests(TestCase):
                               HTTP_X_CSRFTOKEN=jeton.group(1),
                               HTTP_REFERER="https://bending-iron.com/partenaire/", **hote)
         self.assertEqual(reponse.status_code, 200)
-        self.assertEqual(reponse.json(), {"success": "Commande enregistrée"})
+        self.assertEqual(reponse.json(), {"success": "Demande de livraison enregistrée"})
         self.assertEqual(item.quantite_commande, 6)
 
     def test_alerte_etape_cachee_sans_message(self):

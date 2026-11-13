@@ -338,7 +338,7 @@ class Annulation(models.Model):
     TYPES = [
         ("client", "Commande client"),
         ("proforma", "Proforma"),
-        ("projet", "Commande projet"),
+        ("projet", "Demande de livraison partielle"),
         ("additionnel", "Travaux additionnels"),
     ]
     STATUTS_AVANT = STATUTS_ANNULABLES + [("aucun", "Aucun traitement")]

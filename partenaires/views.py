@@ -155,7 +155,7 @@ def valider_commande_partenaire(request):
     if projet is None:
         return JsonResponse({'error': 'Projet introuvable'}, status=404)
     if not projet.peut_commander:
-        return JsonResponse({'error': "Ce projet ne permet pas de commander pour le moment."}, status=400)
+        return JsonResponse({'error': "Ce projet ne permet pas de demander une livraison pour le moment."}, status=400)
 
     # Validation complète AVANT de créer quoi que ce soit
     lignes = []
@@ -172,7 +172,7 @@ def valider_commande_partenaire(request):
         lignes.append((item, quantite))
 
     if not lignes:
-        return JsonResponse({'error': 'Aucune quantité à commander'}, status=400)
+        return JsonResponse({'error': 'Aucune quantité à livrer'}, status=400)
 
     with transaction.atomic():
         commande = ProjetOrder.objects.create(projet=projet)
@@ -180,7 +180,7 @@ def valider_commande_partenaire(request):
             ProjetOrderItem.objects.create(projet_order=commande, projet_item=item, quantite=quantite)
         TraimentOrder.objects.create(projet_order=commande, user=request.user)
 
-    return JsonResponse({'success': 'Commande enregistrée'})
+    return JsonResponse({'success': 'Demande de livraison enregistrée'})
 
 @login_required
 def historique_order(request, projet_id):

@@ -10,7 +10,7 @@ projets
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-8">
-                <h2>Commandes pour le projet : {{ projet }}</h2>
+                <h2>Demandes de livraison partielle du projet : {{ projet }}</h2>
 
                 {% for order in orders%}
                 <table class="table table-responsive">
@@ -64,7 +64,7 @@ projets
                     </tbody>
                 </table>
                 {% empty %}
-                <p>Aucune commande pour ce projet.</p>
+                <p>Aucune demande de livraison pour ce projet.</p>
                 {% endfor %}
             </div>
             <div class="col-md-4 shadow-sm">

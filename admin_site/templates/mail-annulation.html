@@ -8,7 +8,8 @@
 
 <body>
     <h3>Bonjour {{ user.first_name }},</h3>
-    <p>Votre commande <b>N° {{ annulation.numero }}</b> a été <b>annulée</b>.</p>
+    <p>Votre {% if annulation.type_commande == "projet" %}demande de livraison partielle{% else %}commande{% endif %}
+        <b>N° {{ annulation.numero }}</b> a été <b>annulée</b>.</p>
     <p>Motif : {{ annulation.motif }}</p>
     {% if annulation.montant_paye %}
     <p>Montant déjà payé : <b>{{ annulation.montant_paye|floatformat:0 }} FCFA</b>.

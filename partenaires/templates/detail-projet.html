@@ -53,7 +53,7 @@ details sur le projet
                     {% endif %}
                 </p>
                 <p>
-                    <button class="btn btn-outline-warning" onclick="validerCommande()">Commander</button>
+                    <button class="btn btn-outline-warning" onclick="validerCommande()">Demander une livraison</button>
                     <button class="btn btn-outline-secondary" onclick="viderPanier()">Vider le panier</button>
 
                     <a href="{% url 'historique-order' projet.id%}" class="btn btn-warning">Voir historique</a>
@@ -84,7 +84,7 @@ details sur le projet
                     <th>Quantité totale</th>
                     <th>Quantité livrée</th>
                     <th>Quantité restante</th>
-                    <th colspan="2">Commander</th>
+                    <th colspan="2">Quantité à livrer</th>
                     <th>Panier</th>
                 </thead>
                 <tbody>
@@ -207,7 +207,7 @@ details sur le projet
         const quantiteDejaDansPanier = panier[produitId]?.quantite || 0;
         if (quantiteDejaDansPanier + qty > restant) {
             const disponible = restant - quantiteDejaDansPanier;
-            errorDiv.textContent = `Vous ne pouvez commander que ${disponible} unité(s) supplémentaire(s).`;
+            errorDiv.textContent = `Vous ne pouvez demander que ${disponible} unité(s) supplémentaire(s).`;
             return;
         }
 
@@ -290,7 +290,7 @@ details sur le projet
                 if (messageDiv) {
                     messageDiv.innerHTML = `
                         <div class="alert alert-success" role="alert">
-                            Commande enregistrée avec succès !
+                            Demande de livraison enregistrée avec succès !
                         </div>`;
                 }
                 localStorage.removeItem(CLE_PANIER);
@@ -305,7 +305,7 @@ details sur le projet
         .catch(function (error) {
             window.__commandeEnCours = false;
             console.error("Erreur :", error);
-            alert(error && error.message ? error.message : "La commande n'a pas pu être envoyée. Vérifiez votre connexion.");
+            alert(error && error.message ? error.message : "La demande de livraison n'a pas pu être envoyée. Vérifiez votre connexion.");
         });
     };
 

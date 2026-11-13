@@ -67,7 +67,7 @@ def _montants(type_commande, commande):
 
 def _numero(type_commande, commande):
     if type_commande == "projet":
-        return f"{commande.projet.name} - commande {commande.id}"
+        return f"{commande.projet.name} - demande de livraison {commande.id}"
     return f"{commande.numero}"
 
 
@@ -105,6 +105,7 @@ def contexte(type_commande, commande):
         "annulation": annulation,
         "peut_annuler": annulation is None and peut_annuler(commande.get_statut_actuel),
         "url_annulation": reverse("commande.annuler", args=[type_commande, commande.id]),
+        "libelle_annulation": "la demande de livraison" if type_commande == "projet" else "la commande",
     }
 
 
@@ -136,7 +137,9 @@ def annuler(type_commande, commande_id, user, motif):
         # L'e-mail part après l'enregistrement ; une panne de messagerie ne bloque pas l'annulation
         try:
             from auth_app.utils import send_custom_email
-            send_custom_email("Annulation de votre commande", "mail-annulation.html",
+            objet = ("Annulation de votre demande de livraison partielle" if type_commande == "projet"
+                     else "Annulation de votre commande")
+            send_custom_email(objet, "mail-annulation.html",
                               {"user": destinataire, "annulation": annulation}, [destinataire.email])
         except Exception:
             logger.exception("E-mail d'annulation non envoyé (%s %s)", type_commande, commande.id)

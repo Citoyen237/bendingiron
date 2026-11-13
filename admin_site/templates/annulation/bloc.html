@@ -10,18 +10,18 @@
 </div>
 {% elif peut_annuler %}
 <button type="button" class="btn btn-danger text-lg" data-bs-toggle="modal" data-bs-target="#modalAnnulation">
-    <i class="bi bi-x-circle"></i> Annuler la commande
+    <i class="bi bi-x-circle"></i> Annuler {{ libelle_annulation }}
 </button>
 <div class="modal fade" id="modalAnnulation" tabindex="-1" aria-labelledby="titreAnnulation" aria-hidden="true">
     <div class="modal-dialog">
         <form method="post" action="{{ url_annulation }}" class="modal-content text-start">
             {% csrf_token %}
             <div class="modal-header">
-                <h5 class="modal-title" id="titreAnnulation">Annuler la commande</h5>
+                <h5 class="modal-title" id="titreAnnulation">Annuler {{ libelle_annulation }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
-                <p class="text-danger">L'annulation est <b>définitive</b> : la commande ne pourra plus avancer.</p>
+                <p class="text-danger">L'annulation est <b>définitive</b> : {{ libelle_annulation }} ne pourra plus avancer.</p>
                 <label for="motifAnnulation" class="form-label">Motif (obligatoire)</label>
                 <textarea id="motifAnnulation" name="motif" class="form-control" rows="3" maxlength="500" required
                           placeholder="Ex. : le client renonce à sa commande"></textarea>

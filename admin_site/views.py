@@ -615,7 +615,7 @@ def change_statut_order(request, order_id):
         )
     userIn = order.projet.partenariat.user
     template="mail-statut.html"
-    objet="le statut de votre commande"
+    objet="le statut de votre demande de livraison partielle"
     context = {
        'user': userIn,
        'order':order
