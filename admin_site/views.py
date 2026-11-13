@@ -773,13 +773,34 @@ def get_order_additional(request):
     }
     return render(request, "partenaires/list-order-additional.html", context)
 
+STATUTS_TRAVAUX = {
+    "en_attente": ("En attente", "bg-warning text-dark"),
+    "en_production": ("En production", "bg-primary"),
+    "pret_pour_livraison": ("Prêt pour livraison", "bg-info text-dark"),
+    "termine": ("Livraison terminée", "bg-success"),
+}
+
+
 @admin_required
-def  get_order_additional_projet(request, projet_id):
-    orders = OrderAdd.objects.filter(id=projet_id).order_by('created_at')
-    projet= get_object_or_404(Projet, id=projet_id)
+def get_order_additional_projet(request, projet_id):
+    """Travaux additionnels d'UN projet (avant : filtrait par numéro de commande = numéro de projet)."""
+    projet = get_object_or_404(Projet, id=projet_id)
+    commandes = (OrderAdd.objects.filter(projet_order=projet).order_by("-created_at")
+                 .prefetch_related("orderitemadd_set", "payments_add", "traimentadd_set"))
+    lignes = []
+    for commande in commandes:
+        net, paye = commande.net_payer, commande.total_paye
+        statut = commande.get_statut_actuel
+        libelle, couleur = STATUTS_TRAVAUX.get(statut, ("Aucun traitement", "bg-secondary"))
+        lignes.append({"commande": commande, "net": net, "paye": paye, "reste": commande.reste_a_payer,
+                       "articles": commande.orderitemadd_set.count(),
+                       "statut": libelle, "couleur": couleur})
     context = {
-        'orders': orders,
-        'projet':projet
+        "projet": projet,
+        "lignes": lignes,
+        "total_net": sum(l["net"] for l in lignes),
+        "total_paye": sum(l["paye"] for l in lignes),
+        "total_reste": sum(l["reste"] for l in lignes),
     }
     return render(request, "partenaires/travaux-add-projet.html", context)
 #proforma
