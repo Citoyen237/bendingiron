@@ -129,7 +129,10 @@ detail
         <li class="step-active">Solde ma facture</li>
         <li class="step-active">Livraison termine</li>
         {% endif %}
-    </ol>
+    {% if status == "annule" %}
+    <li class="step-active" style="background:#dc3545;color:#fff">Commande annulée</li>
+    {% endif %}
+  </ol>
 </div>
 <section class="content project-area">
     <div class="container border shadow">

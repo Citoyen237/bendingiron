@@ -131,6 +131,7 @@ proformas
                                         {%if status == "termine" %}
                                         <a class="btn btn-success text-lg">{{status}}</a>
                                         {%endif%}
+                                        {% include "annulation/bloc.html" %}
                                         {% if order.est_supprimable %}
                                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
                                             data-bs-target="#modalSuppression" data-numero="{{ order.id }}"

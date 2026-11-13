@@ -189,6 +189,9 @@ def _page_confirmation(request, panier, paniers_details, total_prix, form, erreu
 @login_required
 def payer_solde(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
+    if order.get_statut_actuel == "annule":
+        messages.error(request, "Cette commande est annulée : elle ne peut plus être payée.")
+        return redirect("mes_commande")
 
     total_deja_paye = sum(p.amount_paid for p in order.payments.all())
     reste_a_payer = round(float(order.net_payer) - total_deja_paye)

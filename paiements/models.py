@@ -205,7 +205,16 @@ class DemandePaiement(models.Model):
         # CAS B) -> 'solde_facture' : le client vient de régler ce qu'il devait
         # encore.
         statut_traitement = "en_attente" if nouvelle_commande else "solde_facture"
-        Traiment.objects.create(order=order, user=self.user, statut=statut_traitement)
+        if not nouvelle_commande and order.get_statut_actuel == "annule":
+            # Commande annulée pendant le paiement : l'argent est enregistré
+            # (à rembourser), mais l'annulation reste le dernier statut.
+            logger.warning("Paiement reçu sur la commande annulée %s", order.id)
+            from django.db.models import F
+            from usesOrders.models import Annulation
+            Annulation.objects.filter(type_commande="client", commande_id=order.id).update(
+                montant_paye=F("montant_paye") + self.montant)
+        else:
+            Traiment.objects.create(order=order, user=self.user, statut=statut_traitement)
 
         self.statut = self.Statut.CONFIRME
         self.confirmed_at = timezone.now()

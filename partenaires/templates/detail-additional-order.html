@@ -119,6 +119,9 @@ detail
     <li class="step-active">Pret pour livraison</li>
     <li class="step-active">Livraison termine</li>
     {% endif %}
+  {% if status == "annule" %}
+    <li class="step-active" style="background:#dc3545;color:#fff">Commande annulée</li>
+    {% endif %}
   </ol>
 </div>
 <section class="content project-area">

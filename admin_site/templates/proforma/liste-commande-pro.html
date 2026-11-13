@@ -45,7 +45,9 @@ proformas
                                     <td>{{order.net_payer}}</td>
                                     <td>
                                         
-                                        {% if order.statut_final == "Terminée et soldée" %}
+                                        {% if order.statut_final == "Annulée" %}
+                                        <span class="badge bg-danger">Annulée</span>
+                                        {% elif order.statut_final == "Terminée et soldée" %}
                                         <span class="badge bg-success">{{order.statut_final}}        
                                         </span>
                                         {% else %}

@@ -1,0 +1,36 @@
+{% comment %}Bloc « Annuler la commande » des pages de détail (admin). Variables : annulation, peut_annuler, url_annulation.{% endcomment %}
+{% if annulation %}
+<div class="alert alert-danger mt-3 mb-0 text-start">
+    <span class="badge bg-danger">Annulée</span>
+    le {{ annulation.created_at|date:"d/m/Y à H:i" }}{% if annulation.user %} par {{ annulation.user }}{% endif %},
+    au statut « {{ annulation.get_statut_avant_display }} ».<br>
+    <b>Motif :</b> {{ annulation.motif }}
+    {% if annulation.montant_paye %}<br><b>Déjà payé :</b> {{ annulation.montant_paye|floatformat:0 }} FCFA
+    (à traiter hors du site : remboursement ou retenue){% endif %}
+</div>
+{% elif peut_annuler %}
+<button type="button" class="btn btn-danger text-lg" data-bs-toggle="modal" data-bs-target="#modalAnnulation">
+    <i class="bi bi-x-circle"></i> Annuler la commande
+</button>
+<div class="modal fade" id="modalAnnulation" tabindex="-1" aria-labelledby="titreAnnulation" aria-hidden="true">
+    <div class="modal-dialog">
+        <form method="post" action="{{ url_annulation }}" class="modal-content text-start">
+            {% csrf_token %}
+            <div class="modal-header">
+                <h5 class="modal-title" id="titreAnnulation">Annuler la commande</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger">L'annulation est <b>définitive</b> : la commande ne pourra plus avancer.</p>
+                <label for="motifAnnulation" class="form-label">Motif (obligatoire)</label>
+                <textarea id="motifAnnulation" name="motif" class="form-control" rows="3" maxlength="500" required
+                          placeholder="Ex. : le client renonce à sa commande"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+                <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}

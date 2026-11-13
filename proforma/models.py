@@ -124,6 +124,8 @@ class OrderPro(models.Model):
     
     @property
     def statut_final(self):
+        if self.get_statut_actuel == "annule":
+            return "Annulée"
         if self.est_termine and self.est_solde:
             return "Terminée et soldée"
         if self.est_termine:
@@ -166,6 +168,7 @@ class TraimentPro(models.Model):
         ('en_production', 'En production'),
         ('pret_pour_livraison', 'Pret pour livraison'),
         ('termine', 'Livraison termine'),
+        ('annule', 'Annulée'),
     ], default='en_attente')
     created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
     

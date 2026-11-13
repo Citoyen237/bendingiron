@@ -30,6 +30,7 @@ urlpatterns = [
     path('commandes/<int:order_id>', detail_commande, name='order.detail'),
     path('commandes/<int:order_id>/suivis', suivis_commande, name='order.suivis'),
     path('commandes/change-statut/<int:order_id>', change_statut, name='change.status'),
+    path('commandes/<str:type_commande>/<int:order_id>/annuler/', annuler_commande, name='commande.annuler'),
 
     
     path('partenariats/', ListPartenariats.as_view(), name='partenariat.list'),

@@ -6,6 +6,10 @@ Bénéfice et stock ne sont PAS calculés tant que les préalables ne sont pas f
 chiffres seraient faux.
 
 Montants : ceux des factures (net à payer, TTC), comme sur les PDF.
+Commandes annulées : retirées du chiffre d'affaires, du nombre de commandes et du
+reste à encaisser ; elles ont leur propre bloc (_annulations). Leurs paiements
+restent dans les encaissements tant qu'aucun remboursement n'est enregistré
+(proposition G).
 """
 from collections import Counter, defaultdict
 from decimal import Decimal
@@ -69,7 +73,26 @@ def _evolution(actuel, precedent):
     return round((actuel - precedent) * 100 / precedent, 1)
 
 
+def _annulees():
+    """{type: ensemble des identifiants de commandes annulées}."""
+    from usesOrders.models import Annulation
+    ids = defaultdict(set)
+    for type_commande, commande_id in Annulation.objects.values_list("type_commande", "commande_id"):
+        ids[type_commande].add(commande_id)
+    return ids
+
+
 def _commandes_de_l_annee(annee):
+    """Commandes de l'année, SANS les commandes annulées."""
+    annulees = _annulees()
+    cmd = _toutes_les_commandes(annee)
+    for cle, type_commande in (("client", "client"), ("proforma", "proforma"),
+                               ("additionnel", "additionnel"), ("commandes_projet", "projet")):
+        cmd[cle] = [c for c in cmd[cle] if c.id not in annulees[type_commande]]
+    return cmd
+
+
+def _toutes_les_commandes(annee):
     from partenaires.models import OrderAdd, Projet, ProjetOrder
     from proforma.models import OrderPro
     from usesOrders.models import Order
@@ -267,6 +290,51 @@ def _produits(cmd):
     }
 
 
+STATUTS_AVANT = {
+    "aucun": "Aucun traitement", "en_attente": "En attente", "en_production": "En production",
+    "pret_pour_livraison": "Prêt pour livraison", "solde_facture": "Facture soldée",
+}
+
+
+def _annulations(annee):
+    """Commandes annulées dans l'année (date d'annulation).
+
+    remboursements à faire / faits et retenues : préparés pour la proposition G
+    (None = pas encore géré, affiché « — »).
+    """
+    from usesOrders.models import Annulation
+    annulations = list(Annulation.objects.filter(**_periode("created_at", annee)))
+    nombre = {cle: 0 for cle, _ in TYPES}
+    montant = {cle: 0 for cle, _ in TYPES}
+    par_mois = [0] * 12
+    statuts = Counter()
+    for a in annulations:
+        nombre[a.type_commande] += 1
+        montant[a.type_commande] += _entier(a.montant_commande)
+        par_mois[_mois(a.created_at)] += 1
+        statuts[a.statut_avant] += 1
+    gere = any(a.montant_rembourse is not None or a.montant_retenu is not None for a in annulations)
+    a_rembourser = rembourse = retenu = None
+    if gere:   # proposition G en place
+        rembourse = sum(_entier(a.montant_rembourse) for a in annulations)
+        retenu = sum(_entier(a.montant_retenu) for a in annulations)
+        a_rembourser = max(sum(_entier(a.montant_paye) for a in annulations) - rembourse - retenu, 0)
+    return {
+        "nombre": nombre,
+        "total": len(annulations),
+        "montant": montant,
+        "montant_total": sum(montant.values()),
+        "par_mois": par_mois,
+        "par_statut": [(STATUTS_AVANT.get(s, s), n) for s, n in
+                       sorted(statuts.items(), key=lambda x: list(STATUTS_AVANT).index(x[0])
+                              if x[0] in STATUTS_AVANT else 99)],
+        "deja_paye": sum(_entier(a.montant_paye) for a in annulations),
+        "a_rembourser": a_rembourser,
+        "rembourse": rembourse,
+        "retenu": retenu,
+    }
+
+
 def statistiques(annee):
     """Toutes les statistiques d'une année, plus la comparaison avec l'année précédente."""
     cmd = _commandes_de_l_annee(annee)
@@ -292,6 +360,7 @@ def statistiques(annee):
         "commandes": commandes,
         "clients": clients,
         "produits": _produits(cmd),
+        "annulations": _annulations(annee),
         "precedent": prec,
         "evolution": {
             "ca": _evolution(ca["total"], prec["ca"]),

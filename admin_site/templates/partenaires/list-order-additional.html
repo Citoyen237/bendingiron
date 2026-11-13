@@ -58,6 +58,7 @@
                                             {{order.get_statut_actuel}}
                                         </span>
                                         {%endif%}
+{% if order.get_statut_actuel == "annule" %}<span class="badge bg-danger">Annulée</span>{% endif %}
 
                                     </th>
                                     <td><a href="{% url 'partenariat.detail.order.additional' order.id %}"

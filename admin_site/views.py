@@ -47,6 +47,7 @@ from django.db import transaction
 
 from decimal import Decimal
 from django.db.models import OuterRef, Subquery
+from usesOrders import annulation as annulation_cmd
 
 def montant_total_ventes_terminees():
     # Dernier statut par commande
@@ -416,6 +417,7 @@ def detail_commande(request, order_id):
         'orderId':commande.id,
         'order':commande
     }
+    context.update(annulation_cmd.contexte("client", commande))
     return render(request, 'order/detail.html',context)
 
 @admin_required
@@ -434,6 +436,9 @@ def change_statut(request, order_id):
    user=request.user
     #   Récupérer l'objet
    order = get_object_or_404(Order, id=order_id)
+   if order.get_statut_actuel == annulation_cmd.ANNULE:
+      messages.error(request, "Commande annulée : son statut ne change plus.")
+      return redirect('order.detail', order.id)
    new_status=order.get_statut_actuel
   
    if (order.get_statut_actuel == "en_attente" ):
@@ -580,6 +585,7 @@ def get_detail_order(request, order_id):
         'orderId':commande.id,
         'order':commande
     }
+    context.update(annulation_cmd.contexte("projet", commande))
     return render(request, "partenaires/detail-order.html", context)
 
 @require_POST
@@ -588,6 +594,9 @@ def change_statut_order(request, order_id):
     user=request.user
     #   Récupérer l'objet
     order = get_object_or_404(ProjetOrder, id=order_id)
+    if order.get_statut_actuel == annulation_cmd.ANNULE:
+        messages.error(request, "Commande annulée : son statut ne change plus.")
+        return redirect('partenariat.orders.details', order.id)
     new_status=order.get_statut_actuel
  
     if (order.get_statut_actuel == "en_attente" ):
@@ -653,6 +662,9 @@ SUIVANT_ADD = {
 @admin_required
 def change_statut_order_add(request, order_id):
     order = get_object_or_404(OrderAdd, id=order_id)
+    if order.get_statut_actuel == annulation_cmd.ANNULE:
+        messages.error(request, "Commande annulée : son statut ne change plus.")
+        return redirect('partenariat.detail.order.additional', order.id)
     nouveau = SUIVANT_ADD.get(order.get_statut_actuel, "en_attente")
     TraimentAdd.objects.create(order=order, user=request.user, statut=nouveau)
     messages.success(request, "Statut mis à jour.")
@@ -670,6 +682,9 @@ def get_detail_order_additional(request, order_id):
         order = get_object_or_404(OrderAdd.objects.select_for_update(), id=order_id)
         form = PaymentAddForm(request.POST or None, order=order)
 
+        if request.method == "POST" and order.get_statut_actuel == annulation_cmd.ANNULE:
+            messages.error(request, "Commande annulée : aucun paiement ne peut être enregistré.")
+            return redirect(request.path)
         if request.method == "POST" and form.is_valid():
             paiement = form.save(commit=False)
             paiement.order = order
@@ -699,6 +714,7 @@ def get_detail_order_additional(request, order_id):
         'order':commande,
         'form':form
     }
+    context.update(annulation_cmd.contexte("additionnel", commande))
     return render(request, 'partenaires/detail-commande-additional.html',context)
 
 class ListCodeRevendeur(AdminRequiredMixin, ListView):
@@ -778,6 +794,7 @@ STATUTS_TRAVAUX = {
     "en_production": ("En production", "bg-primary"),
     "pret_pour_livraison": ("Prêt pour livraison", "bg-info text-dark"),
     "termine": ("Livraison terminée", "bg-success"),
+    "annule": ("Annulée", "bg-danger"),
 }
 
 
@@ -826,6 +843,9 @@ def detail_order_pro(request, order_id):
         order = get_object_or_404(OrderPro.objects.select_for_update(), id=order_id)
         form = PaymentProForm(request.POST or None, order=order)
 
+        if request.method == "POST" and order.get_statut_actuel == annulation_cmd.ANNULE:
+            messages.error(request, "Commande annulée : aucun paiement ne peut être enregistré.")
+            return redirect(request.path)
         if request.method == "POST" and form.is_valid():
             paiement = form.save(commit=False)
             paiement.order = order
@@ -855,6 +875,7 @@ def detail_order_pro(request, order_id):
         'order':commande,
         'form':form
     }
+    context.update(annulation_cmd.contexte("proforma", commande))
     return render(request, 'proforma/detail-commande-pro.html',context)
 
 @admin_required
@@ -873,6 +894,9 @@ def change_statut_pro(request, order_id):
    user=request.user
     #   Récupérer l'objet
    order = get_object_or_404(OrderPro, id=order_id)
+   if order.get_statut_actuel == annulation_cmd.ANNULE:
+      messages.error(request, "Commande annulée : son statut ne change plus.")
+      return redirect('detail.proforma', order.id)
    new_status=order.get_statut_actuel
   
    if (order.get_statut_actuel == "en_attente" ):
@@ -938,3 +962,20 @@ def statistiques_annuelles(request):
         "s": stats, "annees": annees, "graphiques": graphiques,
         "current_url": request.get_full_path(),
     })
+
+
+# --- Annulation d'une commande (13/11/2026) ---
+@require_POST
+@admin_required
+def annuler_commande(request, type_commande, order_id):
+    if type_commande not in ("client", "proforma", "projet", "additionnel"):
+        raise Http404
+    try:
+        annulation = annulation_cmd.annuler(type_commande, order_id, request.user, request.POST.get("motif"))
+    except annulation_cmd.AnnulationImpossible as erreur:
+        messages.error(request, str(erreur))
+    except (Order.DoesNotExist, OrderPro.DoesNotExist, ProjetOrder.DoesNotExist, OrderAdd.DoesNotExist):
+        raise Http404
+    else:
+        messages.success(request, f"La commande n° {annulation.numero} est annulée.")
+    return redirect(annulation_cmd.url_detail(type_commande, order_id))

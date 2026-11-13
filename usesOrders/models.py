@@ -215,6 +215,7 @@ class Traiment(models.Model):
         ('pret_pour_livraison', 'Pret pour livraison'),
         ('solde_facture', 'Solde ma facture'),
         ('termine', 'Livraison termine'),
+        ('annule', 'Annulée'),
     ], default='en_attente')
     created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
     
@@ -298,3 +299,66 @@ class CodePromoUse(models.Model):
     def __str__(self):
         return f"{self.promo_code.code}"
 
+
+# --- Annulation des commandes (13/11/2026) ---
+STATUTS_ANNULABLES = [   # dans l'ordre d'avancement
+    ("en_attente", "En attente"),
+    ("en_production", "En production"),
+    ("pret_pour_livraison", "Prêt pour livraison"),
+    ("solde_facture", "Facture soldée"),
+]
+
+
+class ReglageCommande(models.Model):
+    """Réglages des commandes, modifiables par l'admin dans « larue » (une seule ligne)."""
+    annulation_jusqu_a = models.CharField(
+        "Annulation permise jusqu'au statut", max_length=20,
+        choices=STATUTS_ANNULABLES, default="pret_pour_livraison",
+        help_text="Une commande peut être annulée tant que son statut ne dépasse pas celui-ci. "
+                  "Une commande « Livraison terminée » ne peut jamais être annulée.")
+
+    class Meta:
+        verbose_name = "Réglage des commandes"
+        verbose_name_plural = "Réglages des commandes"
+
+    def __str__(self):
+        return "Réglages des commandes"
+
+    @classmethod
+    def actuel(cls):
+        return cls.objects.first() or cls()
+
+
+class Annulation(models.Model):
+    """Trace d'une commande annulée (client, proforma, projet ou travaux additionnels).
+
+    montant_rembourse et montant_retenu sont prévus pour la proposition G
+    (partie remboursable / non remboursable) : vides tant qu'elle n'est pas faite.
+    """
+    TYPES = [
+        ("client", "Commande client"),
+        ("proforma", "Proforma"),
+        ("projet", "Commande projet"),
+        ("additionnel", "Travaux additionnels"),
+    ]
+    STATUTS_AVANT = STATUTS_ANNULABLES + [("aucun", "Aucun traitement")]
+
+    type_commande = models.CharField(max_length=20, choices=TYPES)
+    commande_id = models.PositiveIntegerField()
+    numero = models.CharField(max_length=50, blank=True)
+    statut_avant = models.CharField("Statut au moment de l'annulation", max_length=20, choices=STATUTS_AVANT)
+    motif = models.TextField(max_length=500)
+    montant_commande = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    montant_paye = models.DecimalField("Déjà payé", max_digits=14, decimal_places=2, default=0)
+    montant_rembourse = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    montant_retenu = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=["type_commande", "commande_id"],
+                                               name="annulation_unique_par_commande")]
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.get_type_commande_display()} {self.numero or self.commande_id} annulée"

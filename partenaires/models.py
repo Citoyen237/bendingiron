@@ -4,6 +4,12 @@ from django.utils import timezone
 from produits.models import *
 from django.db.models import Sum
 from decimal import Decimal
+
+
+def commandes_projet_annulees():
+    """Identifiants des commandes projet annulées (sous-requête)."""
+    from usesOrders.models import Annulation
+    return Annulation.objects.filter(type_commande="projet").values("commande_id")
 # Create your models here.
 class CompteurFactureProj(models.Model):
     annee = models.PositiveIntegerField(unique=True)
@@ -162,7 +168,7 @@ class Projet(models.Model):
         # On récupère la somme des quantités commandées de chaque ProjetItem lié au sous commande
         total = ProjetOrderItem.objects.filter(
             projet_item__projet=self
-        ).aggregate(
+        ).exclude(projet_order_id__in=commandes_projet_annulees()).aggregate(
             somme=Sum('quantite')
         )['somme']
         return total or 0
@@ -213,7 +219,8 @@ class Projet(models.Model):
     
     @property
     def toutes_commandes_terminees(self):
-        orders = self.projetorder_set.all()
+        # Les commandes annulées ne comptent pas
+        orders = self.projetorder_set.exclude(id__in=commandes_projet_annulees())
         if not orders.exists():
             return False  # pas de commandes → pas terminé
         return all(order.get_statut_actuel == "termine" for order in orders)
@@ -262,9 +269,10 @@ class ProjetItem(models.Model):
         """
         Retourne la quantité commandée pour cet item dans les commandes du projet lié.
         """
+        # Une commande projet annulée rend ses quantités au « restant »
         return self.orders_items.filter(
                 projet_order__projet=self.projet
-            ).aggregate(
+            ).exclude(projet_order_id__in=commandes_projet_annulees()).aggregate(
                 total=Sum('quantite')
             )['total'] or 0
 
@@ -348,6 +356,7 @@ class TraimentOrder(models.Model):
         ('en_production', 'En production'),
         ('pret_pour_livraison', 'Pret pour livraison'),
         ('termine', 'Livraison termine'),
+        ('annule', 'Annulée'),
     ], default='en_attente')
     created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
     
@@ -464,6 +473,7 @@ class TraimentAdd(models.Model):
         ('en_production', 'En production'),
         ('pret_pour_livraison', 'Pret pour livraison'),
         ('termine', 'Livraison termine'),
+        ('annule', 'Annulée'),
     ], default='en_attente')
     created_at = models.DateTimeField(auto_now_add=True)  # ➕ important pour trier
     

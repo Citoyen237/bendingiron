@@ -223,6 +223,47 @@ Statistiques {{ s.annee|unlocalize }}
       </div>
     </div>
 
+    {# ===== 8. Commandes annulées (proposition G préparée) ===== #}
+    <div class="row" id="bloc-annulations">
+      <div class="col-lg-4">
+        <div class="card"><div class="card-body">
+          <h5 class="card-title">Commandes annulées <span>| {{ s.annulations.total }} dans l'année</span></h5>
+          <table class="table stat-table">
+            {% for cle, libelle in s.types %}
+            <tr><td>{{ libelle }}</td>
+              <td class="text-end">{% for k, v in s.annulations.nombre.items %}{% if k == cle %}{{ v }}{% endif %}{% endfor %}</td>
+              <td class="text-end">{% for k, v in s.annulations.montant.items %}{% if k == cle %}{{ v|intcomma }} F{% endif %}{% endfor %}</td></tr>
+            {% endfor %}
+            <tr class="fw-bold"><td>Total</td><td class="text-end">{{ s.annulations.total }}</td><td class="text-end">{{ s.annulations.montant_total|intcomma }} F</td></tr>
+          </table>
+          <p class="text-muted small mb-0">Retirées du chiffre d'affaires, du nombre de commandes et du reste à encaisser.</p>
+        </div></div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card"><div class="card-body">
+          <h5 class="card-title">Annulées au statut</h5>
+          <table class="table stat-table">
+            {% for libelle, n in s.annulations.par_statut %}
+            <tr><td>{{ libelle }}</td><td class="text-end">{{ n }}</td></tr>
+            {% empty %}<tr><td class="text-muted">Aucune commande annulée.</td></tr>{% endfor %}
+          </table>
+        </div></div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card"><div class="card-body">
+          <h5 class="card-title">Argent des annulations</h5>
+          <table class="table stat-table">
+            <tr><td>Déjà payé sur ces commandes</td><td class="text-end">{{ s.annulations.deja_paye|intcomma }} F</td></tr>
+            <tr><td>Remboursements à faire</td><td class="text-end">{% if s.annulations.a_rembourser is not None %}{{ s.annulations.a_rembourser|intcomma }} F{% else %}—{% endif %}</td></tr>
+            <tr><td>Remboursements faits</td><td class="text-end">{% if s.annulations.rembourse is not None %}{{ s.annulations.rembourse|intcomma }} F{% else %}—{% endif %}</td></tr>
+            <tr><td>Retenues gardées</td><td class="text-end">{% if s.annulations.retenu is not None %}{{ s.annulations.retenu|intcomma }} F{% else %}—{% endif %}</td></tr>
+          </table>
+          <p class="text-muted small mb-0">« — » : remboursable / retenu pas encore géré (proposition G).
+            L'argent déjà payé reste compté dans « Encaissé » tant qu'aucun remboursement n'est enregistré.</p>
+        </div></div>
+      </div>
+    </div>
+
     {# ===== 3 et 7. En attente des préalables ===== #}
     <div class="row">
       <div class="col-lg-6">

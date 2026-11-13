@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>bending iron</title>
+</head>
+
+<body>
+    <h3>Bonjour {{ user.first_name }},</h3>
+    <p>Votre commande <b>N° {{ annulation.numero }}</b> a été <b>annulée</b>.</p>
+    <p>Motif : {{ annulation.motif }}</p>
+    {% if annulation.montant_paye %}
+    <p>Montant déjà payé : <b>{{ annulation.montant_paye|floatformat:0 }} FCFA</b>.
+        Notre équipe vous contactera au sujet de ce montant.</p>
+    {% endif %}
+    <p>Pour toute question, répondez à cet e-mail ou contactez-nous.</p>
+    <a href="https://www.bending-iron.com">Se connecter</a>
+    <br>
+    <p>Cordialement,</p>
+    <p><b>L'équipe BENDING IRON.</b></p>
+</body>
+
+</html>
