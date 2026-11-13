@@ -255,7 +255,7 @@ class CommandeProjetSansCookieCsrfTests(TestCase):
         self.client.force_login(partenaire)
         url = reverse("partenaire.detail", args=[projet.id])
         html = self.client.get(url, secure=True).content.decode()
-        self.assertEqual(html.count("La 1er tranche"), 1)   # une seule fois
+        self.assertEqual(html.count("La 1re tranche"), 1)   # une seule fois
         PaiementProjet.objects.create(projet=projet, tranche=1)
         html = self.client.get(url, secure=True).content.decode()
         self.assertNotIn('class="alert alert-info text-center text-dark"', html)

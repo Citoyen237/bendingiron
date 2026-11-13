@@ -73,6 +73,12 @@ details sur le projet
             <div class="alert alert-info text-center text-dark" role="alert">{{ etape }}</div>
             {% endif %}
             {% endwith %}
+            {% if projet.peut_commander %}
+            <p id="plafond-livraison" class="text-center">
+                Vous pouvez encore demander : <b>{{ projet.quantite_encore_demandable|unlocalize }} pièce(s)</b>
+                (plafond {{ projet.plafond_livraison }} % du projet avec les tranches payées)
+            </p>
+            {% endif %}
 
             <div id="message"></div>
             {% csrf_token %}{# jeton de sécurité lu par le script « Commander » (le cookie peut manquer) #}
@@ -139,6 +145,11 @@ details sur le projet
     // Panier propre à CE projet (avant : un seul panier « panier » pour tous les
     // projets ; des restes d'un autre projet ou d'anciens essais bloquaient la commande).
     const projetId = {{ projet.id|unlocalize }};
+    // Pièces encore demandables avec les tranches payées (le serveur revérifie)
+    const ENCORE_DEMANDABLE = {{ projet.quantite_encore_demandable|unlocalize }};
+    function totalPanier() {
+        return Object.values(panier).reduce(function (t, p) { return t + (parseInt(p.quantite) || 0); }, 0);
+    }
     const CLE_PANIER = "panier_projet_" + projetId;
     localStorage.removeItem("panier");   // ancien panier commun : abandonné
 
@@ -208,6 +219,12 @@ details sur le projet
         if (quantiteDejaDansPanier + qty > restant) {
             const disponible = restant - quantiteDejaDansPanier;
             errorDiv.textContent = `Vous ne pouvez demander que ${disponible} unité(s) supplémentaire(s).`;
+            return;
+        }
+
+        if (totalPanier() + qty > ENCORE_DEMANDABLE) {
+            const reste = Math.max(ENCORE_DEMANDABLE - totalPanier(), 0);
+            errorDiv.textContent = `Plafond des tranches payées : vous pouvez encore ajouter ${reste} pièce(s) au total.`;
             return;
         }
 

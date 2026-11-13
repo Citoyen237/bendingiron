@@ -175,6 +175,16 @@ def valider_commande_partenaire(request):
         return JsonResponse({'error': 'Aucune quantité à livrer'}, status=400)
 
     with transaction.atomic():
+        # Verrou sur le projet : deux demandes envoyées en même temps ne peuvent
+        # pas dépasser ensemble le restant ou le plafond.
+        projet = Projet.objects.select_for_update().get(pk=projet.pk)
+        for item, quantite in lignes:
+            if quantite > item.quantite_restant:
+                return JsonResponse({'error': f"Quantité demandée supérieure au restant pour {item.produit}"}, status=400)
+        # Plafond des tranches payées, demande en cours comprise
+        erreur = projet.erreur_plafond(sum(q for _, q in lignes))
+        if erreur:
+            return JsonResponse({'error': erreur}, status=400)
         commande = ProjetOrder.objects.create(projet=projet)
         for item, quantite in lignes:
             ProjetOrderItem.objects.create(projet_order=commande, projet_item=item, quantite=quantite)

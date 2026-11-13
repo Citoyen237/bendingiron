@@ -192,30 +192,70 @@ class Projet(models.Model):
     def peut_passer_a_etape_suivante2(self):
         return self.pourcentage_realisation >= 90 and self.tranche3_payee
     
-    # Si réalisation < 50 %, seule la 1ʳᵉ tranche suffit.
-    # Si 50 % ≤ réalisation < 90 %, il faut la 2ᵉ tranche.
-    # Si réalisation ≥ 90 %, il faut la 3ᵉ tranche.
+    # Livraisons partielles (règle du 13/11/2026) : chaque tranche payée ouvre un
+    # PLAFOND, vérifié en comptant la demande en cours (avant : seul le déjà
+    # livré était regardé, et une seule demande pouvait prendre 100 % du projet).
+    #   aucune tranche -> 0 %   1re -> 50 %   1re + 2e -> 90 %   les 3 -> 100 %
+    # Pourcentage = pièces demandées / pièces prévues (demandes annulées exclues).
+    PLAFONDS_LIVRAISON = {0: 0, 1: 50, 2: 90, 3: 100}
+
+    @staticmethod
+    def libelle_tranche(numero):
+        return "1re" if numero == 1 else f"{numero}e"
+
+    @property
+    def tranches_payees(self):
+        """Nombre de tranches payées dans l'ordre (1, puis 2, puis 3)."""
+        payees = set(self.paiements.values_list("tranche", flat=True))
+        n = 0
+        while n + 1 in payees:
+            n += 1
+        return n
+
+    @property
+    def plafond_livraison(self):
+        """Pourcentage maximal du projet livrable avec les tranches payées."""
+        return self.PLAFONDS_LIVRAISON[self.tranches_payees]
+
+    @property
+    def quantite_max_livrable(self):
+        """Pièces livrables au plus (plafond, arrondi à la pièce inférieure)."""
+        return self.quantite_totale_commandee * self.plafond_livraison // 100
+
+    @property
+    def quantite_encore_demandable(self):
+        return max(self.quantite_max_livrable - self.quantite_commande_totale, 0)
+
     @property
     def peut_commander(self):
-        if self.pourcentage_realisation < 50:
-            return self.tranche1_payee
-        elif 50 <= self.pourcentage_realisation < 90:
-            return self.tranche2_payee
-        elif self.pourcentage_realisation >= 90:
-            return self.tranche3_payee
-        return False
+        return self.quantite_encore_demandable > 0
+
+    def erreur_plafond(self, quantite_demandee):
+        """Message si la demande dépasse le plafond des tranches payées, sinon None."""
+        if quantite_demandee <= self.quantite_encore_demandable:
+            return None
+        n = self.tranches_payees
+        if n == 0:
+            return "La 1re tranche n'est pas encore payée : aucune livraison possible."
+        message = (f"Avec {'les ' + str(n) + ' premières tranches payées' if n > 1 else 'la 1re tranche payée'}, "
+                   f"vous pouvez vous faire livrer jusqu'à {self.plafond_livraison} % du projet "
+                   f"({self.quantite_max_livrable} pièce(s)). Vous pouvez encore demander "
+                   f"{self.quantite_encore_demandable} pièce(s).")
+        if n < 3:
+            message += f" Payez la {self.libelle_tranche(n + 1)} tranche pour aller plus loin."
+        return message
 
     @property
     def message_etape_suivante(self):
-        if self.peut_commander:
+        if self.peut_commander or not self.quantite_totale_commandee:
             return ""
-        elif self.pourcentage_realisation < 50 and not self.tranche1_payee:
-            return "La 1er tranche n'est pas encore payée."
-        elif 50 <= self.pourcentage_realisation < 90 and not self.tranche2_payee:
-            return "La 2e tranche n'est pas encore payée."
-        elif self.pourcentage_realisation >= 90 and not self.tranche3_payee:
-            return "La 3e tranche n'est pas encore payée."
-        return "Conditions non remplies."
+        n = self.tranches_payees
+        if n >= 3 or self.quantite_commande_totale >= self.quantite_totale_commandee:
+            return ""        # tout est payé ou tout est déjà demandé
+        suivante = self.libelle_tranche(n + 1)
+        if n == 0:
+            return f"La {suivante} tranche n'est pas encore payée."
+        return f"Plafond de {self.plafond_livraison} % atteint : la {suivante} tranche n'est pas encore payée."
     
     @property
     def toutes_commandes_terminees(self):
