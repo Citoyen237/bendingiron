@@ -36,6 +36,10 @@ class OrderUserInfoFormPro(forms.ModelForm):
         super(OrderUserInfoFormPro, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
+        # Case à cocher : pas de « form-control » (style de zone de texte qui la rendait
+        # impossible à cocher visuellement)
+        self.fields['appliquer_tva'].widget.attrs = {
+            'style': 'position: static; width: 1.3em; height: 1.3em; margin: 0; cursor: pointer; accent-color: #ffb600;'}
 
 class PaymentProForm(forms.ModelForm):
     MODES = [
