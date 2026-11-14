@@ -360,5 +360,13 @@ class Annulation(models.Model):
                                                name="annulation_unique_par_commande")]
         ordering = ["-created_at"]
 
+    @property
+    def montant_a_rembourser(self):
+        """Montant rendu au client : saisi par l'admin (proposition G), sinon tout ce
+        qui a été payé moins une éventuelle retenue."""
+        if self.montant_rembourse is not None:
+            return self.montant_rembourse
+        return max(self.montant_paye - (self.montant_retenu or 0), 0)
+
     def __str__(self):
         return f"{self.get_type_commande_display()} {self.numero or self.commande_id} annulée"

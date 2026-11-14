@@ -11,10 +11,19 @@
     <p>Votre {% if annulation.type_commande == "projet" %}demande de livraison partielle{% else %}commande{% endif %}
         <b>N° {{ annulation.numero }}</b> a été <b>annulée</b>.</p>
     <p>Motif : {{ annulation.motif }}</p>
-    {% if annulation.montant_paye %}
-    <p>Montant déjà payé : <b>{{ annulation.montant_paye|floatformat:0 }} FCFA</b>.
-        Notre équipe vous contactera au sujet de ce montant.</p>
+    {% load montants %}
+    {% with remboursement=annulation.montant_a_rembourser %}
+    {% if remboursement %}
+    <p>Montant déjà payé : <b>{{ annulation.montant_paye|floatformat:"0g" }} FCFA</b>.</p>
+    <p style="padding: 10px 14px; background: #fff7e0; border-left: 4px solid #ffb600;">
+        <b>Montant à rembourser : {{ remboursement|floatformat:"0g" }} FCFA</b><br>
+        ({{ remboursement|en_lettres|capfirst }} francs CFA)<br><br>
+        Pour entrer en possession de votre remboursement, veuillez vous rendre à la
+        <b>direction de BENDING IRON</b> (Bepanda l'an 2000, entre la 7<sup>e</sup> et la 8<sup>e</sup> rue, Douala),
+        muni(e) de la référence <b>N° {{ annulation.numero }}</b>.
+    </p>
     {% endif %}
+    {% endwith %}
     <p>Pour toute question, répondez à cet e-mail ou contactez-nous.</p>
     <a href="https://www.bending-iron.com">Se connecter</a>
     <br>

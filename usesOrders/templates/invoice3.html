@@ -56,7 +56,7 @@
         table th,
         table td {
             border: 1px solid #2b2a2a;
-            padding: 8px;
+            padding: 3px 5px;
             text-align: left;
         }
 
@@ -86,7 +86,7 @@
         }
 
         td {
-            font-size: 16px;
+            font-size: 10px;
         }
 
         .footer {
@@ -192,6 +192,11 @@
                     <td>__ €</td>
                 </tr> -->
     </table>
+        {% load montants %}
+        <p style="font-size: 11px; margin: 10px 0 14px;">
+            Arrêté la présente facture à la somme TTC de :
+            <b style="background-color: #ffe14d; padding: 1px 4px;">{{ net_payer|en_lettres|capfirst }} francs CFA</b>
+        </p>
 
     <div class="footer">
         <!-- Additional Information -->

@@ -65,6 +65,9 @@ class AnnulationCommandeClientTests(Base):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ["a@x.cm"])
         self.assertIn("annulée", mail.outbox[0].body)
+        self.assertIn("Montant à rembourser : 700 FCFA", mail.outbox[0].body)
+        self.assertIn("Sept cents francs CFA", mail.outbox[0].body)
+        self.assertIn("direction de BENDING IRON", mail.outbox[0].body)
 
         # le bouton « suivant » ne fait plus avancer
         self.client.post(reverse("change.status", args=[o.id]), secure=True)
@@ -162,6 +165,15 @@ class AnnulationProjetTests(Base):
 
         self.client.post(reverse("partenariat.orders.statut", args=[po.id]), secure=True)
         self.assertEqual(ProjetOrder.objects.get(pk=po.pk).get_statut_actuel, "annule")
+
+        # côté partenaire : badge rouge et motif dans l'historique, bandeau sur le détail
+        self.client.force_login(self.partenaire)
+        historique = self.client.get(reverse("historique-order", args=[self.projet.id]), secure=True)
+        self.assertContains(historique, '<span class="badge bg-danger"', html=False)
+        self.assertContains(historique, "Motif : Le client renonce")
+        detail = self.client.get(reverse("front.orders.details", args=[po.id]), secure=True)
+        self.assertContains(detail, "Cette demande de livraison partielle est annulée")
+        self.assertContains(detail, "Motif : Le client renonce")
 
     def test_travaux_additionnels(self):
         travail = OrderAdd.objects.create(projet_order=self.projet, user=self.partenaire)
