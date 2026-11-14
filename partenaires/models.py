@@ -223,6 +223,11 @@ class Projet(models.Model):
         return self.quantite_totale_commandee * self.plafond_livraison // 100
 
     @property
+    def marge_plafond(self):
+        """Part du projet (en %) encore demandable avec les tranches payées (barre d'avancement)."""
+        return max(round(self.plafond_livraison - self.pourcentage_realisation, 2), 0)
+
+    @property
     def quantite_encore_demandable(self):
         return max(self.quantite_max_livrable - self.quantite_commande_totale, 0)
 
@@ -377,6 +382,24 @@ class PaiementProjet(models.Model):
 class ProjetOrder(models.Model):
     projet = models.ForeignKey(Projet, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    STATUTS_AFFICHES = {   # statut -> (libellé pour le partenaire, couleur du badge)
+        "en_attente": ("En attente", "bg-warning text-dark"),
+        "en_production": ("En production", "bg-primary"),
+        "pret_pour_livraison": ("Prête pour livraison", "bg-info text-dark"),
+        "termine": ("Livrée", "bg-success"),
+        "annule": ("Annulée", "bg-danger"),
+    }
+
+    @property
+    def statut_affiche(self):
+        return self.STATUTS_AFFICHES.get(self.get_statut_actuel, ("Aucun traitement", "bg-secondary"))
+
+    @property
+    def annulation(self):
+        """Annulation enregistrée (date, motif), ou None."""
+        from usesOrders.models import Annulation
+        return Annulation.objects.filter(type_commande="projet", commande_id=self.id).first()
 
     @property
     def get_statut_actuel(self):

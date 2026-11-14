@@ -13,7 +13,7 @@ projets
                 <h2>Demandes de livraison partielle du projet : {{ projet }}</h2>
 
                 {% for order in orders%}
-                <table class="table table-responsive">
+                <table class="table table-responsive{% if order.get_statut_actuel == 'annule' %} table-danger{% endif %}">
                     <thead class="bg-warning">
                         <tr>
                             <th>Code</th>
@@ -26,35 +26,18 @@ projets
                         <tr>
                             <td>{{order.created_at|date:"dmy"}}B-iron{{order.id}}</td>
                             <td>{{ order.created_at }}</td>
-                            <th>
-                                {% if order.get_statut_actuel == "en_attente" %}
-                                <span class="badge bg-warning text-dark">
-                                    {{order.get_statut_actuel}}
+                            <td>
+                                {% with s=order.statut_affiche %}
+                                <span class="badge {{ s.1 }}" style="font-size: .85rem;">
+                                    {% if order.get_statut_actuel == "annule" %}<i class="fas fa-ban"></i> {% endif %}{{ s.0 }}
                                 </span>
-                                {%endif%}
-                                {% if order.get_statut_actuel == "en_production" %}
-                                <span class="badge bg-primary text-dark">
-                                    {{order.get_statut_actuel}}
-                                </span>
-                                {%endif%}
-                                {% if order.get_statut_actuel == "pret_pour_livraison" %}
-                                <span class="badge bg-info text-dark">
-                                    {{order.get_statut_actuel}}
-                                </span>
-                                {%endif%}
-                                {%if order.get_statut_actuel == "solde_facture" %}
-                                <span class="badge bg-secondary text-dark">
-                                    {{order.get_statut_actuel}}
-                                </span>
-                                {%endif%}
-                                {%if order.get_statut_actuel == "termine" %}
-                                <span class="badge bg-success text-dark">
-                                    {{order.get_statut_actuel}}
-                                </span>
-                                {%endif%}
-{% if order.get_statut_actuel == "annule" %}<span class="badge bg-danger">Annulée</span>{% endif %}
-
-                            </th>
+                                {% endwith %}
+                                {% if order.get_statut_actuel == "annule" %}{% with a=order.annulation %}{% if a %}
+                                <div class="small text-danger mt-1">
+                                    Annulée le {{ a.created_at|date:"d/m/Y" }} · Motif : {{ a.motif }}
+                                </div>
+                                {% endif %}{% endwith %}{% endif %}
+                            </td>
                             <td class='text-center'>
                                 <!-- <a href="{% url 'download-bon' order.id %}" class='btn btn-success' name='supprimer'><i class="fas fa-download"></i></a> -->
                                 <a href="{% url 'front.orders.details' order.id %}" class='btn btn-info'

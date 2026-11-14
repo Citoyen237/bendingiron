@@ -7,62 +7,163 @@ details sur le projet
 {% load static %}
 {% load humanize %}
 
-<section class="content">
+<style>
+    /* Fiche du projet (refaite le 14/11/2026) */
+    .fiche-projet { --bi-jaune: #ffb600; --bi-fonce: #1f2a37; }
+    .fiche-projet .entete {
+        background: linear-gradient(135deg, var(--bi-fonce) 0%, #34465c 100%);
+        color: #fff; border-radius: 14px; padding: 1.4rem 1.6rem; position: relative; overflow: hidden;
+    }
+    .fiche-projet .entete::after {
+        content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px;
+        border-radius: 50%; background: rgba(255, 182, 0, .15);
+    }
+    .fiche-projet .entete h2 { color: #fff; font-size: 1.6rem; margin: 0 0 .3rem; }
+    .fiche-projet .entete .meta { color: #cbd5e1; font-size: .92rem; }
+    .fiche-projet .entete .meta span { margin-right: 1.2rem; white-space: nowrap; }
+    .fiche-projet .pastille { display: inline-block; padding: .25rem .75rem; border-radius: 999px;
+        font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+    .fiche-projet .pastille.en-cours { background: var(--bi-jaune); color: var(--bi-fonce); }
+    .fiche-projet .pastille.termine { background: #22c55e; color: #fff; }
+    .fiche-projet .net { text-align: right; position: relative; z-index: 1; }
+    .fiche-projet .net small { color: #cbd5e1; display: block; }
+    .fiche-projet .net b { color: var(--bi-jaune); font-size: 1.9rem; line-height: 1.1; }
+    .fiche-projet .bloc { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.1rem 1.2rem;
+        height: 100%; box-shadow: 0 2px 8px rgba(15, 23, 42, .05); }
+    .fiche-projet .bloc h6 { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: #64748b;
+        margin-bottom: .8rem; }
+    .fiche-projet .ligne { display: flex; justify-content: space-between; padding: .35rem 0;
+        border-bottom: 1px dashed #e5e7eb; font-size: .95rem; }
+    .fiche-projet .ligne:last-child { border-bottom: 0; }
+    .fiche-projet .ligne.total { font-weight: 700; font-size: 1.05rem; color: var(--bi-fonce); }
+    .fiche-projet .progress { height: 14px; border-radius: 999px; background: #eef2f7; }
+    .fiche-projet .legende { font-size: .82rem; color: #64748b; }
+    .fiche-projet .legende i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin: 0 .3rem 0 .8rem; }
+    .fiche-projet .tranche { display: flex; align-items: center; gap: .8rem; padding: .55rem 0;
+        border-bottom: 1px dashed #e5e7eb; }
+    .fiche-projet .tranche:last-child { border-bottom: 0; }
+    .fiche-projet .tranche .rond { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center;
+        justify-content: center; font-weight: 700; flex-shrink: 0; background: #eef2f7; color: #64748b; }
+    .fiche-projet .tranche.payee .rond { background: #22c55e; color: #fff; }
+    .fiche-projet .tranche .montant { margin-left: auto; font-weight: 600; white-space: nowrap; }
+    .fiche-projet .actions .btn { border-radius: 10px; font-weight: 600; }
+    .fiche-projet .liste-actions { display: grid; gap: .5rem; }
+    .fiche-projet .liste-actions .btn { width: 100%; text-align: left; padding: .55rem .9rem; }
+    .fiche-projet .liste-actions .btn i { width: 1.3rem; }
+    .fiche-projet .grille { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 991px) { .fiche-projet .grille { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 767px) { .fiche-projet .grille { grid-template-columns: 1fr; } }
+    @media (max-width: 767px) { .fiche-projet .net { text-align: left; } }
+</style>
+
+<section class="content fiche-projet">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4">
-                <p>Nom du projet : <b>{{projet.name}}</b></p>
-                <p>Date creation : <b>{{projet.created_at}}</b></p>
-                <p>Remise : <b>{{projet.reduction}}%</b></p>
-                <p>Statut : <span class="text-success">{{projet.get_statut}}</span></p>
-                <p>Réalisation : {{ projet.pourcentage_realisation }}</p>
 
+        {# --- En-tête : nom, statut, net à payer --- #}
+        <div class="entete mb-3">
+            <div class="row align-items-center g-3">
+                <div class="col-md-8" style="position: relative; z-index: 1;">
+                    <span class="pastille {% if projet.get_statut == 'termine' %}termine{% else %}en-cours{% endif %}">
+                        {% if projet.get_statut == 'termine' %}Terminé{% else %}En cours{% endif %}
+                    </span>
+                    <h2 class="mt-2">{{ projet.name }}</h2>
+                    <div class="meta">
+                        <span><i class="fas fa-calendar-alt"></i> Créé le {{ projet.created_at|date:"d/m/Y" }}</span>
+                        <span><i class="fas fa-percent"></i> Remise {{ projet.reduction }} %</span>
+                        <span><i class="fas fa-boxes"></i> {{ projet.quantite_totale_commandee }} pièce(s) prévue(s)</span>
+                    </div>
+                </div>
+                <div class="col-md-4 net">
+                    <small>Net à payer (TTC)</small>
+                    <b>{{ projet.net_payer|floatformat:"0g" }} F</b>
+                </div>
             </div>
-            <div class="col-md-4">
-                <p>Montant HT : <b>{{projet.montant_total}} fcfa</b></p>
-                <p>Montant Apres remise : <b>{{projet.montant_apres_remise}} fcfa</b></p>
-                <p>FRAIS INGENIEURIE: <b>{{projet.frais_ingenieurie}} FCFA</b></p>
-                <p>TVA (19,25%): <b>{{projet.montant_tva}} fcfa</b></p>
-                <p>Net a payer : <b>{{projet.net_payer}} fcfa</b> </p>
-                <p>
-                
-                    <button id="downloadBtn" class="btn btn-outline-warning download_btn"
-                        data-url="{% url 'download.projet' projet.id  %}">
-                        <i class="fas fa-download"></i>Telecharger
-                        <span id="btnText" class="btn_text"></span>
-                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
-                            aria-hidden="true"></span>
-                    </button>
+        </div>
 
-
+        {# --- Avancement des livraisons --- #}
+        <div class="bloc mb-3" style="height: auto;">
+            <div class="d-flex justify-content-between align-items-baseline flex-wrap">
+                <h6 class="mb-2">Avancement des livraisons</h6>
+                <span class="fw-bold">{{ projet.pourcentage_realisation|floatformat:"-1" }} % livré
+                    <span class="text-muted fw-normal">({{ projet.quantite_commande_totale }} / {{ projet.quantite_totale_commandee }} pièces)</span>
+                </span>
             </div>
-            <div class="col-md-4">
-                <p>Tranche 1 : <b>{{projet.tranche1}} fcfa</b>
-                    {% if projet.tranche1_payee %}
-                    <i class="fa fa-check text-success"></i>
-                    {% endif %}
-                </p>
-                <p>Tranche 2 : <b>{{projet.tranche2}} fcfa</b>
-                    {% if projet.tranche2_payee %}
-                    <i class="fa fa-check text-success"></i>
-                    {% endif %}
-                </p>
-                <p>Tranche 3 : <b>{{projet.tranche3}} fcfa</b>
-                    {% if projet.tranche3_payee %}
-                    <i class="fa fa-check text-success"></i>
-                    {% endif %}
-                </p>
-                <p>
-                    <button class="btn btn-outline-warning" onclick="validerCommande()">Demander une livraison</button>
-                    <button class="btn btn-outline-secondary" onclick="viderPanier()">Vider le panier</button>
+            <div class="progress" role="progressbar" aria-label="Avancement des livraisons"
+                 aria-valuenow="{{ projet.pourcentage_realisation|unlocalize }}" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar bg-success" style="width: {{ projet.pourcentage_realisation|unlocalize }}%"></div>
+                <div class="progress-bar progress-bar-striped bg-warning" style="width: {{ projet.marge_plafond|unlocalize }}%"></div>
+            </div>
+            <div class="legende mt-2">
+                <i style="background:#198754; margin-left:0"></i>Livré
+                <i style="background:#ffc107"></i>Encore possible avec les tranches payées (plafond {{ projet.plafond_livraison }} %)
+                <i style="background:#eef2f7; border:1px solid #cbd5e1"></i>Après la prochaine tranche
+            </div>
+        </div>
 
-                    <a href="{% url 'historique-order' projet.id%}" class="btn btn-warning">Voir historique</a>
+        <div class="grille">
+            {# --- Montants --- #}
+            <div>
+                <div class="bloc">
+                    <h6><i class="fas fa-file-invoice"></i> Montants</h6>
+                    <div class="ligne"><span>Montant HT</span><b>{{ projet.montant_total|floatformat:"0g" }} F</b></div>
+                    <div class="ligne"><span>Après remise</span><b>{{ projet.montant_apres_remise|floatformat:"0g" }} F</b></div>
+                    <div class="ligne"><span>Frais d'ingénierie</span><b>{{ projet.frais_ingenieurie_montant|floatformat:"0g" }} F</b></div>
+                    <div class="ligne"><span>TVA (19,25 %)</span><b>{{ projet.montant_tva|floatformat:"0g" }} F</b></div>
+                    <div class="ligne total"><span>Net à payer</span><span>{{ projet.net_payer|floatformat:"0g" }} F</span></div>
+                </div>
+            </div>
 
-                    <div class="mt-2"></div>
-                    <u><a href="{% url 'additional-order-list' projet.id%}" class="btn btn-secondary">Travaux
-                            additionnelles</a></u>
-                </p>
+            {# --- Tranches --- #}
+            <div>
+                <div class="bloc">
+                    <h6><i class="fas fa-wallet"></i> Paiement par tranches</h6>
+                    <div class="tranche {% if projet.tranche1_payee %}payee{% endif %}">
+                        <div class="rond">{% if projet.tranche1_payee %}<i class="fas fa-check"></i>{% else %}1{% endif %}</div>
+                        <div><div class="fw-semibold">Tranche 1 · 40 %</div>
+                            <small class="text-muted">{% if projet.tranche1_payee %}Payée · livraisons jusqu'à 50 %{% else %}À payer{% endif %}</small></div>
+                        <div class="montant">{{ projet.tranche1|floatformat:"0g" }} F</div>
+                    </div>
+                    <div class="tranche {% if projet.tranche2_payee %}payee{% endif %}">
+                        <div class="rond">{% if projet.tranche2_payee %}<i class="fas fa-check"></i>{% else %}2{% endif %}</div>
+                        <div><div class="fw-semibold">Tranche 2 · 40 %</div>
+                            <small class="text-muted">{% if projet.tranche2_payee %}Payée · livraisons jusqu'à 90 %{% else %}À payer{% endif %}</small></div>
+                        <div class="montant">{{ projet.tranche2|floatformat:"0g" }} F</div>
+                    </div>
+                    <div class="tranche {% if projet.tranche3_payee %}payee{% endif %}">
+                        <div class="rond">{% if projet.tranche3_payee %}<i class="fas fa-check"></i>{% else %}3{% endif %}</div>
+                        <div><div class="fw-semibold">Tranche 3 · 20 %</div>
+                            <small class="text-muted">{% if projet.tranche3_payee %}Payée · livraisons jusqu'à 100 %{% else %}À payer{% endif %}</small></div>
+                        <div class="montant">{{ projet.tranche3|floatformat:"0g" }} F</div>
+                    </div>
+                </div>
+            </div>
 
+            {# --- Actions --- #}
+            <div>
+                <div class="bloc actions">
+                    <h6><i class="fas fa-bolt"></i> Actions</h6>
+                    <div class="liste-actions">
+                        <button class="btn btn-warning" onclick="validerCommande()">
+                            <i class="fas fa-truck"></i> Demander une livraison
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="viderPanier()">
+                            <i class="fas fa-trash-alt"></i> Vider le panier
+                        </button>
+                        <a href="{% url 'historique-order' projet.id %}" class="btn btn-outline-dark">
+                            <i class="fas fa-history"></i> Voir l'historique
+                        </a>
+                        <a href="{% url 'additional-order-list' projet.id %}" class="btn btn-outline-dark">
+                            <i class="fas fa-plus-square"></i> Travaux additionnels
+                        </a>
+                        <button id="downloadBtn" class="btn btn-outline-warning download_btn"
+                            data-url="{% url 'download.projet' projet.id %}">
+                            <i class="fas fa-download"></i> Télécharger le devis
+                            <span id="btnText" class="btn_text"></span>
+                            <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"
+                                aria-hidden="true"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -110,12 +211,16 @@ details sur le projet
                         </td>
                         {% else %}
                         {% if projet.peut_commander %}
-                        <td colspan="2">
-                            <input type="number" min="1" value="1" class="form-control d-inline w-50 qty-input">
-                            <button class="btn btn-primary"
-                                onclick="addToCart({{ produit.id|unlocalize }}, '{{ produit.produit|escapejs }}', this)">
-                                <i class="fa fa-plus"></i>
-                            </button>
+                        <td colspan="2" style="min-width: 11rem;">
+                            {# Champ assez large pour 4 à 6 chiffres (ex. 1000), bouton collé à droite #}
+                            <div class="d-flex align-items-center gap-1">
+                                <input type="number" min="1" value="1" inputmode="numeric"
+                                    class="form-control qty-input" style="width: 7.5rem; min-width: 7.5rem;">
+                                <button class="btn btn-primary"
+                                    onclick="addToCart({{ produit.id|unlocalize }}, '{{ produit.produit|escapejs }}', this)">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
                             <div class="text-danger mt-1 error-message small"></div>
                         </td>
                         {% endif %}

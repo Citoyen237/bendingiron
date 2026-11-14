@@ -135,6 +135,18 @@ detail
   </ol>
 </div>
 <section class="content project-area">
+    {% if status == "annule" %}{% with a=order.annulation %}
+    <div class="container mb-3">
+        <div class="alert alert-danger d-flex align-items-start" role="alert" style="gap: .8rem;">
+            <i class="fas fa-ban fa-2x"></i>
+            <div>
+                <b>Cette demande de livraison partielle est annulée</b>{% if a %} depuis le {{ a.created_at|date:"d/m/Y" }}{% endif %}.<br>
+                {% if a %}Motif : {{ a.motif }}<br>{% endif %}
+                Les quantités sont revenues dans le restant du projet : vous pouvez les demander à nouveau.
+            </div>
+        </div>
+    </div>
+    {% endwith %}{% endif %}
     <div class="container border shadow">
         <div class="row">
             <div class="col-md-4">
