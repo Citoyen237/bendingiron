@@ -3,52 +3,63 @@
 <header id="header" class="header-one">
   <div class="bg-white">
     <div class="container">
-      <div class="logo-area" style="padding: 0%;">
-        <div class="row align-items-center">
-          <div class="logo col-lg-3 text-center text-lg-left mb-3 mb-md-5 mb-lg-0">
-            <a class="d-block" href="#">
-              <!-- hauteur seule : la largeur suit l'image (903 x 576), le logo n'est plus déformé -->
-              <img loading="lazy" style="height: 140px; width: auto; max-width: 100%" src="{% static 'front/images/logoiron.png' %}"
-                alt="bending iron">
-            </a>
-            {# Messages de session (ex. « Bienvenue Nana ! » après la connexion) : affichés ici, sous le logo #}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="message-accueil {% if message.tags %}message-{{ message.tags }}{% endif %}" role="status">
-              {% if message.tags == "success" %}<i class="fas fa-hand-sparkles"></i> {% endif %}{{ message }}
+      {# En-tête de l'accueil refait le 14/11/2026 : logo à gauche, téléphone et e-mail en une colonne à droite #}
+      <style>
+        .entete-accueil { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem;
+          padding: .6rem 0; }
+        .entete-accueil .entete-logo img { height: 120px; width: auto; max-width: 100%; }
+        .entete-accueil .entete-contacts { display: flex; flex-direction: column; gap: .45rem; }
+        .entete-accueil .entete-contact { display: flex; align-items: center; gap: .55rem; }
+        .entete-accueil .entete-contact .icone { width: 30px; height: 30px; border-radius: 4px; flex-shrink: 0;
+          display: flex; align-items: center; justify-content: center; background: #ffb600; color: #1f2a37;
+          font-size: .8rem; }
+        .entete-accueil .entete-contact small { display: block; margin-bottom: .1rem; color: #6b7280; font-size: .68rem;
+          text-transform: uppercase; letter-spacing: .04em; line-height: 1.2; }
+        .entete-accueil .entete-contact a { display: block; color: #1f2a37; font-weight: 600; font-size: .85rem; line-height: 1.3; }
+        .entete-accueil .entete-contact a:hover { color: #ffb600; }
+        .message-accueil { display: inline-block; margin-top: .4rem; padding: .35rem 1rem; border-radius: 999px;
+          font-weight: 600; font-size: .95rem; background: #ffb600; color: #1f2a37; }
+        .message-accueil.message-error { background: #dc3545; color: #fff; }
+        .message-accueil.message-info, .message-accueil.message-warning { background: #e2e8f0; color: #1f2a37; }
+        @media (max-width: 767px) {
+          .entete-accueil { flex-direction: column; text-align: center; gap: .8rem; }
+          .entete-accueil .entete-logo img { height: 100px; }
+          .entete-accueil .entete-contacts { align-items: flex-start; margin: 0 auto; }
+          .entete-accueil .entete-contact { text-align: left; }
+        }
+      </style>
+      <div class="entete-accueil">
+        <div class="entete-logo">
+          <a class="d-block" href="{% url 'font.index' %}">
+            <img loading="lazy" src="{% static 'front/images/logoiron.png' %}" alt="Bending Iron">
+          </a>
+          {# Messages de session (ex. « Bienvenue Nana ! » après la connexion) : affichés ici, sous le logo #}
+          {% if messages %}
+          {% for message in messages %}
+          <div class="message-accueil {% if message.tags %}message-{{ message.tags }}{% endif %}" role="status">
+            {% if message.tags == "success" %}<i class="fas fa-hand-sparkles"></i> {% endif %}{{ message }}
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+        <div class="entete-contacts">
+          <div class="entete-contact">
+            <span class="icone"><i class="fas fa-phone-alt"></i></span>
+            <div>
+              <small>Contactez-nous</small>
+              <a href="tel:+237698365156">(+237) 698 365 156</a>
+              <a href="tel:+237676868367">(+237) 676 868 367</a>
             </div>
-            {% endfor %}
-            <style>
-              .message-accueil { display: inline-block; margin-top: .4rem; padding: .35rem 1rem; border-radius: 999px;
-                font-weight: 600; font-size: .95rem; background: #ffb600; color: #1f2a37; }
-              .message-accueil.message-error { background: #dc3545; color: #fff; }
-              .message-accueil.message-info, .message-accueil.message-warning { background: #e2e8f0; color: #1f2a37; }
-            </style>
-            {% endif %}
-          </div><!-- logo end -->
-          <div class="col-12 header-right">
-            <ul class="top-info-box">
-              <li>
-                <div class="info-box">
-                  <div class="info-box-content">
-                    <p class="info-box-title">Contactez-nous </p>
-                    <p class="info-box-subtitle">(+237) 698 365 156 / (+237) 676 868 367</p>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div class="info-box">
-                  <div class="info-box-content">
-                    <p class="info-box-title">Email</p>
-                    <p class="info-box-subtitle">contact@bending-iron.com</p>
-                  </div>
-                </div>
-              </li>
-            </ul><!-- Ul end -->
-          </div><!-- header right end -->
-        </div><!-- logo area end -->
-
-      </div><!-- Row end -->
+          </div>
+          <div class="entete-contact">
+            <span class="icone"><i class="fas fa-envelope"></i></span>
+            <div>
+              <small>E-mail</small>
+              <a href="mailto:contact@bending-iron.com">contact@bending-iron.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div><!-- Container end -->
   </div>
   <div class="site-navigation">
