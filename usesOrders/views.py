@@ -32,6 +32,7 @@ def show_cart(request):
                 'quantite': item.quantite,
                 'prix': item.prix_u,
                 'total': item.get_prix_total,
+                'indisponible': not item.produit.disponible,
             })
             # Calculer le prix total du panier si nécessaire
         total_prix = panier.get_prix_total

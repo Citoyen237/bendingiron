@@ -32,6 +32,12 @@ class Produit(models.Model):
     name_page = models.CharField(max_length=255)
     Description = models.TextField(max_length=400,null=True,blank=True)#valeur facultative
     imageshop3d=models.ImageField(upload_to='produits/images')
+    # Produit « gelé » (14/11/2026) : il reste visible dans la boutique, mais sa page
+    # affiche « Indisponible pour le moment » et rien ne peut être ajouté au panier.
+    disponible = models.BooleanField(
+        "Disponible dans la boutique", default=True,
+        help_text="Décocher pour geler le produit : il reste affiché dans la boutique, "
+                  "mais un clic affiche « Indisponible pour le moment ».")
     #
     class Meta:
         constraints = [

@@ -65,7 +65,11 @@ def _lancer_paiement(provider, **kwargs):
 # ---------------------------------------------------------------------- #
 @login_required
 def send_info_user(request):
+    from usesOrders.panier_gele import refuser_si_indisponible
     panier = Cart.objects.filter(user=request.user).first()
+    bloque = refuser_si_indisponible(request, panier)   # produit gelé dans le panier
+    if bloque:
+        return bloque
     paniers_details = []
     total_prix = 0
 

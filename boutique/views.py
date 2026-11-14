@@ -190,6 +190,8 @@ def _nombre(valeur, decimales=2):
 def calcul_json(request, product_id):
     """Calcul en direct pendant la saisie (aucune écriture)."""
     produit = get_object_or_404(Produit, id=product_id)
+    if not produit.disponible and not is_admin(request.user):
+        return JsonResponse({"ok": False, "erreur": "Indisponible pour le moment", "champ": None})
     config = _config_pour(request, produit)
     saisies = _saisies(request.POST)
     try:

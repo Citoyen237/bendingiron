@@ -17,8 +17,12 @@ from usesOrders.promo import retirer_remise
 
 @admin_required
 def confirm_order_pro(request):
+    from usesOrders.panier_gele import refuser_si_indisponible
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
+    bloque = refuser_si_indisponible(request, panier)   # produit gelé dans le panier
+    if bloque:
+        return bloque
     retirer_remise(panier)  # pas de code promo pour les proformas
     paniers_details = []
     total_prix = 0

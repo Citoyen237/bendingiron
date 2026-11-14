@@ -125,6 +125,10 @@ def get_tarifs_fer():
 def detail_produit(request, product_id):
     product = get_object_or_404(Produit, id=product_id)
 
+    # Produit gelé : message seulement, aucun calcul ni ajout au panier (GET comme POST)
+    if not product.disponible:
+        return render(request, "boutique/indisponible.html", {"produit": product})
+
     # L'ajout au panier exige un compte (la page reste consultable par tous)
     if request.method == "POST" and not request.user.is_authenticated:
         from django.contrib.auth.views import redirect_to_login

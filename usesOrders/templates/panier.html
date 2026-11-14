@@ -9,6 +9,16 @@ panier
 {% load static %}
 {% load humanize %}
 <section class="content project-area">
+    {% if messages %}
+    <div class="container-fluid mt-3 px-0">
+        {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} mb-2" role="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="container-fluid mt-3 mb-2 px-0">
+        <a href="{% url 'boutique' %}" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Retour à la boutique</a>
+    </div>
     {% if user.is_authenticated %}
     <div class="container-fluid border shadow">
         <div class="row">
@@ -26,8 +36,10 @@ panier
 
                         {% for item in paniers %}
 
-                        <tr>
-                            <td>{{item.produit}}</td>
+                        <tr{% if item.indisponible %} class="table-danger"{% endif %}>
+                            <td>{{item.produit}}
+                                {% if item.indisponible %}<br><span class="badge bg-danger">Indisponible pour le moment</span>{% endif %}
+                            </td>
                             <td>{{item.details}}
                             <td>{{item.quantite}}</td>
                             <td>{{item.prix}}</td>

@@ -70,8 +70,12 @@ def detail_projet(request, projet_id):
 
 @admin_required
 def confirm_projet(request):
+    from usesOrders.panier_gele import refuser_si_indisponible
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
+    bloque = refuser_si_indisponible(request, panier)   # produit gelé dans le panier
+    if bloque:
+        return bloque
     retirer_remise(panier)  # pas de code promo pour les projets
     paniers_details = []
     total_prix = 0
@@ -331,8 +335,12 @@ def get_detail_order(request, order_id):
 
 @admin_required
 def confirm_additional_order(request):
+    from usesOrders.panier_gele import refuser_si_indisponible
     # Récupérer le panier de l'utilisateur
     panier = Cart.objects.filter(user=request.user).first()
+    bloque = refuser_si_indisponible(request, panier)   # produit gelé dans le panier
+    if bloque:
+        return bloque
     retirer_remise(panier)  # pas de code promo pour les commandes de projet
     paniers_details = []
     total_prix = 0
