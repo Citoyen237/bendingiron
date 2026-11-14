@@ -21,6 +21,7 @@ class Produit(models.Model):
         ('Cintrage de cadre','Cintrage de Cadre'),
         ('Cintrage de forme','Cintrage de Forme'),
         ('Quincaillerie','Quincaillerie'),
+        ('Autre forme','Autre forme'),
     ]
     
     categorie=models.ForeignKey(Categorie, related_name='categorie',on_delete=models.CASCADE)

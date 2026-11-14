@@ -23,6 +23,7 @@ SOUS_CATEGORIES_AUTORISEES = (
     "Cintrage de forme",
     "cintrage d'extremite",
     "redressage et decoupage",
+    "Autre forme",              # ajoutée le 14/11/2026
 )
 
 VALEURS_DIAMETRES = [d for d, _ in DIAMETRES]
