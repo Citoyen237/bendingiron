@@ -9,6 +9,9 @@ confirmation de la commande
 {% load static %}
 {% load humanize %}
 <section class="content project-area">
+    <div class="container mt-3 mb-2">
+        <a href="{% url 'panier' %}" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Retour au panier</a>
+    </div>
     {% if user.is_authenticated %}
     <div class="container-fluid border shadow">
         <div class="row">

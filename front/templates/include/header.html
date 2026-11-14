@@ -11,6 +11,20 @@
               <img loading="lazy" style="height: 140px; width: auto; max-width: 100%" src="{% static 'front/images/logoiron.png' %}"
                 alt="bending iron">
             </a>
+            {# Messages de session (ex. « Bienvenue Nana ! » après la connexion) : affichés ici, sous le logo #}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="message-accueil {% if message.tags %}message-{{ message.tags }}{% endif %}" role="status">
+              {% if message.tags == "success" %}<i class="fas fa-hand-sparkles"></i> {% endif %}{{ message }}
+            </div>
+            {% endfor %}
+            <style>
+              .message-accueil { display: inline-block; margin-top: .4rem; padding: .35rem 1rem; border-radius: 999px;
+                font-weight: 600; font-size: .95rem; background: #ffb600; color: #1f2a37; }
+              .message-accueil.message-error { background: #dc3545; color: #fff; }
+              .message-accueil.message-info, .message-accueil.message-warning { background: #e2e8f0; color: #1f2a37; }
+            </style>
+            {% endif %}
           </div><!-- logo end -->
           <div class="col-lg-9 header-right">
             <ul class="top-info-box">

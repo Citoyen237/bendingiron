@@ -20,6 +20,9 @@ confirmer la commande
     #ecran-lancement .boite { max-width: 420px; }
 </style>
 <section class="content project-area">
+    <div class="container mt-3 mb-2">
+        <a href="{% url 'panier' %}" class="btn btn-outline-dark"><i class="fas fa-arrow-left"></i> Retour au panier</a>
+    </div>
     {% if user.is_authenticated %}
     <div class="container">
         <div class="row"> 
