@@ -31,6 +31,7 @@ urlpatterns = [
     path('commandes/<int:order_id>/suivis', suivis_commande, name='order.suivis'),
     path('commandes/change-statut/<int:order_id>', change_statut, name='change.status'),
     path('commandes/<str:type_commande>/<int:order_id>/annuler/', annuler_commande, name='commande.annuler'),
+    path('commandes/<str:type_commande>/<int:order_id>/rembourser/', rembourser_commande, name='commande.rembourser'),
 
     
     path('partenariats/', ListPartenariats.as_view(), name='partenariat.list'),
@@ -48,6 +49,7 @@ urlpatterns = [
     path('partenariats/<int:projet_id>/commandes-additionnelles-projet/', get_order_additional_projet, name='partenariat.order.additional.projet'),
     path('partenariats/<int:order_id>/commandes-additionnelles/', get_detail_order_additional, name='partenariat.detail.order.additional'),
     path('partenariats/<int:order_id>/commandes-additionnelles/statut/', change_statut_order_add, name='partenariat.order.additional.statut'),
+    path('partenariats/<int:order_id>/commandes-additionnelles/paiements/', historique_paiement_additionnel, name='historique-paiement-additionnel'),
 
 
     path('codes-distributeurs/', ListCodeRevendeur.as_view(), name='code.revendeur'),

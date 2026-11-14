@@ -566,3 +566,36 @@ def genrate_bon_livraison(request, projet_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
     return response
+
+
+@admin_required
+def bon_livraison_additionnel(request, order_id):
+    """Bon de livraison d'un TRAVAIL ADDITIONNEL (avant : le bouton ouvrait celui
+    d'une proforma portant le même numéro, ou une erreur 404)."""
+    order = get_object_or_404(OrderAdd, id=order_id)
+    produits_details = [{
+        'id': item.id,
+        'produit': item.produit,
+        'details': item.details_to_text(),
+        'dessin': image_dessin(item.details),
+        'quantite': item.quantite,
+    } for item in OrderItemAdd.objects.filter(order=order)]
+    image_url, background_url, cachet_url, footer_url = images_facture(request)
+    context = {
+        'order': order,
+        'produits': produits_details,
+        'titre_bon': "BON DE LIVRAISON",
+        'sigle_bon': "TRAVAUX ADDITIONNELS",
+        'numero_bon': order.numero,
+        'image_url': image_url,
+        'background_url': background_url,
+        'cachet_url': cachet_url,
+        'footer_url': footer_url,
+    }
+    html_string = render_to_string('bon_pdf.html', context)
+    pdf = HTML(string=html_string, base_url=request.build_absolute_uri()).write_pdf()
+    date = order.created_at.strftime("%d%m%y")
+    filename = f'BL_travaux_additionnels_{order.projet_order.name}_{date}BI{order.numero}'
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+    return response

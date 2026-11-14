@@ -979,3 +979,29 @@ def annuler_commande(request, type_commande, order_id):
     else:
         messages.success(request, f"La commande n° {annulation.numero} est annulée.")
     return redirect(annulation_cmd.url_detail(type_commande, order_id))
+
+
+@admin_required
+def historique_paiement_additionnel(request, order_id):
+    """Paiements d'un TRAVAIL ADDITIONNEL (avant : le bouton ouvrait ceux d'une proforma)."""
+    commande = get_object_or_404(OrderAdd, id=order_id)
+    paiements = PaymentAdd.objects.filter(order=commande).select_related("user").order_by('-created_at')
+    return render(request, 'partenaires/historique-paiement-additionnel.html',
+                  {'paiements': paiements, 'order': commande})
+
+
+@require_POST
+@admin_required
+def rembourser_commande(request, type_commande, order_id):
+    """Enregistre le remboursement d'une commande annulée (fait à la direction)."""
+    if type_commande not in ("client", "proforma", "projet", "additionnel"):
+        raise Http404
+    try:
+        a = annulation_cmd.rembourser(type_commande, order_id, request.user, request.POST.get("montant"),
+                                      request.POST.get("mode"), request.POST.get("reference"))
+    except annulation_cmd.AnnulationImpossible as erreur:
+        messages.error(request, str(erreur))
+    else:
+        messages.success(request, f"Remboursement de {a.montant_rembourse:.0f} FCFA enregistré "
+                                  f"pour la commande n° {a.numero}.")
+    return redirect(annulation_cmd.url_detail(type_commande, order_id))

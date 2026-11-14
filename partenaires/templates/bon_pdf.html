@@ -177,7 +177,7 @@
                 <img src="{{image_url}}" alt="Logo" style="width:105px;">
             </td>
             <td class="col-title">
-                <span class="title">BON DE LIVRAISON PARTIEL<br>(BLP)</span>
+                <span class="title">{{ titre_bon|default:"BON DE LIVRAISON PARTIEL" }}<br>({{ sigle_bon|default:"BLP" }})</span>
             </td>
             <td class="col-services">
                 Armatures de ferraillage <span class="sq">&#9632;</span><br>
@@ -200,7 +200,7 @@
             <td class="sp" style="width: 8%;"></td>
             <td class="box" style="width: 25%;">
                 <b>N° SERIE :</b>
-                <span class="serie">{{order.id}}BI{{order.created_at|date:"ymd"}}</span>
+                <span class="serie">{% firstof numero_bon order.id %}BI{{order.created_at|date:"ymd"}}</span>
             </td>
         </tr>
     </table>

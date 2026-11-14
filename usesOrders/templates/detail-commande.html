@@ -135,6 +135,15 @@ detail
   </ol>
 </div>
 <section class="content project-area">
+  {% if status == "annule" %}{% with a=order.annulation %}
+  <div class="container mb-3">
+    <div class="alert {% if a.est_rembourse %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+      <b>Commande annulée</b>{% if a %} le {{ a.created_at|date:"d/m/Y" }}{% endif %}.
+      {% if a.est_rembourse %}<br><b>Remboursée</b> le {{ a.rembourse_le|date:"d/m/Y" }} : {{ a.montant_rembourse|floatformat:"0g" }} FCFA ({{ a.mode_remboursement }}).
+      {% elif a.montant_paye %}<br>Remboursement de {{ a.montant_a_rembourser|floatformat:"0g" }} FCFA à retirer à la direction de BENDING IRON.{% endif %}
+    </div>
+  </div>
+  {% endwith %}{% endif %}
   <div class="container border shadow">
     <div class="row">
       <div class="col-md-6 mt-2">

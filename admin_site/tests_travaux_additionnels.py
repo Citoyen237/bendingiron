@@ -51,3 +51,51 @@ class TravauxAdditionnelsProjetTests(TestCase):
     def test_reserve_aux_admins(self):
         self.client.force_login(utilisateur("c@x.cm", "simple"))
         self.assertEqual(self.client.get(self.url, secure=True).status_code, 403)
+
+    def test_boutons_du_detail_vers_le_travail_additionnel_et_pas_une_proforma(self):
+        """Avant : « Bon livraison pdf » et « Voir historique » ouvraient une PROFORMA de même
+        numéro (erreur 404 « No OrderPro matches the given query », ou le document d'un autre client)."""
+        from unittest import mock
+        from partenaires.models import PaymentAdd
+        self.client.force_login(self.admin)
+        page = self.client.get(reverse("partenariat.detail.order.additional", args=[self.travail.id]), secure=True)
+        url_bon = reverse("bon-livraison-additionnel", args=[self.travail.id])
+        url_paiements = reverse("historique-paiement-additionnel", args=[self.travail.id])
+        self.assertContains(page, url_bon)
+        self.assertContains(page, url_paiements)
+        self.assertNotContains(page, reverse("generate_bon_livraison_pro", args=[self.travail.id]))
+        self.assertNotContains(page, reverse("historique-paiement-pro", args=[self.travail.id]))
+
+        PaymentAdd.objects.create(user=self.admin, order=self.travail, amount_paid=500, mode_paid="om")
+        historique = self.client.get(url_paiements, secure=True)
+        self.assertEqual(historique.status_code, 200)
+        self.assertContains(historique, "500 FCFA")
+
+        capture = {}
+
+        class FauxHTML:
+            def __init__(self, string=None, **kwargs):
+                capture["html"] = string
+
+            def write_pdf(self):
+                return b"%PDF-1.4"
+
+        with mock.patch("partenaires.views.HTML", FauxHTML):
+            reponse = self.client.get(url_bon, secure=True)
+        self.assertEqual(reponse.status_code, 200)
+        self.assertEqual(reponse["Content-Type"], "application/pdf")
+        self.assertIn("TRAVAUX ADDITIONNELS", capture["html"])
+        self.assertIn("Projet A", capture["html"])
+        self.assertIn("cadre carre", capture["html"])
+
+    def test_bouton_paiement_cache_quand_solde(self):
+        from partenaires.models import PaymentAdd
+        self.client.force_login(self.admin)
+        url = reverse("partenariat.detail.order.additional", args=[self.travail.id])
+        bouton = 'data-bs-target="#verticalycentered"'
+        self.assertFalse(self.travail.est_solde)
+        self.assertContains(self.client.get(url, secure=True), bouton)
+        PaymentAdd.objects.create(user=self.admin, order=self.travail, amount_paid=self.travail.net_payer,
+                                  mode_paid="Cash")
+        self.assertTrue(self.travail.est_solde)
+        self.assertNotContains(self.client.get(url, secure=True), bouton)

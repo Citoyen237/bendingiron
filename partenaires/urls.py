@@ -16,6 +16,7 @@ urlpatterns = [
     path('commandes-additionnel/<int:projet_id>/liste/', get_order_additional_list, name='additional-order-list'),
     path('commandes-additionnel/<int:order_id>/detail', detail_commande_additional , name='detail_commande_additional'),
     path('commandes-additionnel/projet/<int:order_id>/telecharger/', generate_order_additional, name='download.additional'),
+    path('commandes-additionnel/<int:order_id>/bon-de-livraison/', bon_livraison_additionnel, name='bon-livraison-additionnel'),
 
 
 ]

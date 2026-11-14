@@ -21,8 +21,9 @@ class ReglageCommandeAdmin(admin.ModelAdmin):
 
 @admin.register(Annulation)
 class AnnulationAdmin(admin.ModelAdmin):
-    list_display = ("created_at", "type_commande", "numero", "statut_avant", "montant_commande", "montant_paye", "user")
-    list_filter = ("type_commande", "statut_avant")
+    list_display = ("created_at", "type_commande", "numero", "statut_avant", "montant_commande", "montant_paye",
+                    "montant_rembourse", "rembourse_le", "user")
+    list_filter = ("type_commande", "statut_avant", ("rembourse_le", admin.EmptyFieldListFilter))
     search_fields = ("numero", "motif")
     readonly_fields = ("type_commande", "commande_id", "numero", "statut_avant", "montant_commande",
                        "montant_paye", "user", "created_at")

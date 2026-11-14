@@ -152,6 +152,11 @@ class Order(models.Model):
         return dernier_traiment.statut if dernier_traiment else "Aucun traitement"
     
     @property
+    def annulation(self):
+        """Annulation enregistrée (date, motif, remboursement), ou None."""
+        return Annulation.objects.filter(type_commande="client", commande_id=self.id).first()
+
+    @property
     def infoclient(self):
         try:
             return self.orderuserinfo_set.first()  # si OneToOneField
@@ -365,6 +370,12 @@ class Annulation(models.Model):
     montant_retenu = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    # Remboursement fait hors du site (à la direction), enregistré par l'admin (14/11/2026)
+    rembourse_le = models.DateTimeField("Remboursé le", null=True, blank=True)
+    rembourse_par = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,
+                                      related_name="remboursements_enregistres")
+    mode_remboursement = models.CharField("Mode de remboursement", max_length=50, blank=True)
+    reference_remboursement = models.CharField("Référence", max_length=100, blank=True)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=["type_commande", "commande_id"],
@@ -378,6 +389,10 @@ class Annulation(models.Model):
         if self.montant_rembourse is not None:
             return self.montant_rembourse
         return max(self.montant_paye - (self.montant_retenu or 0), 0)
+
+    @property
+    def est_rembourse(self):
+        return self.rembourse_le is not None
 
     def __str__(self):
         return f"{self.get_type_commande_display()} {self.numero or self.commande_id} annulée"

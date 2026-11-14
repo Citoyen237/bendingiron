@@ -1,0 +1,66 @@
+{% extends '../app.html' %}
+
+{% block 'title' %}
+paiements travaux additionnels
+{% endblock %}
+
+{% block 'content' %}
+{% load humanize %}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Travaux additionnels</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'partenariat.detail.order.additional' order.id %}">Travail additionnel N° {{ order.numero }}</a>
+                </li>
+                <li class="breadcrumb-item active">Historique des paiements reçus</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-md-6">
+                <b>Projet</b> : {{ order.projet_order.name }} <br>
+                <b>Partenaire</b> : {{ order.projet_order.partenariat }} <br>
+                <b>Date</b> : {{ order.created_at }}
+            </div>
+            <div class="col-md-6">
+                <h6>Montant total : <b>{{ order.net_payer|floatformat:"0g" }} FCFA</b></h6>
+                <h6>Montant reçu : <b>{{ order.total_paye|floatformat:"0g" }} FCFA</b></h6>
+                <h6>Reste à payer : <b>{{ order.reste_a_payer|floatformat:"0g" }} FCFA</b></h6>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <th>Date</th>
+                                <th>Responsable</th>
+                                <th>Montant</th>
+                                <th>Mode de paiement</th>
+                            </thead>
+                            <tbody>
+                                {% for item in paiements %}
+                                <tr>
+                                    <td>{{ item.created_at }}</td>
+                                    <td>{{ item.user }}</td>
+                                    <td>{{ item.amount_paid|floatformat:"0g" }} FCFA</td>
+                                    <td>{{ item.mode_paid }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted">Aucun paiement enregistré.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{% url 'partenariat.detail.order.additional' order.id %}" class="btn btn-outline-dark">
+                            <i class="bi bi-arrow-left"></i> Retour au travail additionnel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -94,6 +94,17 @@ class Projet(models.Model):
     def numero(self):
         return f"{self.sequence:03d}"   # ex. 00001
 
+    @property
+    def projet(self):
+        """Projet du travail additionnel (même nom que ProjetOrder.projet, pour le bon de livraison)."""
+        return self.projet_order
+
+    @property
+    def annulation(self):
+        """Annulation enregistrée (date, motif, remboursement), ou None."""
+        from usesOrders.models import Annulation
+        return Annulation.objects.filter(type_commande="additionnel", commande_id=self.id).first()
+
     def __str__(self):
         return self.name
     
@@ -467,6 +478,17 @@ class OrderAdd(models.Model):
     def numero(self):
         return f"{self.sequence:03d}"   # ex. 00001
 
+    @property
+    def projet(self):
+        """Projet du travail additionnel (même nom que ProjetOrder.projet, pour le bon de livraison)."""
+        return self.projet_order
+
+    @property
+    def annulation(self):
+        """Annulation enregistrée (date, motif, remboursement), ou None."""
+        from usesOrders.models import Annulation
+        return Annulation.objects.filter(type_commande="additionnel", commande_id=self.id).first()
+
     def save(self, *args, **kwargs):
         if self.pk:
             return super().save(*args, **kwargs)
@@ -516,7 +538,12 @@ class OrderAdd(models.Model):
 
     @property
     def reste_a_payer(self):
-        return max(Decimal(self.net_payer) - self.total_paye, Decimal("0"))  
+        return max(Decimal(self.net_payer) - self.total_paye, Decimal("0"))
+
+    @property
+    def est_solde(self):
+        """Tout est payé (avant : propriété absente, le bouton « Paiement » restait toujours affiché)."""
+        return self.reste_a_payer <= 0
     
     def __str__(self):
         return f"{self.user} - {self.get_prix_total}"

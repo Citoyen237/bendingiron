@@ -26,7 +26,7 @@ commandes
                 <b>Partenaire</b> : {{order.projet_order.partenariat}} <br>
                 <b>Date </b>: {{order.created_at}} <br>
                  <button id="downloadBtn" class="btn btn-outline-warning download_btn"
-                                            data-url="{% url 'generate_bon_livraison_pro' order.id %}">
+                                            data-url="{% url 'bon-livraison-additionnel' order.id %}">
                                             <i class="fas fa-download">Bon livraison pdf</i>
                                             <span id="btnText" class="btn_text"></span>
                                             <span id="spinner" class="spinner-border spinner-border-sm d-none"
@@ -39,11 +39,11 @@ commandes
                 <h6>Montant total: <b>{{order.net_payer}} FCFA</b></h6>
                 <h6>Montant recu : <b>{{ order.total_paye|floatformat:"0g" }} FCFA</b></h6>
                 <h6>Reste a payer : <b>{{ order.reste_a_payer|floatformat:"0g" }} FCFA </b></h6>
-                <h6><a href="{% url 'historique-paiement-pro' order.id %}" class="btn btn-outline-info">Voir historique</a>
+                <h6><a href="{% url 'historique-paiement-additionnel' order.id %}" class="btn btn-outline-info">Voir historique</a>
                 
                     <!-- Vertically centered Modal -->
 
-                   {% if not order.est_solde %}
+                   {% if not order.est_solde and status != "annule" %}
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#verticalycentered">
                         <i class="bi bi-plus">Paiement</i>

@@ -5,9 +5,45 @@
     le {{ annulation.created_at|date:"d/m/Y à H:i" }}{% if annulation.user %} par {{ annulation.user }}{% endif %},
     au statut « {{ annulation.get_statut_avant_display }} ».<br>
     <b>Motif :</b> {{ annulation.motif }}
-    {% if annulation.montant_paye %}<br><b>Déjà payé :</b> {{ annulation.montant_paye|floatformat:0 }} FCFA
-    (à traiter hors du site : remboursement ou retenue){% endif %}
+    {% if annulation.montant_paye %}<br><b>Déjà payé :</b> {{ annulation.montant_paye|floatformat:"0g" }} FCFA{% endif %}
 </div>
+{% if annulation.montant_paye %}
+{% if annulation.est_rembourse %}
+<div class="alert alert-success mt-2 mb-0 text-start">
+    <i class="bi bi-check-circle-fill"></i> <b>Remboursée</b> le {{ annulation.rembourse_le|date:"d/m/Y à H:i" }} :
+    <b>{{ annulation.montant_rembourse|floatformat:"0g" }} FCFA</b> ({{ annulation.mode_remboursement }}{% if annulation.reference_remboursement %}, réf. {{ annulation.reference_remboursement }}{% endif %})
+    {% if annulation.rembourse_par %}— enregistré par {{ annulation.rembourse_par }}{% endif %}
+    {% if annulation.montant_retenu %}<br>Retenu (non remboursé) : {{ annulation.montant_retenu|floatformat:"0g" }} FCFA{% endif %}
+</div>
+{% else %}
+<form method="post" action="{{ url_remboursement }}" class="alert alert-warning mt-2 mb-0 text-start"
+      onsubmit="return confirm('Confirmer le remboursement ? Il ne pourra plus être modifié.');">
+    {% csrf_token %}
+    <b><i class="bi bi-cash-coin"></i> Remboursement à faire :</b> {{ annulation.montant_a_rembourser|floatformat:"0g" }} FCFA
+    <div class="row g-2 mt-1 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small mb-0">Montant remboursé (FCFA)</label>
+            <input type="number" name="montant" class="form-control form-control-sm" min="1"
+                   max="{{ annulation.montant_paye|floatformat:0 }}" value="{{ annulation.montant_a_rembourser|floatformat:0 }}" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small mb-0">Mode</label>
+            <select name="mode" class="form-select form-select-sm" required>
+                <option value="">Choisir…</option>
+                {% for m in modes_remboursement %}<option value="{{ m }}">{{ m }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small mb-0">Référence (facultatif)</label>
+            <input type="text" name="reference" class="form-control form-control-sm" maxlength="100">
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-sm btn-success w-100">Enregistrer le remboursement</button>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endif %}
 {% elif peut_annuler %}
 <button type="button" class="btn btn-danger text-lg" data-bs-toggle="modal" data-bs-target="#modalAnnulation">
     <i class="bi bi-x-circle"></i> Annuler {{ libelle_annulation }}

@@ -231,3 +231,61 @@ class StatistiquesAnnulationsTests(Base):
         page = self.client.get(reverse("admin.statistiques"), secure=True)
         self.assertContains(page, 'id="bloc-annulations"')
         self.assertContains(page, "Remboursements à faire")
+
+
+class RemboursementTests(Base):
+    """Remboursement d'une commande annulée, enregistré par l'admin (14/11/2026)."""
+
+    def setUp(self):
+        super().setUp()
+        self.o = self.commande_client("en_production")
+        Payment.objects.create(order=self.o, amount_paid=700)
+        self.annuler("client", self.o.id)
+        self.url = reverse("commande.rembourser", args=["client", self.o.id])
+
+    def test_formulaire_puis_mention_remboursee(self):
+        detail = reverse("order.detail", args=[self.o.id])
+        self.assertContains(self.client.get(detail, secure=True), "Enregistrer le remboursement")
+
+        reponse = self.client.post(self.url, {"montant": "700", "mode": "Espèces", "reference": "REC-12"}, secure=True)
+        self.assertRedirects(reponse, detail, fetch_redirect_response=False)
+        a = Annulation.objects.get(type_commande="client", commande_id=self.o.id)
+        self.assertTrue(a.est_rembourse)
+        self.assertEqual((a.montant_rembourse, a.montant_retenu, a.mode_remboursement), (Decimal("700"), 0, "Espèces"))
+        self.assertEqual(a.rembourse_par, self.admin)
+
+        page = self.client.get(detail, secure=True)
+        self.assertContains(page, "Remboursée")
+        self.assertContains(page, "réf. REC-12")
+        self.assertNotContains(page, "Enregistrer le remboursement")
+
+        # côté client
+        from usesOrders.models import OrderUserInfo
+        OrderUserInfo.objects.create(order=self.o, nom="Alice", telephone="6", adresse="Douala")
+        self.client.force_login(self.client_a)
+        page_client = self.client.get(reverse("detail_commande", args=[self.o.id]), secure=True)
+        self.assertContains(page_client, "Remboursée")
+
+        # statistiques : remboursement fait
+        s = statistiques(timezone.localdate().year)
+        self.assertEqual(s["annulations"]["rembourse"], 700)
+        self.assertEqual(s["annulations"]["a_rembourser"], 0)
+
+    def test_remboursement_partiel_le_reste_est_retenu(self):
+        self.client.post(self.url, {"montant": "500", "mode": "Orange Money"}, secure=True)
+        a = Annulation.objects.get(commande_id=self.o.id)
+        self.assertEqual((a.montant_rembourse, a.montant_retenu), (Decimal("500"), Decimal("200")))
+
+    def test_refus(self):
+        for donnees in ({"montant": "800", "mode": "Espèces"},      # plus que le déjà payé
+                        {"montant": "0", "mode": "Espèces"},
+                        {"montant": "700", "mode": ""}):            # mode manquant
+            self.client.post(self.url, donnees, secure=True)
+            self.assertFalse(Annulation.objects.get(commande_id=self.o.id).est_rembourse, donnees)
+        self.client.post(self.url, {"montant": "700", "mode": "Espèces"}, secure=True)
+        self.client.post(self.url, {"montant": "100", "mode": "Espèces"}, secure=True)   # 2e fois : ignoré
+        self.assertEqual(Annulation.objects.get(commande_id=self.o.id).montant_rembourse, Decimal("700"))
+
+    def test_reserve_aux_admins(self):
+        self.client.force_login(self.client_a)
+        self.assertEqual(self.client.post(self.url, {"montant": "700", "mode": "Espèces"}, secure=True).status_code, 403)

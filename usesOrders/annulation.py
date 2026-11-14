@@ -106,7 +106,44 @@ def contexte(type_commande, commande):
         "peut_annuler": annulation is None and peut_annuler(commande.get_statut_actuel),
         "url_annulation": reverse("commande.annuler", args=[type_commande, commande.id]),
         "libelle_annulation": "la demande de livraison" if type_commande == "projet" else "la commande",
+        "url_remboursement": reverse("commande.rembourser", args=[type_commande, commande.id]),
+        "modes_remboursement": MODES_REMBOURSEMENT,
     }
+
+
+MODES_REMBOURSEMENT = ["Espèces", "Orange Money", "MTN MoMo", "Virement bancaire", "Chèque"]
+
+
+def rembourser(type_commande, commande_id, user, montant, mode, reference=""):
+    """Enregistre le remboursement (fait hors du site) d'une commande annulée.
+    Le montant non rendu (déjà payé - remboursé) est enregistré comme retenue."""
+    from django.utils import timezone
+    with transaction.atomic():
+        annulation = (Annulation.objects.select_for_update()
+                      .filter(type_commande=type_commande, commande_id=commande_id).first())
+        if annulation is None:
+            raise AnnulationImpossible("Cette commande n'est pas annulée.")
+        if annulation.est_rembourse:
+            raise AnnulationImpossible("Le remboursement est déjà enregistré.")
+        if not annulation.montant_paye:
+            raise AnnulationImpossible("Rien n'a été payé sur cette commande : aucun remboursement.")
+        try:
+            montant = Decimal(str(montant).replace(" ", "").replace(",", "."))
+        except Exception:
+            raise AnnulationImpossible("Montant remboursé invalide.")
+        if montant <= 0 or montant > annulation.montant_paye:
+            raise AnnulationImpossible(
+                f"Le montant remboursé doit être compris entre 1 et {annulation.montant_paye:.0f} FCFA (déjà payé).")
+        if mode not in MODES_REMBOURSEMENT:
+            raise AnnulationImpossible("Choisissez le mode de remboursement.")
+        annulation.montant_rembourse = montant
+        annulation.montant_retenu = annulation.montant_paye - montant
+        annulation.mode_remboursement = mode
+        annulation.reference_remboursement = (reference or "").strip()[:100]
+        annulation.rembourse_le = timezone.now()
+        annulation.rembourse_par = user
+        annulation.save()
+    return annulation
 
 
 def annuler(type_commande, commande_id, user, motif):
