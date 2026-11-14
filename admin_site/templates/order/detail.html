@@ -112,7 +112,7 @@ commandes
                                     <td colspan="2"><b>{{totals}}FCFA</b></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" style="text-align: right;"><b>TVA 19,25%</b></td>
+                                    <td colspan="3" style="text-align: right;"><b>{% load montants %}{{ order.taux_tva|tva_libelle }}</b></td>
                                     <td colspan="2"><b>{{order.montant_tva}} FCFA</b></td>
                                 </tr>
                                 <tr>

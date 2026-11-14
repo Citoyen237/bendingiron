@@ -3,6 +3,9 @@ from django import forms
 from .models import *
 
 class OrderUserInfoFormPro(forms.ModelForm):
+    # TVA décidée par l'admin pour cette proforma (14/11/2026)
+    appliquer_tva = forms.BooleanField(label="Appliquer la TVA (19,25 %)", required=False, initial=True)
+
     class Meta:
         model = OrderUserInfoPro
         fields = ['nom', 'telephone','adresse']

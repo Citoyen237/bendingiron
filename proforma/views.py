@@ -53,7 +53,9 @@ def confirm_order_pro(request):
                 return redirect('panier')  # panier vide
 
             # 2. Créer la commande
-            order = OrderPro.objects.create(user=user, remise=0)  # pas de code promo
+            from usesOrders.tva import taux_pour
+            order = OrderPro.objects.create(user=user, remise=0,  # pas de code promo
+                                            taux_tva=taux_pour(form.cleaned_data.get('appliquer_tva')))
             order.save()
             # 3. Copier chaque CartItem en OrderItem
             for item in cart.items.all():
@@ -99,6 +101,7 @@ def confirm_order_pro(request):
             'paniers': paniers_details, 
             'total_prix': total_prix,
             'montant_tva' :panier.montant_tva,
+            'taux_tva': panier.taux_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
             'get_tranche2':panier.get_tranche2,
@@ -141,6 +144,7 @@ def generate_invoice_pro(request, invoice_id):
                 'cachet_url':cachet_url,
                 'footer_url':footer_url,
                 'montant_tva' :order.montant_tva,
+                'taux_tva': order.taux_tva,
                 'net_payer':order.net_payer,
                 'get_tranche1':order.get_tranche1,
                 'get_tranche2':order.get_tranche2
@@ -193,6 +197,7 @@ def generate_bon_livraison_pro(request, invoice_id):
                 'cachet_url':cachet_url,
                 'footer_url':footer_url,
                 'montant_tva' :order.montant_tva,
+                'taux_tva': order.taux_tva,
                 'net_payer':order.net_payer,
                 'get_tranche1':order.get_tranche1,
                 'get_tranche2':order.get_tranche2

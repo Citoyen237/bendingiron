@@ -168,7 +168,9 @@ class DemandePaiement(models.Model):
         if nouvelle_commande:
             # --- CAS A : on matérialise la commande pour la 1ère fois --- #
             # La remise du code promo appliquée au panier est conservée sur la commande
-            order = Order.objects.create(user=self.user, remise=self.donnees_client.get("remise", 0))
+            from decimal import Decimal as _D
+            order = Order.objects.create(user=self.user, remise=self.donnees_client.get("remise", 0),
+                                         taux_tva=_D(str(self.donnees_client.get("taux_tva", "19.25"))))
 
             for item in self.donnees_items:
                 OrderItem.objects.create(

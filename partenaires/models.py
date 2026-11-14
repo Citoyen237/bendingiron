@@ -24,6 +24,14 @@ class Partenariats(models.Model):
     telephone = models.CharField(max_length=200)
     date_debut = models.DateTimeField()
     date_fin = models.DateTimeField()
+    # TVA décidée par l'admin pour ce partenaire (14/11/2026) ; figée sur chaque projet
+    soumis_tva = models.BooleanField("Appliquer la TVA", default=True,
+                                     help_text="Décocher pour ne pas facturer la TVA à ce partenaire "
+                                               "(projets et travaux additionnels créés ensuite).")
+
+    class Meta:
+        verbose_name = "partenariat"
+        verbose_name_plural = "Partenariats"
 
     @property
     def is_expired(self):
@@ -44,6 +52,9 @@ class Partenariats(models.Model):
 
 class Projet(models.Model):
     partenariat=models.ForeignKey(Partenariats, on_delete=models.CASCADE)
+    # TVA figée à la création (19,25 ou 0 = exonéré), décidée par l'admin (usesOrders/tva.py)
+    taux_tva = models.DecimalField("Taux de TVA (%)", max_digits=5, decimal_places=2, default=Decimal("19.25"),
+                                   help_text="19,25 ou 0 (exonéré). Figé à la création de la commande.")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name=models.CharField(max_length=255, unique=True)
     annee = models.PositiveIntegerField(editable=False)
@@ -100,7 +111,8 @@ class Projet(models.Model):
     
     @property
     def montant_tva(self):
-        return round((self.montant_apres_remise*19.25)/100)
+        from usesOrders.tva import calculer_tva
+        return calculer_tva(self.montant_apres_remise, self.taux_tva)
 
     @property
     def net_payer(self):
@@ -434,6 +446,9 @@ class CompteurFactureAdd(models.Model):
 # Create your models here.
 class OrderAdd(models.Model):
     projet_order= models.ForeignKey(Projet,related_name='projet_add', on_delete=models.CASCADE)
+    # TVA figée à la création (19,25 ou 0 = exonéré), décidée par l'admin (usesOrders/tva.py)
+    taux_tva = models.DecimalField("Taux de TVA (%)", max_digits=5, decimal_places=2, default=Decimal("19.25"),
+                                   help_text="19,25 ou 0 (exonéré). Figé à la création de la commande.")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     annee = models.PositiveIntegerField(editable=False)
     sequence = models.PositiveIntegerField(editable=False)
@@ -483,7 +498,8 @@ class OrderAdd(models.Model):
 
     @property
     def montant_tva(self):
-        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+        from usesOrders.tva import calculer_tva
+        return calculer_tva(self.get_prix_total, self.taux_tva)
     
     @property
     def get_statut_actuel(self):

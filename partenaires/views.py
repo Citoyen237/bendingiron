@@ -12,6 +12,7 @@ from collections import defaultdict
 from django.template.loader import get_template, render_to_string
 from django.utils.decorators import method_decorator
 from weasyprint import HTML
+from usesOrders.tva import taux_pour
 from django.conf import settings
 from django.http import HttpResponse
 from django.db import transaction
@@ -110,6 +111,7 @@ def confirm_projet(request):
             projet=Projet.objects.create(
                 user=user,
                 partenariat=form.cleaned_data['partenariat'],
+                taux_tva=taux_pour(form.cleaned_data['partenariat'].soumis_tva),   # TVA du partenaire, figée
                 reduction=form.cleaned_data['reduction'],
                 name=form.cleaned_data['name'],
                 frais_ingenieurie=frais_ingenieurie,
@@ -373,6 +375,7 @@ def confirm_additional_order(request):
             # 2. Créer la commande
             order = form.save(commit=False)
             order.user = request.user
+            order.taux_tva = taux_pour(order.projet_order.partenariat.soumis_tva)   # TVA du partenaire, figée
             order.save()  # attribue annee + sequence (numéro)
             # 3. Copier chaque CartItem en OrderItem
             for item in cart.items.all():
@@ -406,6 +409,7 @@ def confirm_additional_order(request):
             'paniers': paniers_details, 
             'total_prix': total_prix,
             'montant_tva' :panier.montant_tva,
+            'taux_tva': panier.taux_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
             'get_tranche2':panier.get_tranche2,
@@ -461,6 +465,7 @@ def detail_commande_additional(request, order_id):
         'status':commande.get_statut_actuel,
         'order':commande,
         'montant_tva' :commande.montant_tva,
+        'taux_tva': commande.taux_tva,
         'net_payer':commande.net_payer,
         'filename':filename
     }
@@ -500,6 +505,7 @@ def generate_order_additional(request, order_id):
                 'cachet_url':cachet_url,
                 'footer_url':footer_url,
                 'montant_tva' :order.montant_tva,
+                'taux_tva': order.taux_tva,
                 'net_payer':order.net_payer,
                }  # Contexte à passer au template
     # Préparation du HTML avec image

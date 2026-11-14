@@ -134,6 +134,7 @@ def send_info_user(request):
             donnees_client = {
                 **form.infos_client(request.user),
                 "remise": float(panier.remise or 0),
+                "taux_tva": str(panier.taux_tva),      # figé : c'est ce montant qui est payé
             }
 
             provider = data["mode_payement"]  # "orange" ou "mtn"
@@ -178,6 +179,7 @@ def _page_confirmation(request, panier, paniers_details, total_prix, form, erreu
         "remise": panier.remise if panier else 0,
         "montant_remise": round(panier.montant_remise()) if panier else 0,
         "montant_tva": panier.montant_tva if panier else 0,
+        "taux_tva": panier.taux_tva if panier else None,
         "net_payer": panier.net_payer if panier else 0,
         "get_tranche1": panier.get_tranche1 if panier else 0,
         "get_tranche2": panier.get_tranche2 if panier else 0,

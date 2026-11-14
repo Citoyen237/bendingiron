@@ -7,7 +7,7 @@ User = get_user_model()
 class ParteriatForm(forms.ModelForm):
     class Meta:
         model = Partenariats
-        fields = ['user', 'name', 'email', 'adresse', 'telephone', 'date_debut', 'date_fin']
+        fields = ['user', 'name', 'email', 'adresse', 'telephone', 'date_debut', 'date_fin', 'soumis_tva']
         labels = {
             'user': "Nom de l'referent",
             'name': "Nom de l'entreprise",

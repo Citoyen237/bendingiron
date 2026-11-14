@@ -9,6 +9,12 @@ from dateutil.relativedelta import relativedelta
 # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    @property
+    def taux_tva(self):
+        """Taux du client propriétaire du panier (case « Appliquer la TVA » de son compte)."""
+        from .tva import taux_pour
+        return taux_pour(getattr(self.user, "soumis_tva", True))
     created_at = models.DateTimeField(auto_now_add=True)
     remise = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,7 +38,8 @@ class Cart(models.Model):
 
     @property
     def montant_tva(self):
-        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+        from .tva import calculer_tva
+        return calculer_tva(self.get_prix_total, self.taux_tva)
     @property
     def net_payer(self):
         return round(self.montant_tva + self.get_prix_total)
@@ -84,6 +91,9 @@ class Order(models.Model):
     # False : ancienne règle (remise sur le prix de revient) — conservée pour
     # les commandes existantes afin que leurs factures ne changent pas.
     remise_sur_total = models.BooleanField(default=True)
+    # TVA figée à la création (19,25 ou 0 = exonéré), décidée par l'admin (usesOrders/tva.py)
+    taux_tva = models.DecimalField("Taux de TVA (%)", max_digits=5, decimal_places=2, default=Decimal("19.25"),
+                                   help_text="19,25 ou 0 (exonéré). Figé à la création de la commande.")
     annee = models.PositiveIntegerField(editable=False)
     sequence = models.PositiveIntegerField(editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -108,7 +118,8 @@ class Order(models.Model):
 
     @property
     def montant_tva(self):
-        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+        from .tva import calculer_tva
+        return calculer_tva(self.get_prix_total, self.taux_tva)
     
     @property
     def net_payer(self):

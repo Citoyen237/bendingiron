@@ -108,7 +108,7 @@ details sur le projet
                     <div class="ligne"><span>Montant HT</span><b>{{ projet.montant_total|floatformat:"0g" }} F</b></div>
                     <div class="ligne"><span>Après remise</span><b>{{ projet.montant_apres_remise|floatformat:"0g" }} F</b></div>
                     <div class="ligne"><span>Frais d'ingénierie</span><b>{{ projet.frais_ingenieurie_montant|floatformat:"0g" }} F</b></div>
-                    <div class="ligne"><span>TVA (19,25 %)</span><b>{{ projet.montant_tva|floatformat:"0g" }} F</b></div>
+                    <div class="ligne"><span>{% load montants %}{{ projet.taux_tva|tva_libelle }}</span><b>{{ projet.montant_tva|floatformat:"0g" }} F</b></div>
                     <div class="ligne total"><span>Net à payer</span><span>{{ projet.net_payer|floatformat:"0g" }} F</span></div>
                 </div>
             </div>

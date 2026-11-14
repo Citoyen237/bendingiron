@@ -9,6 +9,13 @@ class CustomUser(AbstractUser):
     groups = models.ManyToManyField(Group, related_name="customuser_set")
     user_permissions = models.ManyToManyField(Permission, related_name="customuser_set")
     email_verified = models.BooleanField(default=False)
+    # TVA décidée par l'admin pour ce client (14/11/2026) ; figée sur chaque commande
+    soumis_tva = models.BooleanField("Appliquer la TVA", default=True,
+                                     help_text="Décocher pour ne pas facturer la TVA à ce client.")
+
+    class Meta:
+        verbose_name = "compte client"
+        verbose_name_plural = "Clients et comptes"
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"

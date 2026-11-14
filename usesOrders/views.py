@@ -40,6 +40,7 @@ def show_cart(request):
             'paniers': paniers_details, 
             'total_prix': total_prix,
             'montant_tva' :panier.montant_tva,
+            'taux_tva': panier.taux_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
             'get_tranche2':panier.get_tranche2,
@@ -81,7 +82,7 @@ def confirmer_commande(request):
         return redirect('panier')
 
     # 2. Créer la commande
-    order = Order.objects.create(user=user, remise=cart.remise)  # remise du code promo conservée
+    order = Order.objects.create(user=user, remise=cart.remise, taux_tva=cart.taux_tva)  # remise du code promo conservée
 
     # 3. Copier chaque CartItem en OrderItem
     for item in cart.items.all():
@@ -148,6 +149,7 @@ def detail_commande(request, order_id):
         'status':commande.get_statut_actuel,
         'order':commande,
         'montant_tva' :commande.montant_tva,
+        'taux_tva': commande.taux_tva,
         'net_payer':commande.net_payer,
         'get_tranche1':commande.get_tranche1,
         'get_tranche2':commande.get_tranche2,
@@ -194,7 +196,7 @@ def send_info_user(request):
                 return redirect('info_user')
 
             # 2. Créer la commande
-            order = Order.objects.create(user=user, remise=cart.remise)  # remise du code promo conservée
+            order = Order.objects.create(user=user, remise=cart.remise, taux_tva=cart.taux_tva)  # remise du code promo conservée
 
             # 3. Copier chaque CartItem en OrderItem
             for item in cart.items.all():
@@ -237,6 +239,7 @@ def send_info_user(request):
             'remise': panier.remise,
             'montant_remise': round(panier.montant_remise()),
             'montant_tva' :panier.montant_tva,
+            'taux_tva': panier.taux_tva,
             'net_payer':panier.net_payer,
             'get_tranche1':panier.get_tranche1,
             'get_tranche2':panier.get_tranche2,
@@ -278,6 +281,7 @@ def generate_invoice_pdf(request, invoice_id):
                 'cachet_url':cachet_url,
                 'footer_url':footer_url,
                 'montant_tva' :order.montant_tva,
+                'taux_tva': order.taux_tva,
                 'net_payer':order.net_payer,
                 'get_tranche1':order.get_tranche1,
                 'get_tranche2':order.get_tranche2
@@ -330,6 +334,7 @@ def generate_invoice_pdf_solde(request, invoice_id):
                 'cachet_url':cachet_url,
                 'footer_url':footer_url,
                 'montant_tva' :order.montant_tva,
+                'taux_tva': order.taux_tva,
                 'net_payer':order.net_payer,
                 'get_tranche1':order.get_tranche1,
                 'get_tranche2':order.get_tranche2

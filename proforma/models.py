@@ -15,6 +15,9 @@ class CompteurFacturePro(models.Model):
 # Create your models here.
 class OrderPro(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    # TVA figée à la création (19,25 ou 0 = exonéré), décidée par l'admin (usesOrders/tva.py)
+    taux_tva = models.DecimalField("Taux de TVA (%)", max_digits=5, decimal_places=2, default=Decimal("19.25"),
+                                   help_text="19,25 ou 0 (exonéré). Figé à la création de la commande.")
     remise = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     annee = models.PositiveIntegerField(editable=False)
     sequence = models.PositiveIntegerField(editable=False)
@@ -64,7 +67,8 @@ class OrderPro(models.Model):
 
     @property
     def montant_tva(self):
-        return round((Decimal(self.get_prix_total)*Decimal(19.25))/100)
+        from usesOrders.tva import calculer_tva
+        return calculer_tva(self.get_prix_total, self.taux_tva)
     
     @property
     def net_payer(self):

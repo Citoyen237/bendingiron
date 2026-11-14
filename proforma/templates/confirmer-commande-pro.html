@@ -27,7 +27,7 @@ confirmer la commande
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="form-check mb-0">
-                                <h6>TVA 19,25% </h6>
+                                <h6>{% load montants %}{{ taux_tva|tva_libelle }} </h6>
                             </div>
                             <a class="text-dark">{{montant_tva|intcomma}} FCFA</a>
                         </div>
@@ -63,6 +63,10 @@ confirmer la commande
                                 <div class="col-md-6">
                                     {{form.mode_livraison.label}}
                                     {{form.mode_livraison}}
+                                </div>
+                                <div class="col-md-12 mt-2">
+                                    {{ form.appliquer_tva }}
+                                    <label for="{{ form.appliquer_tva.id_for_label }}"><b>{{ form.appliquer_tva.label }}</b></label>
                                 </div>
                             </div>
             
